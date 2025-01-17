@@ -8,72 +8,81 @@ import (
 	internal "github.com/Newscatcher/newscatcher-go/internal"
 )
 
-// SubscriptionResponse DTO class.
-type SubscriptionResponse struct {
-	Active              bool   `json:"active" url:"active"`
-	CallsPerSeconds     *int   `json:"calls_per_seconds,omitempty" url:"calls_per_seconds,omitempty"`
-	PlanName            string `json:"plan_name" url:"plan_name"`
-	UsageAssignedCalls  *int   `json:"usage_assigned_calls,omitempty" url:"usage_assigned_calls,omitempty"`
-	UsageRemainingCalls *int   `json:"usage_remaining_calls,omitempty" url:"usage_remaining_calls,omitempty"`
-	HistoricalDays      *int   `json:"historical_days,omitempty" url:"historical_days,omitempty"`
+// Response model for a successful `Subscription` request retrieving plan information. Response field behavior:
+// - Required fields are guaranteed to be present and non-null.
+// - Optional fields may be `null`/`undefined` if the data couldn't
+// be extracted during processing.
+type SubscriptionResponseDto struct {
+	// Indicates whether the subscription is currently active.
+	Active bool `json:"active" url:"active"`
+	// The number of API calls allowed per second allowed in the current plan.
+	ConcurrentCalls int `json:"concurrent_calls" url:"concurrent_calls"`
+	// The name of the subscription plan.
+	Plan string `json:"plan" url:"plan"`
+	// The total number of API calls assigned to the current subscription.
+	PlanCalls int `json:"plan_calls" url:"plan_calls"`
+	// The number of API calls remaining for the current subscription period.
+	RemainingCalls int `json:"remaining_calls" url:"remaining_calls"`
+	// The number of historical days accessible under the current subscription plan.
+	HistoricalDays int `json:"historical_days" url:"historical_days"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (s *SubscriptionResponse) GetActive() bool {
+func (s *SubscriptionResponseDto) GetActive() bool {
 	if s == nil {
 		return false
 	}
 	return s.Active
 }
 
-func (s *SubscriptionResponse) GetCallsPerSeconds() *int {
+func (s *SubscriptionResponseDto) GetConcurrentCalls() int {
 	if s == nil {
-		return nil
+		return 0
 	}
-	return s.CallsPerSeconds
+	return s.ConcurrentCalls
 }
 
-func (s *SubscriptionResponse) GetPlanName() string {
+func (s *SubscriptionResponseDto) GetPlan() string {
 	if s == nil {
 		return ""
 	}
-	return s.PlanName
+	return s.Plan
 }
 
-func (s *SubscriptionResponse) GetUsageAssignedCalls() *int {
+func (s *SubscriptionResponseDto) GetPlanCalls() int {
 	if s == nil {
-		return nil
+		return 0
 	}
-	return s.UsageAssignedCalls
+	return s.PlanCalls
 }
 
-func (s *SubscriptionResponse) GetUsageRemainingCalls() *int {
+func (s *SubscriptionResponseDto) GetRemainingCalls() int {
 	if s == nil {
-		return nil
+		return 0
 	}
-	return s.UsageRemainingCalls
+	return s.RemainingCalls
 }
 
-func (s *SubscriptionResponse) GetHistoricalDays() *int {
+func (s *SubscriptionResponseDto) GetHistoricalDays() int {
 	if s == nil {
-		return nil
+		return 0
 	}
 	return s.HistoricalDays
 }
 
-func (s *SubscriptionResponse) GetExtraProperties() map[string]interface{} {
+func (s *SubscriptionResponseDto) GetExtraProperties() map[string]interface{} {
 	return s.extraProperties
 }
 
-func (s *SubscriptionResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler SubscriptionResponse
+func (s *SubscriptionResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler SubscriptionResponseDto
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*s = SubscriptionResponse(value)
+	*s = SubscriptionResponseDto(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *s)
 	if err != nil {
 		return err
@@ -83,7 +92,7 @@ func (s *SubscriptionResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s *SubscriptionResponse) String() string {
+func (s *SubscriptionResponseDto) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value

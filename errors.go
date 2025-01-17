@@ -7,14 +7,158 @@ import (
 	core "github.com/Newscatcher/newscatcher-go/core"
 )
 
-// Validation Error
+// Bad request
+type BadRequestError struct {
+	*core.APIError
+	Body *Error
+}
+
+func (b *BadRequestError) UnmarshalJSON(data []byte) error {
+	var body *Error
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	b.StatusCode = 400
+	b.Body = body
+	return nil
+}
+
+func (b *BadRequestError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(b.Body)
+}
+
+func (b *BadRequestError) Unwrap() error {
+	return b.APIError
+}
+
+// Forbidden - Server refuses action
+type ForbiddenError struct {
+	*core.APIError
+	Body *Error
+}
+
+func (f *ForbiddenError) UnmarshalJSON(data []byte) error {
+	var body *Error
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	f.StatusCode = 403
+	f.Body = body
+	return nil
+}
+
+func (f *ForbiddenError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(f.Body)
+}
+
+func (f *ForbiddenError) Unwrap() error {
+	return f.APIError
+}
+
+// Internal server error
+type InternalServerError struct {
+	*core.APIError
+	Body string
+}
+
+func (i *InternalServerError) UnmarshalJSON(data []byte) error {
+	var body string
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	i.StatusCode = 500
+	i.Body = body
+	return nil
+}
+
+func (i *InternalServerError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(i.Body)
+}
+
+func (i *InternalServerError) Unwrap() error {
+	return i.APIError
+}
+
+// Request timeout
+type RequestTimeoutError struct {
+	*core.APIError
+	Body *Error
+}
+
+func (r *RequestTimeoutError) UnmarshalJSON(data []byte) error {
+	var body *Error
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	r.StatusCode = 408
+	r.Body = body
+	return nil
+}
+
+func (r *RequestTimeoutError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.Body)
+}
+
+func (r *RequestTimeoutError) Unwrap() error {
+	return r.APIError
+}
+
+// Too many requests - Rate limit exceeded
+type TooManyRequestsError struct {
+	*core.APIError
+	Body *Error
+}
+
+func (t *TooManyRequestsError) UnmarshalJSON(data []byte) error {
+	var body *Error
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	t.StatusCode = 429
+	t.Body = body
+	return nil
+}
+
+func (t *TooManyRequestsError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.Body)
+}
+
+func (t *TooManyRequestsError) Unwrap() error {
+	return t.APIError
+}
+
+// Unauthorized - Authentication failed
+type UnauthorizedError struct {
+	*core.APIError
+	Body *Error
+}
+
+func (u *UnauthorizedError) UnmarshalJSON(data []byte) error {
+	var body *Error
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	u.StatusCode = 401
+	u.Body = body
+	return nil
+}
+
+func (u *UnauthorizedError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(u.Body)
+}
+
+func (u *UnauthorizedError) Unwrap() error {
+	return u.APIError
+}
+
+// Validation error
 type UnprocessableEntityError struct {
 	*core.APIError
-	Body *HttpValidationError
+	Body *Error
 }
 
 func (u *UnprocessableEntityError) UnmarshalJSON(data []byte) error {
-	var body *HttpValidationError
+	var body *Error
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}

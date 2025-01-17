@@ -31,12 +31,12 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-// This endpoint allows you to get the list of sources that are available in the database. You can filter the sources by language and country. The maximum number of sources displayed is set according to your plan. You can find the list of plans and their features here: https://newscatcherapi.com/news-api#news-api-pricing
+// Retrieves a list of sources based on specified criteria such as language, country, rank, and more.
 func (c *Client) Get(
 	ctx context.Context,
 	request *newscatchergo.SourcesGetRequest,
 	opts ...option.RequestOption,
-) (*newscatchergo.SourceResponse, error) {
+) (*newscatchergo.SourcesResponseDto, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -56,14 +56,44 @@ func (c *Client) Get(
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
+				APIError: apiError,
+			}
+		},
 	}
 
-	var response *newscatchergo.SourceResponse
+	var response *newscatchergo.SourcesResponseDto
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -83,12 +113,12 @@ func (c *Client) Get(
 	return response, nil
 }
 
-// This endpoint allows you to get the list of sources that are available in the database. You can filter the sources by language and country. The maximum number of sources displayed is set according to your plan. You can find the list of plans and their features here: https://newscatcherapi.com/news-api#news-api-pricing
+// Retrieves the list of sources available in the database. You can filter the sources by language, country, and more.
 func (c *Client) Post(
 	ctx context.Context,
-	request *newscatchergo.SourcesRequest,
+	request *newscatchergo.SourcesPostRequest,
 	opts ...option.RequestOption,
-) (*newscatchergo.SourceResponse, error) {
+) (*newscatchergo.SourcesResponseDto, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -102,14 +132,44 @@ func (c *Client) Post(
 	)
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
+				APIError: apiError,
+			}
+		},
 	}
 
-	var response *newscatchergo.SourceResponse
+	var response *newscatchergo.SourcesResponseDto
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

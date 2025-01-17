@@ -5,164 +5,206 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Newscatcher/newscatcher-go/internal"
-	time "time"
 )
 
-type SearchUrlRequest struct {
-	Ids      interface{}           `json:"ids,omitempty" url:"-"`
-	Links    interface{}           `json:"links,omitempty" url:"-"`
-	From     *SearchUrlRequestFrom `json:"from_,omitempty" url:"-"`
-	To       *SearchUrlRequestTo   `json:"to_,omitempty" url:"-"`
-	Page     *int                  `json:"page,omitempty" url:"-"`
-	PageSize *int                  `json:"page_size,omitempty" url:"-"`
+type SearchUrlPostRequest struct {
+	Ids   *Ids   `json:"ids,omitempty" url:"-"`
+	Links *Links `json:"links,omitempty" url:"-"`
+	// The starting point in time to search from. Accepts date-time strings in ISO 8601 format and plain text strings. The default time zone is UTC.
+	//
+	// Formats with examples:
+	// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+	// - YYYY-MM-dd: `2024-07-01`
+	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+	// - YYYY/mm/dd: `2024/07/01`
+	// - English phrases: `1 day ago`, `today`
+	From *From `json:"from_,omitempty" url:"-"`
+	// The ending point in time to search up to. Accepts date-time strings in ISO 8601 format and plain text strings. The default time zone is UTC.
+	//
+	// Formats with examples:
+	// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+	// - YYYY-MM-dd: `2024-07-01`
+	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+	// - YYYY/mm/dd: `2024/07/01`
+	// - English phrases: `1 day ago`, `today`
+	To       *To       `json:"to_,omitempty" url:"-"`
+	Page     *Page     `json:"page,omitempty" url:"-"`
+	PageSize *PageSize `json:"page_size,omitempty" url:"-"`
 }
 
 type SearchUrlGetRequest struct {
-	Ids      string  `json:"-" url:"ids"`
-	Links    string  `json:"-" url:"links"`
-	From     *string `json:"-" url:"from_,omitempty"`
-	To       *string `json:"-" url:"to_,omitempty"`
-	Page     *int    `json:"-" url:"page,omitempty"`
-	PageSize *int    `json:"-" url:"page_size,omitempty"`
+	// The Newscatcher article ID (corresponds to the `_id` field in API response) or a list of article IDs to search for. To specify multiple IDs, use a comma-separated string.
+	//
+	// Example: `"1234567890abcdef, abcdef1234567890"`
+	//
+	// **Caution**: You can use either the `links` or the `ids` parameter, but not both at the same time.
+	Ids *string `json:"-" url:"ids,omitempty"`
+	// The article link or list of article links to search for. To specify multiple links, use a comma-separated string.
+	//
+	// Example: `"https://example.com/article1, https://example.com/article2"`
+	//
+	// **Caution**: You can use either the `links` or the `ids` parameter, but not both at the same time.
+	Links *string `json:"-" url:"links,omitempty"`
+	From  *From   `json:"-" url:"from_,omitempty"`
+	To    *To     `json:"-" url:"to_,omitempty"`
+	// The page number to scroll through the results. Use for pagination, as a single API response can return up to 1,000 articles.
+	//
+	// For details, see [How to paginate large datasets](https://www.newscatcherapi.com/docs/v3/documentation/how-to/paginate-large-datasets).
+	Page *int `json:"-" url:"page,omitempty"`
+	// The number of articles to return per page.
+	PageSize *int `json:"-" url:"page_size,omitempty"`
 }
 
-type SearchUrlRequestFrom struct {
-	String   string
-	DateTime time.Time
+// The Newscatcher article ID (corresponds to the `_id` field in API response) or a list of article IDs to search for. To specify multiple IDs, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"5f8d0d55b6e45e00179c6e7e,5f8d0d55b6e45e00179c6e7f"`
+// - `["5f8d0d55b6e45e00179c6e7e","5f8d0d55b6e45e00179c6e7f"]`
+//
+// **Caution**: You can use either the `links` or the `ids` parameter, but not both at the same time.
+type Ids struct {
+	String     string
+	StringList []string
 
 	typ string
 }
 
-func NewSearchUrlRequestFromFromString(value string) *SearchUrlRequestFrom {
-	return &SearchUrlRequestFrom{typ: "String", String: value}
+func NewIdsFromString(value string) *Ids {
+	return &Ids{typ: "String", String: value}
 }
 
-func NewSearchUrlRequestFromFromDateTime(value time.Time) *SearchUrlRequestFrom {
-	return &SearchUrlRequestFrom{typ: "DateTime", DateTime: value}
+func NewIdsFromStringList(value []string) *Ids {
+	return &Ids{typ: "StringList", StringList: value}
 }
 
-func (s *SearchUrlRequestFrom) GetString() string {
-	if s == nil {
+func (i *Ids) GetString() string {
+	if i == nil {
 		return ""
 	}
-	return s.String
+	return i.String
 }
 
-func (s *SearchUrlRequestFrom) GetDateTime() time.Time {
-	if s == nil {
-		return time.Time{}
+func (i *Ids) GetStringList() []string {
+	if i == nil {
+		return nil
 	}
-	return s.DateTime
+	return i.StringList
 }
 
-func (s *SearchUrlRequestFrom) UnmarshalJSON(data []byte) error {
+func (i *Ids) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		s.typ = "String"
-		s.String = valueString
+		i.typ = "String"
+		i.String = valueString
 		return nil
 	}
-	var valueDateTime *internal.DateTime
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		s.typ = "DateTime"
-		s.DateTime = valueDateTime.Time()
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typ = "StringList"
+		i.StringList = valueStringList
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
 }
 
-func (s SearchUrlRequestFrom) MarshalJSON() ([]byte, error) {
-	if s.typ == "String" || s.String != "" {
-		return json.Marshal(s.String)
+func (i Ids) MarshalJSON() ([]byte, error) {
+	if i.typ == "String" || i.String != "" {
+		return json.Marshal(i.String)
 	}
-	if s.typ == "DateTime" || !s.DateTime.IsZero() {
-		return json.Marshal(internal.NewDateTime(s.DateTime))
+	if i.typ == "StringList" || i.StringList != nil {
+		return json.Marshal(i.StringList)
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
-type SearchUrlRequestFromVisitor interface {
+type IdsVisitor interface {
 	VisitString(string) error
-	VisitDateTime(time.Time) error
+	VisitStringList([]string) error
 }
 
-func (s *SearchUrlRequestFrom) Accept(visitor SearchUrlRequestFromVisitor) error {
-	if s.typ == "String" || s.String != "" {
-		return visitor.VisitString(s.String)
+func (i *Ids) Accept(visitor IdsVisitor) error {
+	if i.typ == "String" || i.String != "" {
+		return visitor.VisitString(i.String)
 	}
-	if s.typ == "DateTime" || !s.DateTime.IsZero() {
-		return visitor.VisitDateTime(s.DateTime)
+	if i.typ == "StringList" || i.StringList != nil {
+		return visitor.VisitStringList(i.StringList)
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", s)
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
-type SearchUrlRequestTo struct {
-	String   string
-	DateTime time.Time
+// The article link or list of article links to search for. To specify multiple links, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"https://nytimes.com/article1, https://bbc.com/article2"`
+// - `["https://nytimes.com/article1", "https://bbc.com/article2"]`
+//
+// **Caution**: You can use either the `links` or the `ids` parameter, but not both at the same time.
+type Links struct {
+	String     string
+	StringList []string
 
 	typ string
 }
 
-func NewSearchUrlRequestToFromString(value string) *SearchUrlRequestTo {
-	return &SearchUrlRequestTo{typ: "String", String: value}
+func NewLinksFromString(value string) *Links {
+	return &Links{typ: "String", String: value}
 }
 
-func NewSearchUrlRequestToFromDateTime(value time.Time) *SearchUrlRequestTo {
-	return &SearchUrlRequestTo{typ: "DateTime", DateTime: value}
+func NewLinksFromStringList(value []string) *Links {
+	return &Links{typ: "StringList", StringList: value}
 }
 
-func (s *SearchUrlRequestTo) GetString() string {
-	if s == nil {
+func (l *Links) GetString() string {
+	if l == nil {
 		return ""
 	}
-	return s.String
+	return l.String
 }
 
-func (s *SearchUrlRequestTo) GetDateTime() time.Time {
-	if s == nil {
-		return time.Time{}
+func (l *Links) GetStringList() []string {
+	if l == nil {
+		return nil
 	}
-	return s.DateTime
+	return l.StringList
 }
 
-func (s *SearchUrlRequestTo) UnmarshalJSON(data []byte) error {
+func (l *Links) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		s.typ = "String"
-		s.String = valueString
+		l.typ = "String"
+		l.String = valueString
 		return nil
 	}
-	var valueDateTime *internal.DateTime
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		s.typ = "DateTime"
-		s.DateTime = valueDateTime.Time()
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		l.typ = "StringList"
+		l.StringList = valueStringList
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
 }
 
-func (s SearchUrlRequestTo) MarshalJSON() ([]byte, error) {
-	if s.typ == "String" || s.String != "" {
-		return json.Marshal(s.String)
+func (l Links) MarshalJSON() ([]byte, error) {
+	if l.typ == "String" || l.String != "" {
+		return json.Marshal(l.String)
 	}
-	if s.typ == "DateTime" || !s.DateTime.IsZero() {
-		return json.Marshal(internal.NewDateTime(s.DateTime))
+	if l.typ == "StringList" || l.StringList != nil {
+		return json.Marshal(l.StringList)
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
 }
 
-type SearchUrlRequestToVisitor interface {
+type LinksVisitor interface {
 	VisitString(string) error
-	VisitDateTime(time.Time) error
+	VisitStringList([]string) error
 }
 
-func (s *SearchUrlRequestTo) Accept(visitor SearchUrlRequestToVisitor) error {
-	if s.typ == "String" || s.String != "" {
-		return visitor.VisitString(s.String)
+func (l *Links) Accept(visitor LinksVisitor) error {
+	if l.typ == "String" || l.String != "" {
+		return visitor.VisitString(l.String)
 	}
-	if s.typ == "DateTime" || !s.DateTime.IsZero() {
-		return visitor.VisitDateTime(s.DateTime)
+	if l.typ == "StringList" || l.StringList != nil {
+		return visitor.VisitStringList(l.StringList)
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", s)
+	return fmt.Errorf("type %T does not include a non-empty union type", l)
 }

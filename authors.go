@@ -10,435 +10,590 @@ import (
 )
 
 type AuthorsGetRequest struct {
-	AuthorName             string   `json:"-" url:"author_name"`
-	NotAuthorName          *string  `json:"-" url:"not_author_name,omitempty"`
-	Sources                string   `json:"-" url:"sources"`
-	PredefinedSources      string   `json:"-" url:"predefined_sources"`
-	NotSources             string   `json:"-" url:"not_sources"`
-	Lang                   string   `json:"-" url:"lang"`
-	NotLang                string   `json:"-" url:"not_lang"`
-	Countries              string   `json:"-" url:"countries"`
-	NotCountries           string   `json:"-" url:"not_countries"`
-	From                   *string  `json:"-" url:"from_,omitempty"`
-	To                     *string  `json:"-" url:"to_,omitempty"`
-	PublishedDatePrecision *string  `json:"-" url:"published_date_precision,omitempty"`
-	ByParseDate            *bool    `json:"-" url:"by_parse_date,omitempty"`
-	SortBy                 *string  `json:"-" url:"sort_by,omitempty"`
-	RankedOnly             *string  `json:"-" url:"ranked_only,omitempty"`
-	FromRank               *int     `json:"-" url:"from_rank,omitempty"`
-	ToRank                 *int     `json:"-" url:"to_rank,omitempty"`
-	IsHeadline             *bool    `json:"-" url:"is_headline,omitempty"`
-	IsOpinion              *bool    `json:"-" url:"is_opinion,omitempty"`
-	IsPaidContent          *bool    `json:"-" url:"is_paid_content,omitempty"`
-	ParentUrl              string   `json:"-" url:"parent_url"`
-	AllLinks               string   `json:"-" url:"all_links"`
-	AllDomainLinks         string   `json:"-" url:"all_domain_links"`
-	WordCountMin           *int     `json:"-" url:"word_count_min,omitempty"`
-	WordCountMax           *int     `json:"-" url:"word_count_max,omitempty"`
-	Page                   *int     `json:"-" url:"page,omitempty"`
-	PageSize               *int     `json:"-" url:"page_size,omitempty"`
-	IncludeNlpData         *bool    `json:"-" url:"include_nlp_data,omitempty"`
-	HasNlp                 *bool    `json:"-" url:"has_nlp,omitempty"`
-	Theme                  *string  `json:"-" url:"theme,omitempty"`
-	NotTheme               *string  `json:"-" url:"not_theme,omitempty"`
-	TitleSentimentMin      *float64 `json:"-" url:"title_sentiment_min,omitempty"`
-	TitleSentimentMax      *float64 `json:"-" url:"title_sentiment_max,omitempty"`
-	ContentSentimentMin    *float64 `json:"-" url:"content_sentiment_min,omitempty"`
-	ContentSentimentMax    *float64 `json:"-" url:"content_sentiment_max,omitempty"`
-	IptcTags               string   `json:"-" url:"iptc_tags"`
-	NotIptcTags            string   `json:"-" url:"not_iptc_tags"`
-	IabTags                string   `json:"-" url:"iab_tags"`
-	NotIabTags             string   `json:"-" url:"not_iab_tags"`
+	// The name of the author to search for. This parameter returns exact matches only.
+	AuthorName string `json:"-" url:"author_name"`
+	// The list of author names to exclude from your search. To exclude articles by specific authors, use a comma-separated string.
+	//
+	// Example: `"John Doe, Jane Doe"`
+	NotAuthorName *string `json:"-" url:"not_author_name,omitempty"`
+	// Predefined top news sources per country.
+	//
+	// Format: start with the word `top`, followed by the number of desired sources, and then the two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Multiple countries with the number of top sources can be specified as a comma-separated string.
+	//
+	// Examples:
+	// - `"top 100 US"`
+	// - `"top 33 AT"`
+	// - `"top 50 US, top 20 GB"`
+	// - `"top 33 AT, top 50 IT"`
+	PredefinedSources *string `json:"-" url:"predefined_sources,omitempty"`
+	// One or more news sources to narrow down the search. The format must be a domain URL. Subdomains, such as `finance.yahoo.com`, are also acceptable.To specify multiple sources, use a comma-separated string.
+	//
+	// Examples:
+	// - `"nytimes.com"`
+	// - `"theguardian.com, finance.yahoo.com"`
+	Sources *string `json:"-" url:"sources,omitempty"`
+	// The news sources to exclude from the search. To exclude multiple sources, use a comma-separated string.
+	//
+	// Example: `"cnn.com, wsj.com"`
+	NotSources *string `json:"-" url:"not_sources,omitempty"`
+	// The language(s) of the search. The only accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To select multiple languages, use a comma-separated string.
+	//
+	// Example: `"en, es"`
+	//
+	// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+	Lang *string `json:"-" url:"lang,omitempty"`
+	// The language(s) to exclude from the search. The accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To exclude multiple languages, use a comma-separated string.
+	//
+	// Example: `"fr, de"`
+	//
+	// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+	NotLang *string `json:"-" url:"not_lang,omitempty"`
+	// The countries where the news publisher is located. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To select multiple countries, use a comma-separated string.
+	//
+	// Example: `"US, CA"`
+	//
+	// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+	Countries *string `json:"-" url:"countries,omitempty"`
+	// The publisher location countries to exclude from the search. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To exclude multiple countries, use a comma-separated string.
+	//
+	// Example:`"US, CA"`
+	//
+	// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+	NotCountries *string `json:"-" url:"not_countries,omitempty"`
+	// The starting point in time to search from. Accepts date-time strings in ISO 8601 format and plain text. The default time zone is UTC.
+	//
+	// Formats with examples:
+	// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+	// - YYYY-MM-dd: `2024-07-01`
+	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+	// - YYYY/mm/dd: `2024/07/01`
+	// - English phrases: `1 day ago`, `today`
+	//
+	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
+	From *time.Time `json:"-" url:"from_,omitempty"`
+	// The ending point in time to search up to. Accepts date-time strings in ISO 8601 format and plain text. The default time zone is UTC.
+	//
+	// Formats with examples:
+	// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+	// - YYYY-MM-dd: `2024-07-01`
+	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+	// - YYYY/mm/dd: `2024/07/01`
+	// - English phrases: `1 day ago`, `today`
+	//
+	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
+	To *time.Time `json:"-" url:"to_,omitempty"`
+	// The precision of the published date. There are three types:
+	// - `full`: The day and time of an article is correctly identified with the appropriate timezone.
+	// - `timezone unknown`: The day and time of an article is correctly identified without timezone.
+	// - `date`: Only the day is identified without an exact time.
+	PublishedDatePrecision *AuthorsGetRequestPublishedDatePrecision `json:"-" url:"published_date_precision,omitempty"`
+	// If true, the `from_` and `to_` parameters use article parse dates instead of published dates. Additionally, the `parse_date` variable is added to the output for each article object.
+	ByParseDate *bool `json:"-" url:"by_parse_date,omitempty"`
+	// The sorting order of the results. Possible values are:
+	// - `relevancy`: The most relevant results first.
+	// - `date`: The most recently published results first.
+	// - `rank`: The results from the highest-ranked sources first.
+	SortBy *AuthorsGetRequestSortBy `json:"-" url:"sort_by,omitempty"`
+	// If true, limits the search to sources ranked in the top 1 million online websites. If false, includes unranked sources which are assigned a rank of 999999.
+	RankedOnly *bool `json:"-" url:"ranked_only,omitempty"`
+	// The lowest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+	FromRank *int `json:"-" url:"from_rank,omitempty"`
+	// The highest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+	ToRank *int `json:"-" url:"to_rank,omitempty"`
+	// If true, only returns articles that were posted on the home page of a given news domain.
+	IsHeadline *bool `json:"-" url:"is_headline,omitempty"`
+	// If true, returns only opinion pieces. If false, excludes opinion-based articles and returns news only.
+	IsOpinion *bool `json:"-" url:"is_opinion,omitempty"`
+	// If false, returns only articles that have publicly available complete content. Some publishers partially block content, so this setting ensures that only full articles are retrieved.
+	IsPaidContent *bool `json:"-" url:"is_paid_content,omitempty"`
+	// The categorical URL(s) to filter your search. To filter your search by multiple categorical URLs, use a comma-separated string.
+	//
+	// Example: `"wsj.com/politics, wsj.com/tech"`
+	ParentUrl *string `json:"-" url:"parent_url,omitempty"`
+	// The complete URL(s) mentioned in the article. For multiple URLs, use a comma-separated string.
+	//
+	// Example: `"https://aiindex.stanford.edu/report, https://www.stateof.ai"`
+	//
+	// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+	AllLinks *string `json:"-" url:"all_links,omitempty"`
+	// The domain(s) mentioned in the article. For multiple domains, use a comma-separated string.
+	//
+	// Example: `"who.int, nih.gov"`
+	//
+	// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+	AllDomainLinks *string `json:"-" url:"all_domain_links,omitempty"`
+	// The minimum number of words an article must contain. To be used for avoiding articles with small content.
+	WordCountMin *int `json:"-" url:"word_count_min,omitempty"`
+	// The maximum number of words an article can contain. To be used for avoiding articles with large content.
+	WordCountMax *int `json:"-" url:"word_count_max,omitempty"`
+	// The page number to scroll through the results. Use for pagination, as a single API response can return up to 1,000 articles.
+	//
+	// For details, see [How to paginate large datasets](https://www.newscatcherapi.com/docs/v3/documentation/how-to/paginate-large-datasets).
+	Page *int `json:"-" url:"page,omitempty"`
+	// The number of articles to return per page.
+	PageSize *int `json:"-" url:"page_size,omitempty"`
+	// If true, includes an NLP layer with each article in the response. This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
+	//
+	// The NLP layer includes:
+	// - Theme: General topic of the article.
+	// - Summary: A concise overview of the article content.
+	// - Sentiment: Separate scores for title and content (range: -1 to 1).
+	// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
+	// - IPTC tags: Standardized news category tags.
+	// - IAB tags: Content categories for digital advertising.
+	//
+	// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	IncludeNlpData *bool `json:"-" url:"include_nlp_data,omitempty"`
+	// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
+	//
+	// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	HasNlp *bool `json:"-" url:"has_nlp,omitempty"`
+	// Filters articles based on their general topic, as determined by NLP analysis. To select multiple themes, use a comma-separated string.
+	//
+	// Example: `"Finance, Tech"`
+	//
+	// **Note**: The `theme` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	//
+	// Available options: `Business`, `Economics`, `Entertainment`, `Finance`, `Health`, `Politics`, `Science`, `Sports`, `Tech`, `Crime`, `Financial Crime`, `Lifestyle`, `Automotive`, `Travel`, `Weather`, `General`.
+	Theme *string `json:"-" url:"theme,omitempty"`
+	// Inverse of the `theme` parameter. Excludes articles based on their general topic, as determined by NLP analysis. To exclude multiple themes, use a comma-separated string.
+	//
+	// Example: `"Crime, Tech"`
+	//
+	// **Note**: The `not_theme` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	NotTheme *string `json:"-" url:"not_theme,omitempty"`
+	// The name of person, organization, location, product or other named entity to search for. To specify multiple names use a comma-separated string.
+	//
+	// Example: `"Tesla, Amazon"`
+	NerName *string `json:"-" url:"ner_name,omitempty"`
+	// Filters articles based on the minimum sentiment score of their titles.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `title_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	TitleSentimentMin *float64 `json:"-" url:"title_sentiment_min,omitempty"`
+	// Filters articles based on the maximum sentiment score of their titles.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `title_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	TitleSentimentMax *float64 `json:"-" url:"title_sentiment_max,omitempty"`
+	// Filters articles based on the minimum sentiment score of their content.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `content_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	ContentSentimentMin *float64 `json:"-" url:"content_sentiment_min,omitempty"`
+	// Filters articles based on the maximum sentiment score of their content.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `content_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	ContentSentimentMax *float64 `json:"-" url:"content_sentiment_max,omitempty"`
+	// Filters articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags, use a comma-separated string of tag IDs.
+	//
+	// Example: `"20000199, 20000209"`
+	//
+	// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+	IptcTags *string `json:"-" url:"iptc_tags,omitempty"`
+	// Inverse of the `iptc_tags` parameter. Excludes articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags to exclude, use a comma-separated string of tag IDs.
+	//
+	// Example: `"20000205, 20000209"`
+	//
+	// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+	NotIptcTags *string `json:"-" url:"not_iptc_tags,omitempty"`
+	// Filters articles based on Interactive Advertising Bureau (IAB) content categories. These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories, use a comma-separated string.
+	//
+	// Example: `"Business, Events"`
+	//
+	// **Note**: The `iab_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
+	IabTags *string `json:"-" url:"iab_tags,omitempty"`
+	// Inverse of the `iab_tags` parameter. Excludes articles based on Interactive Advertising Bureau (IAB) content categories. These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories to exclude, use a comma-separated string.
+	//
+	// Example: `"Agriculture, Metals"`
+	//
+	// **Note**: The `not_iab_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
+	NotIabTags *string `json:"-" url:"not_iab_tags,omitempty"`
+	// Filters articles based on provided taxonomy that is tailored to your specific needs and is accessible only with your API key. To specify tags, use the following pattern:
+	//
+	// - `custom_tags.taxonomy=Tag1,Tag2,Tag3`, where `taxonomy` is the taxonomy name and `Tag1,Tag2,Tag3` is a comma-separated list of tags.
+	//
+	// Example: `custom_tags.industry="Manufacturing, Supply Chain, Logistics"`
+	//
+	// To learn more, see the [Custom tags](/docs/v3/documentation/guides-and-concepts/custom-tags).
+	CustomTags *string `json:"-" url:"custom_tags,omitempty"`
 }
 
-type AuthorSearchRequest struct {
-	AuthorName             string                         `json:"author_name" url:"-"`
-	NotAuthorName          *string                        `json:"not_author_name,omitempty" url:"-"`
-	Sources                interface{}                    `json:"sources,omitempty" url:"-"`
-	PredefinedSources      interface{}                    `json:"predefined_sources,omitempty" url:"-"`
-	NotSources             interface{}                    `json:"not_sources,omitempty" url:"-"`
-	Lang                   interface{}                    `json:"lang,omitempty" url:"-"`
-	NotLang                interface{}                    `json:"not_lang,omitempty" url:"-"`
-	Countries              interface{}                    `json:"countries,omitempty" url:"-"`
-	NotCountries           interface{}                    `json:"not_countries,omitempty" url:"-"`
-	From                   *AuthorSearchRequestFrom       `json:"from_,omitempty" url:"-"`
-	To                     *AuthorSearchRequestTo         `json:"to_,omitempty" url:"-"`
-	PublishedDatePrecision *string                        `json:"published_date_precision,omitempty" url:"-"`
-	ByParseDate            *bool                          `json:"by_parse_date,omitempty" url:"-"`
-	SortBy                 *string                        `json:"sort_by,omitempty" url:"-"`
-	RankedOnly             *AuthorSearchRequestRankedOnly `json:"ranked_only,omitempty" url:"-"`
-	FromRank               *int                           `json:"from_rank,omitempty" url:"-"`
-	ToRank                 *int                           `json:"to_rank,omitempty" url:"-"`
-	IsHeadline             *bool                          `json:"is_headline,omitempty" url:"-"`
-	IsOpinion              *bool                          `json:"is_opinion,omitempty" url:"-"`
-	IsPaidContent          *bool                          `json:"is_paid_content,omitempty" url:"-"`
-	ParentUrl              interface{}                    `json:"parent_url,omitempty" url:"-"`
-	AllLinks               interface{}                    `json:"all_links,omitempty" url:"-"`
-	AllDomainLinks         interface{}                    `json:"all_domain_links,omitempty" url:"-"`
-	WordCountMin           *int                           `json:"word_count_min,omitempty" url:"-"`
-	WordCountMax           *int                           `json:"word_count_max,omitempty" url:"-"`
-	Page                   *int                           `json:"page,omitempty" url:"-"`
-	PageSize               *int                           `json:"page_size,omitempty" url:"-"`
-	IncludeNlpData         *bool                          `json:"include_nlp_data,omitempty" url:"-"`
-	HasNlp                 *bool                          `json:"has_nlp,omitempty" url:"-"`
-	Theme                  *string                        `json:"theme,omitempty" url:"-"`
-	NotTheme               *string                        `json:"not_theme,omitempty" url:"-"`
-	TitleSentimentMin      *float64                       `json:"title_sentiment_min,omitempty" url:"-"`
-	TitleSentimentMax      *float64                       `json:"title_sentiment_max,omitempty" url:"-"`
-	ContentSentimentMin    *float64                       `json:"content_sentiment_min,omitempty" url:"-"`
-	ContentSentimentMax    *float64                       `json:"content_sentiment_max,omitempty" url:"-"`
-	IptcTags               interface{}                    `json:"iptc_tags,omitempty" url:"-"`
-	NotIptcTags            interface{}                    `json:"not_iptc_tags,omitempty" url:"-"`
-	IabTags                interface{}                    `json:"iab_tags,omitempty" url:"-"`
-	NotIabTags             interface{}                    `json:"not_iab_tags,omitempty" url:"-"`
+type AuthorsPostRequest struct {
+	AuthorName             AuthorName              `json:"author_name" url:"-"`
+	NotAuthorName          *NotAuthorName          `json:"not_author_name,omitempty" url:"-"`
+	PredefinedSources      *PredefinedSources      `json:"predefined_sources,omitempty" url:"-"`
+	Sources                *Sources                `json:"sources,omitempty" url:"-"`
+	NotSources             *NotSources             `json:"not_sources,omitempty" url:"-"`
+	Lang                   *Lang                   `json:"lang,omitempty" url:"-"`
+	NotLang                *NotLang                `json:"not_lang,omitempty" url:"-"`
+	Countries              *Countries              `json:"countries,omitempty" url:"-"`
+	NotCountries           *NotCountries           `json:"not_countries,omitempty" url:"-"`
+	From                   *From                   `json:"from_,omitempty" url:"-"`
+	To                     *To                     `json:"to_,omitempty" url:"-"`
+	PublishedDatePrecision *PublishedDatePrecision `json:"published_date_precision,omitempty" url:"-"`
+	ByParseDate            *ByParseDate            `json:"by_parse_date,omitempty" url:"-"`
+	SortBy                 *SortBy                 `json:"sort_by,omitempty" url:"-"`
+	RankedOnly             *RankedOnly             `json:"ranked_only,omitempty" url:"-"`
+	FromRank               *FromRank               `json:"from_rank,omitempty" url:"-"`
+	ToRank                 *ToRank                 `json:"to_rank,omitempty" url:"-"`
+	IsHeadline             *IsHeadline             `json:"is_headline,omitempty" url:"-"`
+	IsOpinion              *IsOpinion              `json:"is_opinion,omitempty" url:"-"`
+	IsPaidContent          *IsPaidContent          `json:"is_paid_content,omitempty" url:"-"`
+	ParentUrl              *ParentUrl              `json:"parent_url,omitempty" url:"-"`
+	AllLinks               *AllLinks               `json:"all_links,omitempty" url:"-"`
+	AllDomainLinks         *AllDomainLinks         `json:"all_domain_links,omitempty" url:"-"`
+	WordCountMin           *WordCountMin           `json:"word_count_min,omitempty" url:"-"`
+	WordCountMax           *WordCountMax           `json:"word_count_max,omitempty" url:"-"`
+	Page                   *Page                   `json:"page,omitempty" url:"-"`
+	PageSize               *PageSize               `json:"page_size,omitempty" url:"-"`
+	IncludeNlpData         *IncludeNlpData         `json:"include_nlp_data,omitempty" url:"-"`
+	HasNlp                 *HasNlp                 `json:"has_nlp,omitempty" url:"-"`
+	Theme                  *Theme                  `json:"theme,omitempty" url:"-"`
+	NotTheme               *NotTheme               `json:"not_theme,omitempty" url:"-"`
+	NerName                *NerName                `json:"ner_name,omitempty" url:"-"`
+	TitleSentimentMin      *TitleSentimentMin      `json:"title_sentiment_min,omitempty" url:"-"`
+	TitleSentimentMax      *TitleSentimentMax      `json:"title_sentiment_max,omitempty" url:"-"`
+	ContentSentimentMin    *ContentSentimentMin    `json:"content_sentiment_min,omitempty" url:"-"`
+	ContentSentimentMax    *ContentSentimentMax    `json:"content_sentiment_max,omitempty" url:"-"`
+	IptcTags               *IptcTags               `json:"iptc_tags,omitempty" url:"-"`
+	NotIptcTags            *NotIptcTags            `json:"not_iptc_tags,omitempty" url:"-"`
+	IabTags                *IabTags                `json:"iab_tags,omitempty" url:"-"`
+	NotIabTags             *NotIabTags             `json:"not_iab_tags,omitempty" url:"-"`
+	CustomTags             *CustomTags             `json:"custom_tags,omitempty" url:"-"`
 }
 
-type AuthorSearchRequestFrom struct {
-	String   string
-	DateTime time.Time
+// The name of the author to search for. This parameter returns exact matches only.
+type AuthorName = string
 
-	typ string
+// The response model for a failed `Authors` search request.
+type FailedAuthorsResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize int `json:"page_size" url:"page_size"`
+	// An empty list of articles, as no matches were found.
+	Articles  []map[string]interface{} `json:"articles,omitempty" url:"articles,omitempty"`
+	UserInput *UserInputDto            `json:"user_input,omitempty" url:"user_input,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
 }
 
-func NewAuthorSearchRequestFromFromString(value string) *AuthorSearchRequestFrom {
-	return &AuthorSearchRequestFrom{typ: "String", String: value}
-}
-
-func NewAuthorSearchRequestFromFromDateTime(value time.Time) *AuthorSearchRequestFrom {
-	return &AuthorSearchRequestFrom{typ: "DateTime", DateTime: value}
-}
-
-func (a *AuthorSearchRequestFrom) GetString() string {
-	if a == nil {
+func (f *FailedAuthorsResponseDto) GetStatus() string {
+	if f == nil {
 		return ""
 	}
-	return a.String
+	return f.Status
 }
 
-func (a *AuthorSearchRequestFrom) GetDateTime() time.Time {
-	if a == nil {
-		return time.Time{}
+func (f *FailedAuthorsResponseDto) GetTotalHits() int {
+	if f == nil {
+		return 0
 	}
-	return a.DateTime
+	return f.TotalHits
 }
 
-func (a *AuthorSearchRequestFrom) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		a.typ = "String"
-		a.String = valueString
+func (f *FailedAuthorsResponseDto) GetPage() int {
+	if f == nil {
+		return 0
+	}
+	return f.Page
+}
+
+func (f *FailedAuthorsResponseDto) GetTotalPages() int {
+	if f == nil {
+		return 0
+	}
+	return f.TotalPages
+}
+
+func (f *FailedAuthorsResponseDto) GetPageSize() int {
+	if f == nil {
+		return 0
+	}
+	return f.PageSize
+}
+
+func (f *FailedAuthorsResponseDto) GetArticles() []map[string]interface{} {
+	if f == nil {
 		return nil
 	}
-	var valueDateTime *internal.DateTime
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		a.typ = "DateTime"
-		a.DateTime = valueDateTime.Time()
+	return f.Articles
+}
+
+func (f *FailedAuthorsResponseDto) GetUserInput() *UserInputDto {
+	if f == nil {
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
+	return f.UserInput
 }
 
-func (a AuthorSearchRequestFrom) MarshalJSON() ([]byte, error) {
-	if a.typ == "String" || a.String != "" {
-		return json.Marshal(a.String)
+func (f *FailedAuthorsResponseDto) GetExtraProperties() map[string]interface{} {
+	return f.extraProperties
+}
+
+func (f *FailedAuthorsResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler FailedAuthorsResponseDto
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	if a.typ == "DateTime" || !a.DateTime.IsZero() {
-		return json.Marshal(internal.NewDateTime(a.DateTime))
+	*f = FailedAuthorsResponseDto(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
 }
 
-type AuthorSearchRequestFromVisitor interface {
-	VisitString(string) error
-	VisitDateTime(time.Time) error
-}
-
-func (a *AuthorSearchRequestFrom) Accept(visitor AuthorSearchRequestFromVisitor) error {
-	if a.typ == "String" || a.String != "" {
-		return visitor.VisitString(a.String)
+func (f *FailedAuthorsResponseDto) String() string {
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
 	}
-	if a.typ == "DateTime" || !a.DateTime.IsZero() {
-		return visitor.VisitDateTime(a.DateTime)
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", a)
+	return fmt.Sprintf("%#v", f)
 }
 
-type AuthorSearchRequestRankedOnly struct {
-	String  string
-	Boolean bool
+type AuthorsGetRequestPublishedDatePrecision string
 
-	typ string
-}
+const (
+	AuthorsGetRequestPublishedDatePrecisionFull            AuthorsGetRequestPublishedDatePrecision = "full"
+	AuthorsGetRequestPublishedDatePrecisionTimezoneUnknown AuthorsGetRequestPublishedDatePrecision = "timezone unknown"
+	AuthorsGetRequestPublishedDatePrecisionDate            AuthorsGetRequestPublishedDatePrecision = "date"
+)
 
-func NewAuthorSearchRequestRankedOnlyFromString(value string) *AuthorSearchRequestRankedOnly {
-	return &AuthorSearchRequestRankedOnly{typ: "String", String: value}
-}
-
-func NewAuthorSearchRequestRankedOnlyFromBoolean(value bool) *AuthorSearchRequestRankedOnly {
-	return &AuthorSearchRequestRankedOnly{typ: "Boolean", Boolean: value}
-}
-
-func (a *AuthorSearchRequestRankedOnly) GetString() string {
-	if a == nil {
-		return ""
+func NewAuthorsGetRequestPublishedDatePrecisionFromString(s string) (AuthorsGetRequestPublishedDatePrecision, error) {
+	switch s {
+	case "full":
+		return AuthorsGetRequestPublishedDatePrecisionFull, nil
+	case "timezone unknown":
+		return AuthorsGetRequestPublishedDatePrecisionTimezoneUnknown, nil
+	case "date":
+		return AuthorsGetRequestPublishedDatePrecisionDate, nil
 	}
-	return a.String
+	var t AuthorsGetRequestPublishedDatePrecision
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (a *AuthorSearchRequestRankedOnly) GetBoolean() bool {
-	if a == nil {
-		return false
-	}
-	return a.Boolean
+func (a AuthorsGetRequestPublishedDatePrecision) Ptr() *AuthorsGetRequestPublishedDatePrecision {
+	return &a
 }
 
-func (a *AuthorSearchRequestRankedOnly) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		a.typ = "String"
-		a.String = valueString
-		return nil
+type AuthorsGetRequestSortBy string
+
+const (
+	AuthorsGetRequestSortByRelevancy AuthorsGetRequestSortBy = "relevancy"
+	AuthorsGetRequestSortByDate      AuthorsGetRequestSortBy = "date"
+	AuthorsGetRequestSortByRank      AuthorsGetRequestSortBy = "rank"
+)
+
+func NewAuthorsGetRequestSortByFromString(s string) (AuthorsGetRequestSortBy, error) {
+	switch s {
+	case "relevancy":
+		return AuthorsGetRequestSortByRelevancy, nil
+	case "date":
+		return AuthorsGetRequestSortByDate, nil
+	case "rank":
+		return AuthorsGetRequestSortByRank, nil
 	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		a.typ = "Boolean"
-		a.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
+	var t AuthorsGetRequestSortBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (a AuthorSearchRequestRankedOnly) MarshalJSON() ([]byte, error) {
-	if a.typ == "String" || a.String != "" {
-		return json.Marshal(a.String)
-	}
-	if a.typ == "Boolean" || a.Boolean != false {
-		return json.Marshal(a.Boolean)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
-}
-
-type AuthorSearchRequestRankedOnlyVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (a *AuthorSearchRequestRankedOnly) Accept(visitor AuthorSearchRequestRankedOnlyVisitor) error {
-	if a.typ == "String" || a.String != "" {
-		return visitor.VisitString(a.String)
-	}
-	if a.typ == "Boolean" || a.Boolean != false {
-		return visitor.VisitBoolean(a.Boolean)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", a)
-}
-
-type AuthorSearchRequestTo struct {
-	String   string
-	DateTime time.Time
-
-	typ string
-}
-
-func NewAuthorSearchRequestToFromString(value string) *AuthorSearchRequestTo {
-	return &AuthorSearchRequestTo{typ: "String", String: value}
-}
-
-func NewAuthorSearchRequestToFromDateTime(value time.Time) *AuthorSearchRequestTo {
-	return &AuthorSearchRequestTo{typ: "DateTime", DateTime: value}
-}
-
-func (a *AuthorSearchRequestTo) GetString() string {
-	if a == nil {
-		return ""
-	}
-	return a.String
-}
-
-func (a *AuthorSearchRequestTo) GetDateTime() time.Time {
-	if a == nil {
-		return time.Time{}
-	}
-	return a.DateTime
-}
-
-func (a *AuthorSearchRequestTo) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		a.typ = "String"
-		a.String = valueString
-		return nil
-	}
-	var valueDateTime *internal.DateTime
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		a.typ = "DateTime"
-		a.DateTime = valueDateTime.Time()
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
-}
-
-func (a AuthorSearchRequestTo) MarshalJSON() ([]byte, error) {
-	if a.typ == "String" || a.String != "" {
-		return json.Marshal(a.String)
-	}
-	if a.typ == "DateTime" || !a.DateTime.IsZero() {
-		return json.Marshal(internal.NewDateTime(a.DateTime))
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
-}
-
-type AuthorSearchRequestToVisitor interface {
-	VisitString(string) error
-	VisitDateTime(time.Time) error
-}
-
-func (a *AuthorSearchRequestTo) Accept(visitor AuthorSearchRequestToVisitor) error {
-	if a.typ == "String" || a.String != "" {
-		return visitor.VisitString(a.String)
-	}
-	if a.typ == "DateTime" || !a.DateTime.IsZero() {
-		return visitor.VisitDateTime(a.DateTime)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", a)
+func (a AuthorsGetRequestSortBy) Ptr() *AuthorsGetRequestSortBy {
+	return &a
 }
 
 type AuthorsGetResponse struct {
-	SearchResponse       *SearchResponse
-	FailedSearchResponse *FailedSearchResponse
+	SearchResponseDto        *SearchResponseDto
+	FailedAuthorsResponseDto *FailedAuthorsResponseDto
 
 	typ string
 }
 
-func NewAuthorsGetResponseFromSearchResponse(value *SearchResponse) *AuthorsGetResponse {
-	return &AuthorsGetResponse{typ: "SearchResponse", SearchResponse: value}
+func NewAuthorsGetResponseFromSearchResponseDto(value *SearchResponseDto) *AuthorsGetResponse {
+	return &AuthorsGetResponse{typ: "SearchResponseDto", SearchResponseDto: value}
 }
 
-func NewAuthorsGetResponseFromFailedSearchResponse(value *FailedSearchResponse) *AuthorsGetResponse {
-	return &AuthorsGetResponse{typ: "FailedSearchResponse", FailedSearchResponse: value}
+func NewAuthorsGetResponseFromFailedAuthorsResponseDto(value *FailedAuthorsResponseDto) *AuthorsGetResponse {
+	return &AuthorsGetResponse{typ: "FailedAuthorsResponseDto", FailedAuthorsResponseDto: value}
 }
 
-func (a *AuthorsGetResponse) GetSearchResponse() *SearchResponse {
+func (a *AuthorsGetResponse) GetSearchResponseDto() *SearchResponseDto {
 	if a == nil {
 		return nil
 	}
-	return a.SearchResponse
+	return a.SearchResponseDto
 }
 
-func (a *AuthorsGetResponse) GetFailedSearchResponse() *FailedSearchResponse {
+func (a *AuthorsGetResponse) GetFailedAuthorsResponseDto() *FailedAuthorsResponseDto {
 	if a == nil {
 		return nil
 	}
-	return a.FailedSearchResponse
+	return a.FailedAuthorsResponseDto
 }
 
 func (a *AuthorsGetResponse) UnmarshalJSON(data []byte) error {
-	valueSearchResponse := new(SearchResponse)
-	if err := json.Unmarshal(data, &valueSearchResponse); err == nil {
-		a.typ = "SearchResponse"
-		a.SearchResponse = valueSearchResponse
+	valueSearchResponseDto := new(SearchResponseDto)
+	if err := json.Unmarshal(data, &valueSearchResponseDto); err == nil {
+		a.typ = "SearchResponseDto"
+		a.SearchResponseDto = valueSearchResponseDto
 		return nil
 	}
-	valueFailedSearchResponse := new(FailedSearchResponse)
-	if err := json.Unmarshal(data, &valueFailedSearchResponse); err == nil {
-		a.typ = "FailedSearchResponse"
-		a.FailedSearchResponse = valueFailedSearchResponse
+	valueFailedAuthorsResponseDto := new(FailedAuthorsResponseDto)
+	if err := json.Unmarshal(data, &valueFailedAuthorsResponseDto); err == nil {
+		a.typ = "FailedAuthorsResponseDto"
+		a.FailedAuthorsResponseDto = valueFailedAuthorsResponseDto
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
 }
 
 func (a AuthorsGetResponse) MarshalJSON() ([]byte, error) {
-	if a.typ == "SearchResponse" || a.SearchResponse != nil {
-		return json.Marshal(a.SearchResponse)
+	if a.typ == "SearchResponseDto" || a.SearchResponseDto != nil {
+		return json.Marshal(a.SearchResponseDto)
 	}
-	if a.typ == "FailedSearchResponse" || a.FailedSearchResponse != nil {
-		return json.Marshal(a.FailedSearchResponse)
+	if a.typ == "FailedAuthorsResponseDto" || a.FailedAuthorsResponseDto != nil {
+		return json.Marshal(a.FailedAuthorsResponseDto)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
 }
 
 type AuthorsGetResponseVisitor interface {
-	VisitSearchResponse(*SearchResponse) error
-	VisitFailedSearchResponse(*FailedSearchResponse) error
+	VisitSearchResponseDto(*SearchResponseDto) error
+	VisitFailedAuthorsResponseDto(*FailedAuthorsResponseDto) error
 }
 
 func (a *AuthorsGetResponse) Accept(visitor AuthorsGetResponseVisitor) error {
-	if a.typ == "SearchResponse" || a.SearchResponse != nil {
-		return visitor.VisitSearchResponse(a.SearchResponse)
+	if a.typ == "SearchResponseDto" || a.SearchResponseDto != nil {
+		return visitor.VisitSearchResponseDto(a.SearchResponseDto)
 	}
-	if a.typ == "FailedSearchResponse" || a.FailedSearchResponse != nil {
-		return visitor.VisitFailedSearchResponse(a.FailedSearchResponse)
+	if a.typ == "FailedAuthorsResponseDto" || a.FailedAuthorsResponseDto != nil {
+		return visitor.VisitFailedAuthorsResponseDto(a.FailedAuthorsResponseDto)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", a)
 }
 
 type AuthorsPostResponse struct {
-	SearchResponse       *SearchResponse
-	FailedSearchResponse *FailedSearchResponse
+	SearchResponseDto        *SearchResponseDto
+	FailedAuthorsResponseDto *FailedAuthorsResponseDto
 
 	typ string
 }
 
-func NewAuthorsPostResponseFromSearchResponse(value *SearchResponse) *AuthorsPostResponse {
-	return &AuthorsPostResponse{typ: "SearchResponse", SearchResponse: value}
+func NewAuthorsPostResponseFromSearchResponseDto(value *SearchResponseDto) *AuthorsPostResponse {
+	return &AuthorsPostResponse{typ: "SearchResponseDto", SearchResponseDto: value}
 }
 
-func NewAuthorsPostResponseFromFailedSearchResponse(value *FailedSearchResponse) *AuthorsPostResponse {
-	return &AuthorsPostResponse{typ: "FailedSearchResponse", FailedSearchResponse: value}
+func NewAuthorsPostResponseFromFailedAuthorsResponseDto(value *FailedAuthorsResponseDto) *AuthorsPostResponse {
+	return &AuthorsPostResponse{typ: "FailedAuthorsResponseDto", FailedAuthorsResponseDto: value}
 }
 
-func (a *AuthorsPostResponse) GetSearchResponse() *SearchResponse {
+func (a *AuthorsPostResponse) GetSearchResponseDto() *SearchResponseDto {
 	if a == nil {
 		return nil
 	}
-	return a.SearchResponse
+	return a.SearchResponseDto
 }
 
-func (a *AuthorsPostResponse) GetFailedSearchResponse() *FailedSearchResponse {
+func (a *AuthorsPostResponse) GetFailedAuthorsResponseDto() *FailedAuthorsResponseDto {
 	if a == nil {
 		return nil
 	}
-	return a.FailedSearchResponse
+	return a.FailedAuthorsResponseDto
 }
 
 func (a *AuthorsPostResponse) UnmarshalJSON(data []byte) error {
-	valueSearchResponse := new(SearchResponse)
-	if err := json.Unmarshal(data, &valueSearchResponse); err == nil {
-		a.typ = "SearchResponse"
-		a.SearchResponse = valueSearchResponse
+	valueSearchResponseDto := new(SearchResponseDto)
+	if err := json.Unmarshal(data, &valueSearchResponseDto); err == nil {
+		a.typ = "SearchResponseDto"
+		a.SearchResponseDto = valueSearchResponseDto
 		return nil
 	}
-	valueFailedSearchResponse := new(FailedSearchResponse)
-	if err := json.Unmarshal(data, &valueFailedSearchResponse); err == nil {
-		a.typ = "FailedSearchResponse"
-		a.FailedSearchResponse = valueFailedSearchResponse
+	valueFailedAuthorsResponseDto := new(FailedAuthorsResponseDto)
+	if err := json.Unmarshal(data, &valueFailedAuthorsResponseDto); err == nil {
+		a.typ = "FailedAuthorsResponseDto"
+		a.FailedAuthorsResponseDto = valueFailedAuthorsResponseDto
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
 }
 
 func (a AuthorsPostResponse) MarshalJSON() ([]byte, error) {
-	if a.typ == "SearchResponse" || a.SearchResponse != nil {
-		return json.Marshal(a.SearchResponse)
+	if a.typ == "SearchResponseDto" || a.SearchResponseDto != nil {
+		return json.Marshal(a.SearchResponseDto)
 	}
-	if a.typ == "FailedSearchResponse" || a.FailedSearchResponse != nil {
-		return json.Marshal(a.FailedSearchResponse)
+	if a.typ == "FailedAuthorsResponseDto" || a.FailedAuthorsResponseDto != nil {
+		return json.Marshal(a.FailedAuthorsResponseDto)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
 }
 
 type AuthorsPostResponseVisitor interface {
-	VisitSearchResponse(*SearchResponse) error
-	VisitFailedSearchResponse(*FailedSearchResponse) error
+	VisitSearchResponseDto(*SearchResponseDto) error
+	VisitFailedAuthorsResponseDto(*FailedAuthorsResponseDto) error
 }
 
 func (a *AuthorsPostResponse) Accept(visitor AuthorsPostResponseVisitor) error {
-	if a.typ == "SearchResponse" || a.SearchResponse != nil {
-		return visitor.VisitSearchResponse(a.SearchResponse)
+	if a.typ == "SearchResponseDto" || a.SearchResponseDto != nil {
+		return visitor.VisitSearchResponseDto(a.SearchResponseDto)
 	}
-	if a.typ == "FailedSearchResponse" || a.FailedSearchResponse != nil {
-		return visitor.VisitFailedSearchResponse(a.FailedSearchResponse)
+	if a.typ == "FailedAuthorsResponseDto" || a.FailedAuthorsResponseDto != nil {
+		return visitor.VisitFailedAuthorsResponseDto(a.FailedAuthorsResponseDto)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", a)
 }

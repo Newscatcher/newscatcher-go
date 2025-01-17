@@ -9,41 +9,96 @@ import (
 )
 
 type SourcesGetRequest struct {
-	Lang                  string `json:"-" url:"lang"`
-	Countries             string `json:"-" url:"countries"`
-	PredefinedSources     string `json:"-" url:"predefined_sources"`
-	IncludeAdditionalInfo *bool  `json:"-" url:"include_additional_info,omitempty"`
-	FromRank              *int   `json:"-" url:"from_rank,omitempty"`
-	ToRank                *int   `json:"-" url:"to_rank,omitempty"`
-	SourceName            string `json:"-" url:"source_name"`
-	SourceUrl             string `json:"-" url:"source_url"`
-	IsNewsDomain          *bool  `json:"-" url:"is_news_domain,omitempty"`
-	NewsDomainType        string `json:"-" url:"news_domain_type"`
-	NewsType              string `json:"-" url:"news_type"`
+	// The language(s) of the search. The only accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To select multiple languages, use a comma-separated string.
+	//
+	// Example: `"en, es"`
+	//
+	// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+	Lang *string `json:"-" url:"lang,omitempty"`
+	// The countries where the news publisher is located. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To select multiple countries, use a comma-separated string.
+	//
+	// Example: `"US, CA"`
+	//
+	// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+	Countries *string `json:"-" url:"countries,omitempty"`
+	// Predefined top news sources per country.
+	//
+	// Format: start with the word `top`, followed by the number of desired sources, and then the two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Multiple countries with the number of top sources can be specified as a comma-separated string.
+	//
+	// Examples:
+	// - `"top 100 US"`
+	// - `"top 33 AT"`
+	// - `"top 50 US, top 20 GB"`
+	// - `"top 33 AT, top 50 IT"`
+	PredefinedSources *string `json:"-" url:"predefined_sources,omitempty"`
+	// Word or phrase to search within the source names. To specify multiple values, use a comma-separated string.
+	//
+	// Example: `"sport, tech"`
+	//
+	// **Note**: The search doesn't require an exact match and returns sources containing the specified terms in their names. You can use any word or phrase, like `"sport"` or `"new york times"`. For example, `"sport"` returns sources such as `"Motorsport"`, `"Dot Esport"`, and `"Tuttosport"`.
+	SourceName *string `json:"-" url:"source_name,omitempty"`
+	// The domain(s) of the news publication to search for.
+	//
+	// **Caution**:  When specifying the `source_url` parameter,
+	// you can only use `include_additional_info` as an extra parameter.
+	SourceUrl *string `json:"-" url:"source_url,omitempty"`
+	// If true, returns the following additional datapoints about each news source:
+	// - `nb_articles_for_7d`: The number of articles published by the source in the last week.
+	// - `country`: Source country of origin.
+	// - `rank`: SEO rank.
+	// - `is_news_domain`: Boolean indicating if the source is a news domain.
+	// - `news_domain_type`: Type of news domain (e.g., "Original Content").
+	// - `news_type`: Category of news (e.g., "General News Outlets").
+	IncludeAdditionalInfo *bool `json:"-" url:"include_additional_info,omitempty"`
+	// If true, filters results to include only news domains.
+	IsNewsDomain *bool `json:"-" url:"is_news_domain,omitempty"`
+	// Filters results based on the news domain type. Possible values are:
+	// - `Original Content`: Sources that produce their own content.
+	// - `Aggregator`: Sources that collect content from various other sources.
+	// - `Press Releases`: Sources primarily publishing press releases.
+	// - `Republisher`: Sources that republish content from other sources.
+	// - `Other`: Sources that don't fit into main categories.
+	NewsDomainType *SourcesGetRequestNewsDomainType `json:"-" url:"news_domain_type,omitempty"`
+	// Filters results based on the news type. Multiple types can be specified using a comma-separated string.
+	//
+	// Example: `"General News Outlets,Tech News and Updates"`
+	//
+	// For a complete list of available news types, see [Enumerated parameters > News type](/docs/v3/api-reference/overview/enumerated-parameters#news-type-news-type).
+	NewsType *string `json:"-" url:"news_type,omitempty"`
+	// The lowest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+	FromRank *int `json:"-" url:"from_rank,omitempty"`
+	// The highest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+	ToRank *int `json:"-" url:"to_rank,omitempty"`
 }
 
-type SourcesRequest struct {
-	Lang                  interface{} `json:"lang,omitempty" url:"-"`
-	Countries             interface{} `json:"countries,omitempty" url:"-"`
-	PredefinedSources     interface{} `json:"predefined_sources,omitempty" url:"-"`
-	IncludeAdditionalInfo *bool       `json:"include_additional_info,omitempty" url:"-"`
-	FromRank              *int        `json:"from_rank,omitempty" url:"-"`
-	ToRank                *int        `json:"to_rank,omitempty" url:"-"`
-	SourceName            interface{} `json:"source_name,omitempty" url:"-"`
-	SourceUrl             interface{} `json:"source_url,omitempty" url:"-"`
-	IsNewsDomain          *bool       `json:"is_news_domain,omitempty" url:"-"`
-	NewsDomainType        interface{} `json:"news_domain_type,omitempty" url:"-"`
-	NewsType              interface{} `json:"news_type,omitempty" url:"-"`
+type SourcesPostRequest struct {
+	Lang                  *Lang                  `json:"lang,omitempty" url:"-"`
+	Countries             *Countries             `json:"countries,omitempty" url:"-"`
+	PredefinedSources     *PredefinedSources     `json:"predefined_sources,omitempty" url:"-"`
+	SourceName            *SourceName            `json:"source_name,omitempty" url:"-"`
+	SourceUrl             *SourceUrl             `json:"source_url,omitempty" url:"-"`
+	IncludeAdditionalInfo *IncludeAdditionalInfo `json:"include_additional_info,omitempty" url:"-"`
+	IsNewsDomain          *IsNewsDomain          `json:"is_news_domain,omitempty" url:"-"`
+	NewsDomainType        *NewsDomainType        `json:"news_domain_type,omitempty" url:"-"`
+	NewsType              *NewsType              `json:"news_type,omitempty" url:"-"`
+	FromRank              *FromRank              `json:"from_rank,omitempty" url:"-"`
+	ToRank                *ToRank                `json:"to_rank,omitempty" url:"-"`
 }
 
-// AdditionalSourceInfo DTO class.
+// The data model for additional information about a news source.
 type AdditionalSourceInfo struct {
-	NbArticlesFor7D *int    `json:"nb_articles_for_7d,omitempty" url:"nb_articles_for_7d,omitempty"`
-	Country         *string `json:"country,omitempty" url:"country,omitempty"`
-	Rank            *int    `json:"rank,omitempty" url:"rank,omitempty"`
-	IsNewsDomain    *bool   `json:"is_news_domain,omitempty" url:"is_news_domain,omitempty"`
-	NewsDomainType  *string `json:"news_domain_type,omitempty" url:"news_domain_type,omitempty"`
-	NewsType        *string `json:"news_type,omitempty" url:"news_type,omitempty"`
+	// The number of articles published by the source in the last seven days.
+	NbArticlesFor7D *int `json:"nb_articles_for_7d,omitempty" url:"nb_articles_for_7d,omitempty"`
+	// The country of origin of the news source.
+	Country *string `json:"country,omitempty" url:"country,omitempty"`
+	// The SEO rank of the news source.
+	Rank *int `json:"rank,omitempty" url:"rank,omitempty"`
+	// Indicates whether the source is a news domain.
+	IsNewsDomain *bool `json:"is_news_domain,omitempty" url:"is_news_domain,omitempty"`
+	// The type of news domain.
+	NewsDomainType *string `json:"news_domain_type,omitempty" url:"news_domain_type,omitempty"`
+	// The category of news provided by the source.
+	NewsType *string `json:"news_type,omitempty" url:"news_type,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -123,10 +178,22 @@ func (a *AdditionalSourceInfo) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// "SourceInfo DTO class.
+// If true, returns the following additional datapoints about each news source:
+// - `nb_articles_for_7d`: The number of articles published by the source in the last week.
+// - `country`: Source country of origin.
+// - `rank`: SEO rank.
+// - `is_news_domain`: Boolean indicating if the source is a news domain.
+// - `news_domain_type`: Type of news domain (e.g., "Original Content").
+// - `news_type`: Category of news (e.g., "General News Outlets").
+type IncludeAdditionalInfo = bool
+
+// The data model for information about a news source.
 type SourceInfo struct {
-	NameSource     *string               `json:"name_source,omitempty" url:"name_source,omitempty"`
-	DomainUrl      string                `json:"domain_url" url:"domain_url"`
+	// The name of the news source.
+	NameSource *string `json:"name_source,omitempty" url:"name_source,omitempty"`
+	// The domain URL of the news source.
+	DomainUrl string `json:"domain_url" url:"domain_url"`
+	// The logo of the news source.
 	Logo           *string               `json:"logo,omitempty" url:"logo,omitempty"`
 	AdditionalInfo *AdditionalSourceInfo `json:"additional_info,omitempty" url:"additional_info,omitempty"`
 
@@ -194,48 +261,131 @@ func (s *SourceInfo) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// SourceResponse DTO class.
-type SourceResponse struct {
-	Message   string                       `json:"message" url:"message"`
-	Sources   []*SourceResponseSourcesItem `json:"sources,omitempty" url:"sources,omitempty"`
-	UserInput map[string]interface{}       `json:"user_input,omitempty" url:"user_input,omitempty"`
+// The domains of the news publication to search for. To specify multiple news sources,
+// use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"bbc.com, nytimes.com"`
+// - `["bbc.com", "nytimes.com"]`
+//
+// **Caution**:  When specifying the `source_url` parameter, you can only use `include_additional_info` as an extra parameter.
+type SourceUrl struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewSourceUrlFromString(value string) *SourceUrl {
+	return &SourceUrl{typ: "String", String: value}
+}
+
+func NewSourceUrlFromStringList(value []string) *SourceUrl {
+	return &SourceUrl{typ: "StringList", StringList: value}
+}
+
+func (s *SourceUrl) GetString() string {
+	if s == nil {
+		return ""
+	}
+	return s.String
+}
+
+func (s *SourceUrl) GetStringList() []string {
+	if s == nil {
+		return nil
+	}
+	return s.StringList
+}
+
+func (s *SourceUrl) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		s.typ = "String"
+		s.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		s.typ = "StringList"
+		s.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
+}
+
+func (s SourceUrl) MarshalJSON() ([]byte, error) {
+	if s.typ == "String" || s.String != "" {
+		return json.Marshal(s.String)
+	}
+	if s.typ == "StringList" || s.StringList != nil {
+		return json.Marshal(s.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
+}
+
+type SourceUrlVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (s *SourceUrl) Accept(visitor SourceUrlVisitor) error {
+	if s.typ == "String" || s.String != "" {
+		return visitor.VisitString(s.String)
+	}
+	if s.typ == "StringList" || s.StringList != nil {
+		return visitor.VisitStringList(s.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
+}
+
+// The response model for a successful `Sources` request retrieving news sources matching the specified criteria. Response field behavior:
+// - Required fields are guaranteed to be present and non-null.
+// - Optional fields may be `null`/`undefined` if the data couldn't be extracted during processing.
+type SourcesResponseDto struct {
+	// A message indicating the result of the request.
+	Message string `json:"message" url:"message"`
+	// A list of news sources that match the specified criteria.
+	Sources []*SourcesResponseDtoSourcesItem `json:"sources,omitempty" url:"sources,omitempty"`
+	// The user input parameters for the request.
+	UserInput map[string]interface{} `json:"user_input,omitempty" url:"user_input,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (s *SourceResponse) GetMessage() string {
+func (s *SourcesResponseDto) GetMessage() string {
 	if s == nil {
 		return ""
 	}
 	return s.Message
 }
 
-func (s *SourceResponse) GetSources() []*SourceResponseSourcesItem {
+func (s *SourcesResponseDto) GetSources() []*SourcesResponseDtoSourcesItem {
 	if s == nil {
 		return nil
 	}
 	return s.Sources
 }
 
-func (s *SourceResponse) GetUserInput() map[string]interface{} {
+func (s *SourcesResponseDto) GetUserInput() map[string]interface{} {
 	if s == nil {
 		return nil
 	}
 	return s.UserInput
 }
 
-func (s *SourceResponse) GetExtraProperties() map[string]interface{} {
+func (s *SourcesResponseDto) GetExtraProperties() map[string]interface{} {
 	return s.extraProperties
 }
 
-func (s *SourceResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler SourceResponse
+func (s *SourcesResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler SourcesResponseDto
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*s = SourceResponse(value)
+	*s = SourcesResponseDto(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *s)
 	if err != nil {
 		return err
@@ -245,7 +395,7 @@ func (s *SourceResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s *SourceResponse) String() string {
+func (s *SourcesResponseDto) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -257,36 +407,36 @@ func (s *SourceResponse) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-type SourceResponseSourcesItem struct {
+type SourcesResponseDtoSourcesItem struct {
 	SourceInfo *SourceInfo
 	String     string
 
 	typ string
 }
 
-func NewSourceResponseSourcesItemFromSourceInfo(value *SourceInfo) *SourceResponseSourcesItem {
-	return &SourceResponseSourcesItem{typ: "SourceInfo", SourceInfo: value}
+func NewSourcesResponseDtoSourcesItemFromSourceInfo(value *SourceInfo) *SourcesResponseDtoSourcesItem {
+	return &SourcesResponseDtoSourcesItem{typ: "SourceInfo", SourceInfo: value}
 }
 
-func NewSourceResponseSourcesItemFromString(value string) *SourceResponseSourcesItem {
-	return &SourceResponseSourcesItem{typ: "String", String: value}
+func NewSourcesResponseDtoSourcesItemFromString(value string) *SourcesResponseDtoSourcesItem {
+	return &SourcesResponseDtoSourcesItem{typ: "String", String: value}
 }
 
-func (s *SourceResponseSourcesItem) GetSourceInfo() *SourceInfo {
+func (s *SourcesResponseDtoSourcesItem) GetSourceInfo() *SourceInfo {
 	if s == nil {
 		return nil
 	}
 	return s.SourceInfo
 }
 
-func (s *SourceResponseSourcesItem) GetString() string {
+func (s *SourcesResponseDtoSourcesItem) GetString() string {
 	if s == nil {
 		return ""
 	}
 	return s.String
 }
 
-func (s *SourceResponseSourcesItem) UnmarshalJSON(data []byte) error {
+func (s *SourcesResponseDtoSourcesItem) UnmarshalJSON(data []byte) error {
 	valueSourceInfo := new(SourceInfo)
 	if err := json.Unmarshal(data, &valueSourceInfo); err == nil {
 		s.typ = "SourceInfo"
@@ -302,7 +452,7 @@ func (s *SourceResponseSourcesItem) UnmarshalJSON(data []byte) error {
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
-func (s SourceResponseSourcesItem) MarshalJSON() ([]byte, error) {
+func (s SourcesResponseDtoSourcesItem) MarshalJSON() ([]byte, error) {
 	if s.typ == "SourceInfo" || s.SourceInfo != nil {
 		return json.Marshal(s.SourceInfo)
 	}
@@ -312,12 +462,12 @@ func (s SourceResponseSourcesItem) MarshalJSON() ([]byte, error) {
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
-type SourceResponseSourcesItemVisitor interface {
+type SourcesResponseDtoSourcesItemVisitor interface {
 	VisitSourceInfo(*SourceInfo) error
 	VisitString(string) error
 }
 
-func (s *SourceResponseSourcesItem) Accept(visitor SourceResponseSourcesItemVisitor) error {
+func (s *SourcesResponseDtoSourcesItem) Accept(visitor SourcesResponseDtoSourcesItemVisitor) error {
 	if s.typ == "SourceInfo" || s.SourceInfo != nil {
 		return visitor.VisitSourceInfo(s.SourceInfo)
 	}
@@ -325,4 +475,35 @@ func (s *SourceResponseSourcesItem) Accept(visitor SourceResponseSourcesItemVisi
 		return visitor.VisitString(s.String)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", s)
+}
+
+type SourcesGetRequestNewsDomainType string
+
+const (
+	SourcesGetRequestNewsDomainTypeOriginalContent SourcesGetRequestNewsDomainType = "Original Content"
+	SourcesGetRequestNewsDomainTypeAggregator      SourcesGetRequestNewsDomainType = "Aggregator"
+	SourcesGetRequestNewsDomainTypePressReleases   SourcesGetRequestNewsDomainType = "Press Releases"
+	SourcesGetRequestNewsDomainTypeRepublisher     SourcesGetRequestNewsDomainType = "Republisher"
+	SourcesGetRequestNewsDomainTypeOther           SourcesGetRequestNewsDomainType = "Other"
+)
+
+func NewSourcesGetRequestNewsDomainTypeFromString(s string) (SourcesGetRequestNewsDomainType, error) {
+	switch s {
+	case "Original Content":
+		return SourcesGetRequestNewsDomainTypeOriginalContent, nil
+	case "Aggregator":
+		return SourcesGetRequestNewsDomainTypeAggregator, nil
+	case "Press Releases":
+		return SourcesGetRequestNewsDomainTypePressReleases, nil
+	case "Republisher":
+		return SourcesGetRequestNewsDomainTypeRepublisher, nil
+	case "Other":
+		return SourcesGetRequestNewsDomainTypeOther, nil
+	}
+	var t SourcesGetRequestNewsDomainType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SourcesGetRequestNewsDomainType) Ptr() *SourcesGetRequestNewsDomainType {
+	return &s
 }

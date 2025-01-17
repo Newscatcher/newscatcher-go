@@ -5,10 +5,11 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	internal "github.com/Newscatcher/newscatcher-go/internal"
 	time "time"
 )
 
-type SearchGetRequest struct {
+type AggregationGetRequest struct {
 	// The keyword(s) to search for in articles. Query syntax supports logical operators (`AND`, `OR`, `NOT`) and wildcards:
 	//
 	//   - For an exact match, use double quotes. For example, `"technology news"`.
@@ -38,12 +39,6 @@ type SearchGetRequest struct {
 	// - `"top 50 US, top 20 GB"`
 	// - `"top 33 AT, top 50 IT"`
 	PredefinedSources *string `json:"-" url:"predefined_sources,omitempty"`
-	// Word or phrase to search within the source names. To specify multiple values, use a comma-separated string.
-	//
-	// Example: `"sport, tech"`
-	//
-	// **Note**: The search doesn't require an exact match and returns sources containing the specified terms in their names. You can use any word or phrase, like `"sport"` or `"new york times"`. For example, `"sport"` returns sources such as `"Motorsport"`, `"Dot Esport"`, and `"Tuttosport"`.
-	SourceName *string `json:"-" url:"source_name,omitempty"`
 	// One or more news sources to narrow down the search. The format must be a domain URL. Subdomains, such as `finance.yahoo.com`, are also acceptable.To specify multiple sources, use a comma-separated string.
 	//
 	// Examples:
@@ -108,14 +103,14 @@ type SearchGetRequest struct {
 	// - `full`: The day and time of an article is correctly identified with the appropriate timezone.
 	// - `timezone unknown`: The day and time of an article is correctly identified without timezone.
 	// - `date`: Only the day is identified without an exact time.
-	PublishedDatePrecision *SearchGetRequestPublishedDatePrecision `json:"-" url:"published_date_precision,omitempty"`
+	PublishedDatePrecision *AggregationGetRequestPublishedDatePrecision `json:"-" url:"published_date_precision,omitempty"`
 	// If true, the `from_` and `to_` parameters use article parse dates instead of published dates. Additionally, the `parse_date` variable is added to the output for each article object.
 	ByParseDate *bool `json:"-" url:"by_parse_date,omitempty"`
 	// The sorting order of the results. Possible values are:
 	// - `relevancy`: The most relevant results first.
 	// - `date`: The most recently published results first.
 	// - `rank`: The results from the highest-ranked sources first.
-	SortBy *SearchGetRequestSortBy `json:"-" url:"sort_by,omitempty"`
+	SortBy *AggregationGetRequestSortBy `json:"-" url:"sort_by,omitempty"`
 	// If true, limits the search to sources ranked in the top 1 million online websites. If false, includes unranked sources which are assigned a rank of 999999.
 	RankedOnly *bool `json:"-" url:"ranked_only,omitempty"`
 	// The lowest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
@@ -144,26 +139,6 @@ type SearchGetRequest struct {
 	//
 	// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
 	AllDomainLinks *string `json:"-" url:"all_domain_links,omitempty"`
-	// If true, includes additional domain information in the response for each article:
-	// - `is_news_domain`: Boolean indicating if the source is a news domain.
-	// - `news_domain_type`: Type of news domain (e.g., `"Original Content"`).
-	// - `news_type`: Category of news (e.g., `"News and Blogs"`).
-	AdditionalDomainInfo *bool `json:"-" url:"additional_domain_info,omitempty"`
-	// If true, filters results to include only news domains.
-	IsNewsDomain *bool `json:"-" url:"is_news_domain,omitempty"`
-	// Filters results based on the news domain type. Possible values are:
-	// - `Original Content`: Sources that produce their own content.
-	// - `Aggregator`: Sources that collect content from various other sources.
-	// - `Press Releases`: Sources primarily publishing press releases.
-	// - `Republisher`: Sources that republish content from other sources.
-	// - `Other`: Sources that don't fit into main categories.
-	NewsDomainType *SearchGetRequestNewsDomainType `json:"-" url:"news_domain_type,omitempty"`
-	// Filters results based on the news type. Multiple types can be specified using a comma-separated string.
-	//
-	// Example: `"General News Outlets,Tech News and Updates"`
-	//
-	// For a complete list of available news types, see [Enumerated parameters > News type](/docs/v3/api-reference/overview/enumerated-parameters#news-type-news-type).
-	NewsType *string `json:"-" url:"news_type,omitempty"`
 	// The minimum number of words an article must contain. To be used for avoiding articles with small content.
 	WordCountMin *int `json:"-" url:"word_count_min,omitempty"`
 	// The maximum number of words an article can contain. To be used for avoiding articles with large content.
@@ -174,28 +149,6 @@ type SearchGetRequest struct {
 	Page *int `json:"-" url:"page,omitempty"`
 	// The number of articles to return per page.
 	PageSize *int `json:"-" url:"page_size,omitempty"`
-	// Determines whether to group similar articles into clusters. If true, the API returns clustered results.
-	//
-	// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
-	ClusteringEnabled *bool `json:"-" url:"clustering_enabled,omitempty"`
-	// Specifies which part of the article to use for determining similarity when clustering.
-	//
-	// Possible values are:
-	// - `content`: Uses the full article content (default).
-	// - `title`: Uses only the article title.
-	// - `summary`: Uses the article summary.
-	//
-	// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
-	ClusteringVariable *SearchGetRequestClusteringVariable `json:"-" url:"clustering_variable,omitempty"`
-	// Sets the similarity threshold for grouping articles into clusters. A lower value creates more inclusive clusters, while a higher value requires greater similarity between articles.
-	//
-	// Examples:
-	// - `0.3`: Results in larger, more diverse clusters.
-	// - `0.6`: Balances cluster size and article similarity (default).
-	// - `0.9`: Creates smaller, tightly related clusters.
-	//
-	// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
-	ClusteringThreshold *float64 `json:"-" url:"clustering_threshold,omitempty"`
 	// If true, includes an NLP layer with each article in the response. This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
 	//
 	// The NLP layer includes:
@@ -326,41 +279,16 @@ type SearchGetRequest struct {
 	//
 	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 	NotIptcTags *string `json:"-" url:"not_iptc_tags,omitempty"`
-	// Filters articles based on Interactive Advertising Bureau (IAB) content categories. These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories, use a comma-separated string.
-	//
-	// Example: `"Business, Events"`
-	//
-	// **Note**: The `iab_tags` parameter is only available if tags are included in your subscription plan.
-	//
-	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
-	IabTags *string `json:"-" url:"iab_tags,omitempty"`
-	// Inverse of the `iab_tags` parameter. Excludes articles based on Interactive Advertising Bureau (IAB) content categories. These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories to exclude, use a comma-separated string.
-	//
-	// Example: `"Agriculture, Metals"`
-	//
-	// **Note**: The `not_iab_tags` parameter is only available if tags are included in your subscription plan.
-	//
-	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
-	NotIabTags *string `json:"-" url:"not_iab_tags,omitempty"`
-	// Filters articles based on provided taxonomy that is tailored to your specific needs and is accessible only with your API key. To specify tags, use the following pattern:
-	//
-	// - `custom_tags.taxonomy=Tag1,Tag2,Tag3`, where `taxonomy` is the taxonomy name and `Tag1,Tag2,Tag3` is a comma-separated list of tags.
-	//
-	// Example: `custom_tags.industry="Manufacturing, Supply Chain, Logistics"`
-	//
-	// To learn more, see the [Custom tags](/docs/v3/documentation/guides-and-concepts/custom-tags).
-	CustomTags *string `json:"-" url:"custom_tags,omitempty"`
-	// If true, excludes duplicate and highly similar articles from the search results. If false, returns all relevant articles, including duplicates.
-	//
-	// To learn more, see [Articles deduplication](/docs/v3/documentation/guides-and-concepts/articles-deduplication).
-	ExcludeDuplicates *bool `json:"-" url:"exclude_duplicates,omitempty"`
+	// The aggregation interval for the results. Possible values are:
+	// - `day`: Aggregates results by day.
+	// - `hour`: Aggregates results by hour.
+	AggregationBy *AggregationGetRequestAggregationBy `json:"-" url:"aggregation_by,omitempty"`
 }
 
-type SearchPostRequest struct {
+type AggregationPostRequest struct {
 	Q                      Q                       `json:"q" url:"-"`
 	SearchIn               *SearchIn               `json:"search_in,omitempty" url:"-"`
 	PredefinedSources      *PredefinedSources      `json:"predefined_sources,omitempty" url:"-"`
-	SourceName             *SourceName             `json:"source_name,omitempty" url:"-"`
 	Sources                *Sources                `json:"sources,omitempty" url:"-"`
 	NotSources             *NotSources             `json:"not_sources,omitempty" url:"-"`
 	Lang                   *Lang                   `json:"lang,omitempty" url:"-"`
@@ -382,17 +310,10 @@ type SearchPostRequest struct {
 	ParentUrl              *ParentUrl              `json:"parent_url,omitempty" url:"-"`
 	AllLinks               *AllLinks               `json:"all_links,omitempty" url:"-"`
 	AllDomainLinks         *AllDomainLinks         `json:"all_domain_links,omitempty" url:"-"`
-	AdditionalDomainInfo   *AdditionalDomainInfo   `json:"additional_domain_info,omitempty" url:"-"`
-	IsNewsDomain           *IsNewsDomain           `json:"is_news_domain,omitempty" url:"-"`
-	NewsDomainType         *NewsDomainType         `json:"news_domain_type,omitempty" url:"-"`
-	NewsType               *NewsType               `json:"news_type,omitempty" url:"-"`
 	WordCountMin           *WordCountMin           `json:"word_count_min,omitempty" url:"-"`
 	WordCountMax           *WordCountMax           `json:"word_count_max,omitempty" url:"-"`
 	Page                   *Page                   `json:"page,omitempty" url:"-"`
 	PageSize               *PageSize               `json:"page_size,omitempty" url:"-"`
-	ClusteringEnabled      *ClusteringEnabled      `json:"clustering_enabled,omitempty" url:"-"`
-	ClusteringVariable     *ClusteringVariable     `json:"clustering_variable,omitempty" url:"-"`
-	ClusteringThreshold    *ClusteringThreshold    `json:"clustering_threshold,omitempty" url:"-"`
 	IncludeNlpData         *IncludeNlpData         `json:"include_nlp_data,omitempty" url:"-"`
 	HasNlp                 *HasNlp                 `json:"has_nlp,omitempty" url:"-"`
 	Theme                  *Theme                  `json:"theme,omitempty" url:"-"`
@@ -407,265 +328,632 @@ type SearchPostRequest struct {
 	ContentSentientMax     *ContentSentimentMax    `json:"content_sentient_max,omitempty" url:"-"`
 	IptcTags               *IptcTags               `json:"iptc_tags,omitempty" url:"-"`
 	NotIptcTags            *NotIptcTags            `json:"not_iptc_tags,omitempty" url:"-"`
-	IabTags                *IabTags                `json:"iab_tags,omitempty" url:"-"`
-	NotIabTags             *NotIabTags             `json:"not_iab_tags,omitempty" url:"-"`
-	CustomTags             *CustomTags             `json:"custom_tags,omitempty" url:"-"`
-	ExcludeDuplicates      *ExcludeDuplicates      `json:"exclude_duplicates,omitempty" url:"-"`
+	AggregationBy          *AggregationBy          `json:"aggregation_by,omitempty" url:"-"`
 }
 
-// If true, includes additional domain information in the response for each article:
-// - `is_news_domain`: Boolean indicating if the source is a news domain.
-// - `news_domain_type`: Type of news domain (e.g., `"Original Content"`).
-// - `news_type`: Category of news (e.g., `"News and Blogs"`).
-type AdditionalDomainInfo = bool
-
-// If true, excludes duplicate and highly similar articles from the search results. If false, returns all relevant articles, including duplicates.
-//
-// To learn more, see [Articles deduplication](/docs/v3/documentation/guides-and-concepts/articles-deduplication).
-type ExcludeDuplicates = bool
-
-type SearchGetRequestClusteringVariable string
+// The aggregation interval for the results. Possible values are:
+// - `day`: Aggregates results by day.
+// - `hour`: Aggregates results by hour.
+type AggregationBy string
 
 const (
-	SearchGetRequestClusteringVariableContent SearchGetRequestClusteringVariable = "content"
-	SearchGetRequestClusteringVariableTitle   SearchGetRequestClusteringVariable = "title"
-	SearchGetRequestClusteringVariableSummary SearchGetRequestClusteringVariable = "summary"
+	AggregationByDay  AggregationBy = "day"
+	AggregationByHour AggregationBy = "hour"
 )
 
-func NewSearchGetRequestClusteringVariableFromString(s string) (SearchGetRequestClusteringVariable, error) {
+func NewAggregationByFromString(s string) (AggregationBy, error) {
 	switch s {
-	case "content":
-		return SearchGetRequestClusteringVariableContent, nil
-	case "title":
-		return SearchGetRequestClusteringVariableTitle, nil
-	case "summary":
-		return SearchGetRequestClusteringVariableSummary, nil
+	case "day":
+		return AggregationByDay, nil
+	case "hour":
+		return AggregationByHour, nil
 	}
-	var t SearchGetRequestClusteringVariable
+	var t AggregationBy
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (s SearchGetRequestClusteringVariable) Ptr() *SearchGetRequestClusteringVariable {
-	return &s
+func (a AggregationBy) Ptr() *AggregationBy {
+	return &a
 }
 
-type SearchGetRequestNewsDomainType string
+// The response model for a successful `Aggregation count` request. Response field behavior:
+// - Required fields are guaranteed to be present and non-null.
+// - Optional fields may be `null`/`undefined` if the data couldn't be extracted
+// during processing.
+type AggregationCountResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize int `json:"page_size" url:"page_size"`
+	// The aggregation results. Can be either a dictionary or a list of dictionaries.
+	Aggregations *Aggregations `json:"aggregations,omitempty" url:"aggregations,omitempty"`
+	UserInput    *UserInputDto `json:"user_input,omitempty" url:"user_input,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AggregationCountResponseDto) GetStatus() string {
+	if a == nil {
+		return ""
+	}
+	return a.Status
+}
+
+func (a *AggregationCountResponseDto) GetTotalHits() int {
+	if a == nil {
+		return 0
+	}
+	return a.TotalHits
+}
+
+func (a *AggregationCountResponseDto) GetPage() int {
+	if a == nil {
+		return 0
+	}
+	return a.Page
+}
+
+func (a *AggregationCountResponseDto) GetTotalPages() int {
+	if a == nil {
+		return 0
+	}
+	return a.TotalPages
+}
+
+func (a *AggregationCountResponseDto) GetPageSize() int {
+	if a == nil {
+		return 0
+	}
+	return a.PageSize
+}
+
+func (a *AggregationCountResponseDto) GetAggregations() *Aggregations {
+	if a == nil {
+		return nil
+	}
+	return a.Aggregations
+}
+
+func (a *AggregationCountResponseDto) GetUserInput() *UserInputDto {
+	if a == nil {
+		return nil
+	}
+	return a.UserInput
+}
+
+func (a *AggregationCountResponseDto) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AggregationCountResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler AggregationCountResponseDto
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AggregationCountResponseDto(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AggregationCountResponseDto) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// A single item in the aggregations array containing a collection of time-based article counts.
+type AggregationItem struct {
+	// Array of time frames and their corresponding article counts
+	AggregationCount []*TimeFrameCount `json:"aggregation_count,omitempty" url:"aggregation_count,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AggregationItem) GetAggregationCount() []*TimeFrameCount {
+	if a == nil {
+		return nil
+	}
+	return a.AggregationCount
+}
+
+func (a *AggregationItem) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AggregationItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler AggregationItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AggregationItem(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AggregationItem) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// The aggregation results. Can be either a dictionary or a list of dictionaries.
+type Aggregations struct {
+	AggregationItem     *AggregationItem
+	AggregationItemList []*AggregationItem
+
+	typ string
+}
+
+func NewAggregationsFromAggregationItem(value *AggregationItem) *Aggregations {
+	return &Aggregations{typ: "AggregationItem", AggregationItem: value}
+}
+
+func NewAggregationsFromAggregationItemList(value []*AggregationItem) *Aggregations {
+	return &Aggregations{typ: "AggregationItemList", AggregationItemList: value}
+}
+
+func (a *Aggregations) GetAggregationItem() *AggregationItem {
+	if a == nil {
+		return nil
+	}
+	return a.AggregationItem
+}
+
+func (a *Aggregations) GetAggregationItemList() []*AggregationItem {
+	if a == nil {
+		return nil
+	}
+	return a.AggregationItemList
+}
+
+func (a *Aggregations) UnmarshalJSON(data []byte) error {
+	valueAggregationItem := new(AggregationItem)
+	if err := json.Unmarshal(data, &valueAggregationItem); err == nil {
+		a.typ = "AggregationItem"
+		a.AggregationItem = valueAggregationItem
+		return nil
+	}
+	var valueAggregationItemList []*AggregationItem
+	if err := json.Unmarshal(data, &valueAggregationItemList); err == nil {
+		a.typ = "AggregationItemList"
+		a.AggregationItemList = valueAggregationItemList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
+}
+
+func (a Aggregations) MarshalJSON() ([]byte, error) {
+	if a.typ == "AggregationItem" || a.AggregationItem != nil {
+		return json.Marshal(a.AggregationItem)
+	}
+	if a.typ == "AggregationItemList" || a.AggregationItemList != nil {
+		return json.Marshal(a.AggregationItemList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+type AggregationsVisitor interface {
+	VisitAggregationItem(*AggregationItem) error
+	VisitAggregationItemList([]*AggregationItem) error
+}
+
+func (a *Aggregations) Accept(visitor AggregationsVisitor) error {
+	if a.typ == "AggregationItem" || a.AggregationItem != nil {
+		return visitor.VisitAggregationItem(a.AggregationItem)
+	}
+	if a.typ == "AggregationItemList" || a.AggregationItemList != nil {
+		return visitor.VisitAggregationItemList(a.AggregationItemList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+// The response model for a failed `Aggregation count` request.
+type FailedAggregationCountResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize  int           `json:"page_size" url:"page_size"`
+	UserInput *UserInputDto `json:"user_input,omitempty" url:"user_input,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (f *FailedAggregationCountResponseDto) GetStatus() string {
+	if f == nil {
+		return ""
+	}
+	return f.Status
+}
+
+func (f *FailedAggregationCountResponseDto) GetTotalHits() int {
+	if f == nil {
+		return 0
+	}
+	return f.TotalHits
+}
+
+func (f *FailedAggregationCountResponseDto) GetPage() int {
+	if f == nil {
+		return 0
+	}
+	return f.Page
+}
+
+func (f *FailedAggregationCountResponseDto) GetTotalPages() int {
+	if f == nil {
+		return 0
+	}
+	return f.TotalPages
+}
+
+func (f *FailedAggregationCountResponseDto) GetPageSize() int {
+	if f == nil {
+		return 0
+	}
+	return f.PageSize
+}
+
+func (f *FailedAggregationCountResponseDto) GetUserInput() *UserInputDto {
+	if f == nil {
+		return nil
+	}
+	return f.UserInput
+}
+
+func (f *FailedAggregationCountResponseDto) GetExtraProperties() map[string]interface{} {
+	return f.extraProperties
+}
+
+func (f *FailedAggregationCountResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler FailedAggregationCountResponseDto
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*f = FailedAggregationCountResponseDto(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
+	}
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (f *FailedAggregationCountResponseDto) String() string {
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", f)
+}
+
+// Represents the article count for a specific time frame.
+type TimeFrameCount struct {
+	// The timestamp for the aggregation period in format "YYYY-MM-DD HH:mm:ss"
+	TimeFrame time.Time `json:"time_frame" url:"time_frame"`
+	// The number of articles published during this time frame
+	ArticleCount int `json:"article_count" url:"article_count"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TimeFrameCount) GetTimeFrame() time.Time {
+	if t == nil {
+		return time.Time{}
+	}
+	return t.TimeFrame
+}
+
+func (t *TimeFrameCount) GetArticleCount() int {
+	if t == nil {
+		return 0
+	}
+	return t.ArticleCount
+}
+
+func (t *TimeFrameCount) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TimeFrameCount) UnmarshalJSON(data []byte) error {
+	type embed TimeFrameCount
+	var unmarshaler = struct {
+		embed
+		TimeFrame *internal.DateTime `json:"time_frame"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = TimeFrameCount(unmarshaler.embed)
+	t.TimeFrame = unmarshaler.TimeFrame.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TimeFrameCount) MarshalJSON() ([]byte, error) {
+	type embed TimeFrameCount
+	var marshaler = struct {
+		embed
+		TimeFrame *internal.DateTime `json:"time_frame"`
+	}{
+		embed:     embed(*t),
+		TimeFrame: internal.NewDateTime(t.TimeFrame),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *TimeFrameCount) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+type AggregationGetRequestAggregationBy string
 
 const (
-	SearchGetRequestNewsDomainTypeOriginalContent SearchGetRequestNewsDomainType = "Original Content"
-	SearchGetRequestNewsDomainTypeAggregator      SearchGetRequestNewsDomainType = "Aggregator"
-	SearchGetRequestNewsDomainTypePressReleases   SearchGetRequestNewsDomainType = "Press Releases"
-	SearchGetRequestNewsDomainTypeRepublisher     SearchGetRequestNewsDomainType = "Republisher"
-	SearchGetRequestNewsDomainTypeOther           SearchGetRequestNewsDomainType = "Other"
+	AggregationGetRequestAggregationByDay  AggregationGetRequestAggregationBy = "day"
+	AggregationGetRequestAggregationByHour AggregationGetRequestAggregationBy = "hour"
 )
 
-func NewSearchGetRequestNewsDomainTypeFromString(s string) (SearchGetRequestNewsDomainType, error) {
+func NewAggregationGetRequestAggregationByFromString(s string) (AggregationGetRequestAggregationBy, error) {
 	switch s {
-	case "Original Content":
-		return SearchGetRequestNewsDomainTypeOriginalContent, nil
-	case "Aggregator":
-		return SearchGetRequestNewsDomainTypeAggregator, nil
-	case "Press Releases":
-		return SearchGetRequestNewsDomainTypePressReleases, nil
-	case "Republisher":
-		return SearchGetRequestNewsDomainTypeRepublisher, nil
-	case "Other":
-		return SearchGetRequestNewsDomainTypeOther, nil
+	case "day":
+		return AggregationGetRequestAggregationByDay, nil
+	case "hour":
+		return AggregationGetRequestAggregationByHour, nil
 	}
-	var t SearchGetRequestNewsDomainType
+	var t AggregationGetRequestAggregationBy
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (s SearchGetRequestNewsDomainType) Ptr() *SearchGetRequestNewsDomainType {
-	return &s
+func (a AggregationGetRequestAggregationBy) Ptr() *AggregationGetRequestAggregationBy {
+	return &a
 }
 
-type SearchGetRequestPublishedDatePrecision string
+type AggregationGetRequestPublishedDatePrecision string
 
 const (
-	SearchGetRequestPublishedDatePrecisionFull            SearchGetRequestPublishedDatePrecision = "full"
-	SearchGetRequestPublishedDatePrecisionTimezoneUnknown SearchGetRequestPublishedDatePrecision = "timezone unknown"
-	SearchGetRequestPublishedDatePrecisionDate            SearchGetRequestPublishedDatePrecision = "date"
+	AggregationGetRequestPublishedDatePrecisionFull            AggregationGetRequestPublishedDatePrecision = "full"
+	AggregationGetRequestPublishedDatePrecisionTimezoneUnknown AggregationGetRequestPublishedDatePrecision = "timezone unknown"
+	AggregationGetRequestPublishedDatePrecisionDate            AggregationGetRequestPublishedDatePrecision = "date"
 )
 
-func NewSearchGetRequestPublishedDatePrecisionFromString(s string) (SearchGetRequestPublishedDatePrecision, error) {
+func NewAggregationGetRequestPublishedDatePrecisionFromString(s string) (AggregationGetRequestPublishedDatePrecision, error) {
 	switch s {
 	case "full":
-		return SearchGetRequestPublishedDatePrecisionFull, nil
+		return AggregationGetRequestPublishedDatePrecisionFull, nil
 	case "timezone unknown":
-		return SearchGetRequestPublishedDatePrecisionTimezoneUnknown, nil
+		return AggregationGetRequestPublishedDatePrecisionTimezoneUnknown, nil
 	case "date":
-		return SearchGetRequestPublishedDatePrecisionDate, nil
+		return AggregationGetRequestPublishedDatePrecisionDate, nil
 	}
-	var t SearchGetRequestPublishedDatePrecision
+	var t AggregationGetRequestPublishedDatePrecision
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (s SearchGetRequestPublishedDatePrecision) Ptr() *SearchGetRequestPublishedDatePrecision {
-	return &s
+func (a AggregationGetRequestPublishedDatePrecision) Ptr() *AggregationGetRequestPublishedDatePrecision {
+	return &a
 }
 
-type SearchGetRequestSortBy string
+type AggregationGetRequestSortBy string
 
 const (
-	SearchGetRequestSortByRelevancy SearchGetRequestSortBy = "relevancy"
-	SearchGetRequestSortByDate      SearchGetRequestSortBy = "date"
-	SearchGetRequestSortByRank      SearchGetRequestSortBy = "rank"
+	AggregationGetRequestSortByRelevancy AggregationGetRequestSortBy = "relevancy"
+	AggregationGetRequestSortByDate      AggregationGetRequestSortBy = "date"
+	AggregationGetRequestSortByRank      AggregationGetRequestSortBy = "rank"
 )
 
-func NewSearchGetRequestSortByFromString(s string) (SearchGetRequestSortBy, error) {
+func NewAggregationGetRequestSortByFromString(s string) (AggregationGetRequestSortBy, error) {
 	switch s {
 	case "relevancy":
-		return SearchGetRequestSortByRelevancy, nil
+		return AggregationGetRequestSortByRelevancy, nil
 	case "date":
-		return SearchGetRequestSortByDate, nil
+		return AggregationGetRequestSortByDate, nil
 	case "rank":
-		return SearchGetRequestSortByRank, nil
+		return AggregationGetRequestSortByRank, nil
 	}
-	var t SearchGetRequestSortBy
+	var t AggregationGetRequestSortBy
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (s SearchGetRequestSortBy) Ptr() *SearchGetRequestSortBy {
-	return &s
+func (a AggregationGetRequestSortBy) Ptr() *AggregationGetRequestSortBy {
+	return &a
 }
 
-type SearchGetResponse struct {
-	SearchResponseDto          *SearchResponseDto
-	ClusteredSearchResponseDto *ClusteredSearchResponseDto
+type AggregationGetResponse struct {
+	AggregationCountResponseDto       *AggregationCountResponseDto
+	FailedAggregationCountResponseDto *FailedAggregationCountResponseDto
 
 	typ string
 }
 
-func NewSearchGetResponseFromSearchResponseDto(value *SearchResponseDto) *SearchGetResponse {
-	return &SearchGetResponse{typ: "SearchResponseDto", SearchResponseDto: value}
+func NewAggregationGetResponseFromAggregationCountResponseDto(value *AggregationCountResponseDto) *AggregationGetResponse {
+	return &AggregationGetResponse{typ: "AggregationCountResponseDto", AggregationCountResponseDto: value}
 }
 
-func NewSearchGetResponseFromClusteredSearchResponseDto(value *ClusteredSearchResponseDto) *SearchGetResponse {
-	return &SearchGetResponse{typ: "ClusteredSearchResponseDto", ClusteredSearchResponseDto: value}
+func NewAggregationGetResponseFromFailedAggregationCountResponseDto(value *FailedAggregationCountResponseDto) *AggregationGetResponse {
+	return &AggregationGetResponse{typ: "FailedAggregationCountResponseDto", FailedAggregationCountResponseDto: value}
 }
 
-func (s *SearchGetResponse) GetSearchResponseDto() *SearchResponseDto {
-	if s == nil {
+func (a *AggregationGetResponse) GetAggregationCountResponseDto() *AggregationCountResponseDto {
+	if a == nil {
 		return nil
 	}
-	return s.SearchResponseDto
+	return a.AggregationCountResponseDto
 }
 
-func (s *SearchGetResponse) GetClusteredSearchResponseDto() *ClusteredSearchResponseDto {
-	if s == nil {
+func (a *AggregationGetResponse) GetFailedAggregationCountResponseDto() *FailedAggregationCountResponseDto {
+	if a == nil {
 		return nil
 	}
-	return s.ClusteredSearchResponseDto
+	return a.FailedAggregationCountResponseDto
 }
 
-func (s *SearchGetResponse) UnmarshalJSON(data []byte) error {
-	valueSearchResponseDto := new(SearchResponseDto)
-	if err := json.Unmarshal(data, &valueSearchResponseDto); err == nil {
-		s.typ = "SearchResponseDto"
-		s.SearchResponseDto = valueSearchResponseDto
+func (a *AggregationGetResponse) UnmarshalJSON(data []byte) error {
+	valueAggregationCountResponseDto := new(AggregationCountResponseDto)
+	if err := json.Unmarshal(data, &valueAggregationCountResponseDto); err == nil {
+		a.typ = "AggregationCountResponseDto"
+		a.AggregationCountResponseDto = valueAggregationCountResponseDto
 		return nil
 	}
-	valueClusteredSearchResponseDto := new(ClusteredSearchResponseDto)
-	if err := json.Unmarshal(data, &valueClusteredSearchResponseDto); err == nil {
-		s.typ = "ClusteredSearchResponseDto"
-		s.ClusteredSearchResponseDto = valueClusteredSearchResponseDto
+	valueFailedAggregationCountResponseDto := new(FailedAggregationCountResponseDto)
+	if err := json.Unmarshal(data, &valueFailedAggregationCountResponseDto); err == nil {
+		a.typ = "FailedAggregationCountResponseDto"
+		a.FailedAggregationCountResponseDto = valueFailedAggregationCountResponseDto
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
 }
 
-func (s SearchGetResponse) MarshalJSON() ([]byte, error) {
-	if s.typ == "SearchResponseDto" || s.SearchResponseDto != nil {
-		return json.Marshal(s.SearchResponseDto)
+func (a AggregationGetResponse) MarshalJSON() ([]byte, error) {
+	if a.typ == "AggregationCountResponseDto" || a.AggregationCountResponseDto != nil {
+		return json.Marshal(a.AggregationCountResponseDto)
 	}
-	if s.typ == "ClusteredSearchResponseDto" || s.ClusteredSearchResponseDto != nil {
-		return json.Marshal(s.ClusteredSearchResponseDto)
+	if a.typ == "FailedAggregationCountResponseDto" || a.FailedAggregationCountResponseDto != nil {
+		return json.Marshal(a.FailedAggregationCountResponseDto)
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
 }
 
-type SearchGetResponseVisitor interface {
-	VisitSearchResponseDto(*SearchResponseDto) error
-	VisitClusteredSearchResponseDto(*ClusteredSearchResponseDto) error
+type AggregationGetResponseVisitor interface {
+	VisitAggregationCountResponseDto(*AggregationCountResponseDto) error
+	VisitFailedAggregationCountResponseDto(*FailedAggregationCountResponseDto) error
 }
 
-func (s *SearchGetResponse) Accept(visitor SearchGetResponseVisitor) error {
-	if s.typ == "SearchResponseDto" || s.SearchResponseDto != nil {
-		return visitor.VisitSearchResponseDto(s.SearchResponseDto)
+func (a *AggregationGetResponse) Accept(visitor AggregationGetResponseVisitor) error {
+	if a.typ == "AggregationCountResponseDto" || a.AggregationCountResponseDto != nil {
+		return visitor.VisitAggregationCountResponseDto(a.AggregationCountResponseDto)
 	}
-	if s.typ == "ClusteredSearchResponseDto" || s.ClusteredSearchResponseDto != nil {
-		return visitor.VisitClusteredSearchResponseDto(s.ClusteredSearchResponseDto)
+	if a.typ == "FailedAggregationCountResponseDto" || a.FailedAggregationCountResponseDto != nil {
+		return visitor.VisitFailedAggregationCountResponseDto(a.FailedAggregationCountResponseDto)
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", s)
+	return fmt.Errorf("type %T does not include a non-empty union type", a)
 }
 
-type SearchPostResponse struct {
-	SearchResponseDto          *SearchResponseDto
-	ClusteredSearchResponseDto *ClusteredSearchResponseDto
+type AggregationPostResponse struct {
+	AggregationCountResponseDto       *AggregationCountResponseDto
+	FailedAggregationCountResponseDto *FailedAggregationCountResponseDto
 
 	typ string
 }
 
-func NewSearchPostResponseFromSearchResponseDto(value *SearchResponseDto) *SearchPostResponse {
-	return &SearchPostResponse{typ: "SearchResponseDto", SearchResponseDto: value}
+func NewAggregationPostResponseFromAggregationCountResponseDto(value *AggregationCountResponseDto) *AggregationPostResponse {
+	return &AggregationPostResponse{typ: "AggregationCountResponseDto", AggregationCountResponseDto: value}
 }
 
-func NewSearchPostResponseFromClusteredSearchResponseDto(value *ClusteredSearchResponseDto) *SearchPostResponse {
-	return &SearchPostResponse{typ: "ClusteredSearchResponseDto", ClusteredSearchResponseDto: value}
+func NewAggregationPostResponseFromFailedAggregationCountResponseDto(value *FailedAggregationCountResponseDto) *AggregationPostResponse {
+	return &AggregationPostResponse{typ: "FailedAggregationCountResponseDto", FailedAggregationCountResponseDto: value}
 }
 
-func (s *SearchPostResponse) GetSearchResponseDto() *SearchResponseDto {
-	if s == nil {
+func (a *AggregationPostResponse) GetAggregationCountResponseDto() *AggregationCountResponseDto {
+	if a == nil {
 		return nil
 	}
-	return s.SearchResponseDto
+	return a.AggregationCountResponseDto
 }
 
-func (s *SearchPostResponse) GetClusteredSearchResponseDto() *ClusteredSearchResponseDto {
-	if s == nil {
+func (a *AggregationPostResponse) GetFailedAggregationCountResponseDto() *FailedAggregationCountResponseDto {
+	if a == nil {
 		return nil
 	}
-	return s.ClusteredSearchResponseDto
+	return a.FailedAggregationCountResponseDto
 }
 
-func (s *SearchPostResponse) UnmarshalJSON(data []byte) error {
-	valueSearchResponseDto := new(SearchResponseDto)
-	if err := json.Unmarshal(data, &valueSearchResponseDto); err == nil {
-		s.typ = "SearchResponseDto"
-		s.SearchResponseDto = valueSearchResponseDto
+func (a *AggregationPostResponse) UnmarshalJSON(data []byte) error {
+	valueAggregationCountResponseDto := new(AggregationCountResponseDto)
+	if err := json.Unmarshal(data, &valueAggregationCountResponseDto); err == nil {
+		a.typ = "AggregationCountResponseDto"
+		a.AggregationCountResponseDto = valueAggregationCountResponseDto
 		return nil
 	}
-	valueClusteredSearchResponseDto := new(ClusteredSearchResponseDto)
-	if err := json.Unmarshal(data, &valueClusteredSearchResponseDto); err == nil {
-		s.typ = "ClusteredSearchResponseDto"
-		s.ClusteredSearchResponseDto = valueClusteredSearchResponseDto
+	valueFailedAggregationCountResponseDto := new(FailedAggregationCountResponseDto)
+	if err := json.Unmarshal(data, &valueFailedAggregationCountResponseDto); err == nil {
+		a.typ = "FailedAggregationCountResponseDto"
+		a.FailedAggregationCountResponseDto = valueFailedAggregationCountResponseDto
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
 }
 
-func (s SearchPostResponse) MarshalJSON() ([]byte, error) {
-	if s.typ == "SearchResponseDto" || s.SearchResponseDto != nil {
-		return json.Marshal(s.SearchResponseDto)
+func (a AggregationPostResponse) MarshalJSON() ([]byte, error) {
+	if a.typ == "AggregationCountResponseDto" || a.AggregationCountResponseDto != nil {
+		return json.Marshal(a.AggregationCountResponseDto)
 	}
-	if s.typ == "ClusteredSearchResponseDto" || s.ClusteredSearchResponseDto != nil {
-		return json.Marshal(s.ClusteredSearchResponseDto)
+	if a.typ == "FailedAggregationCountResponseDto" || a.FailedAggregationCountResponseDto != nil {
+		return json.Marshal(a.FailedAggregationCountResponseDto)
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
 }
 
-type SearchPostResponseVisitor interface {
-	VisitSearchResponseDto(*SearchResponseDto) error
-	VisitClusteredSearchResponseDto(*ClusteredSearchResponseDto) error
+type AggregationPostResponseVisitor interface {
+	VisitAggregationCountResponseDto(*AggregationCountResponseDto) error
+	VisitFailedAggregationCountResponseDto(*FailedAggregationCountResponseDto) error
 }
 
-func (s *SearchPostResponse) Accept(visitor SearchPostResponseVisitor) error {
-	if s.typ == "SearchResponseDto" || s.SearchResponseDto != nil {
-		return visitor.VisitSearchResponseDto(s.SearchResponseDto)
+func (a *AggregationPostResponse) Accept(visitor AggregationPostResponseVisitor) error {
+	if a.typ == "AggregationCountResponseDto" || a.AggregationCountResponseDto != nil {
+		return visitor.VisitAggregationCountResponseDto(a.AggregationCountResponseDto)
 	}
-	if s.typ == "ClusteredSearchResponseDto" || s.ClusteredSearchResponseDto != nil {
-		return visitor.VisitClusteredSearchResponseDto(s.ClusteredSearchResponseDto)
+	if a.typ == "FailedAggregationCountResponseDto" || a.FailedAggregationCountResponseDto != nil {
+		return visitor.VisitFailedAggregationCountResponseDto(a.FailedAggregationCountResponseDto)
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", s)
+	return fmt.Errorf("type %T does not include a non-empty union type", a)
 }

@@ -5,1098 +5,493 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Newscatcher/newscatcher-go/internal"
 )
 
 type LatestHeadlinesGetRequest struct {
-	When                *string  `json:"-" url:"when,omitempty"`
-	ByParseDate         *string  `json:"-" url:"by_parse_date,omitempty"`
-	SortBy              *string  `json:"-" url:"sort_by,omitempty"`
-	Lang                string   `json:"-" url:"lang"`
-	NotLang             string   `json:"-" url:"not_lang"`
-	Countries           string   `json:"-" url:"countries"`
-	NotCountries        string   `json:"-" url:"not_countries"`
-	Sources             string   `json:"-" url:"sources"`
-	PredefinedSources   string   `json:"-" url:"predefined_sources"`
-	NotSources          string   `json:"-" url:"not_sources"`
-	NotAuthorName       string   `json:"-" url:"not_author_name"`
-	RankedOnly          *string  `json:"-" url:"ranked_only,omitempty"`
-	IsHeadline          *string  `json:"-" url:"is_headline,omitempty"`
-	IsOpinion           *string  `json:"-" url:"is_opinion,omitempty"`
-	IsPaidContent       *string  `json:"-" url:"is_paid_content,omitempty"`
-	ParentUrl           string   `json:"-" url:"parent_url"`
-	AllLinks            string   `json:"-" url:"all_links"`
-	AllDomainLinks      string   `json:"-" url:"all_domain_links"`
-	WordCountMin        *string  `json:"-" url:"word_count_min,omitempty"`
-	WordCountMax        *string  `json:"-" url:"word_count_max,omitempty"`
-	Page                *string  `json:"-" url:"page,omitempty"`
-	PageSize            *string  `json:"-" url:"page_size,omitempty"`
-	ClusteringVariable  *string  `json:"-" url:"clustering_variable,omitempty"`
-	ClusteringEnabled   *string  `json:"-" url:"clustering_enabled,omitempty"`
+	// The time period for which you want to get the latest headlines.
+	//
+	// Format examples:
+	// - `7d`: Last seven days
+	// - `30d`: Last 30 days
+	// - `1h`: Last hour
+	// - `24h`: Last 24 hours
+	When *string `json:"-" url:"when,omitempty"`
+	// If true, the `from_` and `to_` parameters use article parse dates instead of published dates. Additionally, the `parse_date` variable is added to the output for each article object.
+	ByParseDate *bool `json:"-" url:"by_parse_date,omitempty"`
+	// The language(s) of the search. The only accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To select multiple languages, use a comma-separated string.
+	//
+	// Example: `"en, es"`
+	//
+	// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+	Lang *string `json:"-" url:"lang,omitempty"`
+	// The language(s) to exclude from the search. The accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To exclude multiple languages, use a comma-separated string.
+	//
+	// Example: `"fr, de"`
+	//
+	// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+	NotLang *string `json:"-" url:"not_lang,omitempty"`
+	// The countries where the news publisher is located. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To select multiple countries, use a comma-separated string.
+	//
+	// Example: `"US, CA"`
+	//
+	// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+	Countries *string `json:"-" url:"countries,omitempty"`
+	// The publisher location countries to exclude from the search. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To exclude multiple countries, use a comma-separated string.
+	//
+	// Example:`"US, CA"`
+	//
+	// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+	NotCountries *string `json:"-" url:"not_countries,omitempty"`
+	// Predefined top news sources per country.
+	//
+	// Format: start with the word `top`, followed by the number of desired sources, and then the two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Multiple countries with the number of top sources can be specified as a comma-separated string.
+	//
+	// Examples:
+	// - `"top 100 US"`
+	// - `"top 33 AT"`
+	// - `"top 50 US, top 20 GB"`
+	// - `"top 33 AT, top 50 IT"`
+	PredefinedSources *string `json:"-" url:"predefined_sources,omitempty"`
+	// One or more news sources to narrow down the search. The format must be a domain URL. Subdomains, such as `finance.yahoo.com`, are also acceptable.To specify multiple sources, use a comma-separated string.
+	//
+	// Examples:
+	// - `"nytimes.com"`
+	// - `"theguardian.com, finance.yahoo.com"`
+	Sources *string `json:"-" url:"sources,omitempty"`
+	// The news sources to exclude from the search. To exclude multiple sources, use a comma-separated string.
+	//
+	// Example: `"cnn.com, wsj.com"`
+	NotSources *string `json:"-" url:"not_sources,omitempty"`
+	// The list of author names to exclude from your search. To exclude articles by specific authors, use a comma-separated string.
+	//
+	// Example: `"John Doe, Jane Doe"`
+	NotAuthorName *string `json:"-" url:"not_author_name,omitempty"`
+	// If true, limits the search to sources ranked in the top 1 million online websites. If false, includes unranked sources which are assigned a rank of 999999.
+	RankedOnly *bool `json:"-" url:"ranked_only,omitempty"`
+	// If true, only returns articles that were posted on the home page of a given news domain.
+	IsHeadline *bool `json:"-" url:"is_headline,omitempty"`
+	// If true, returns only opinion pieces. If false, excludes opinion-based articles and returns news only.
+	IsOpinion *bool `json:"-" url:"is_opinion,omitempty"`
+	// If false, returns only articles that have publicly available complete content. Some publishers partially block content, so this setting ensures that only full articles are retrieved.
+	IsPaidContent *bool `json:"-" url:"is_paid_content,omitempty"`
+	// The categorical URL(s) to filter your search. To filter your search by multiple categorical URLs, use a comma-separated string.
+	//
+	// Example: `"wsj.com/politics, wsj.com/tech"`
+	ParentUrl *string `json:"-" url:"parent_url,omitempty"`
+	// The complete URL(s) mentioned in the article. For multiple URLs, use a comma-separated string.
+	//
+	// Example: `"https://aiindex.stanford.edu/report, https://www.stateof.ai"`
+	//
+	// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+	AllLinks *string `json:"-" url:"all_links,omitempty"`
+	// The domain(s) mentioned in the article. For multiple domains, use a comma-separated string.
+	//
+	// Example: `"who.int, nih.gov"`
+	//
+	// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+	AllDomainLinks *string `json:"-" url:"all_domain_links,omitempty"`
+	// The minimum number of words an article must contain. To be used for avoiding articles with small content.
+	WordCountMin *int `json:"-" url:"word_count_min,omitempty"`
+	// The maximum number of words an article can contain. To be used for avoiding articles with large content.
+	WordCountMax *int `json:"-" url:"word_count_max,omitempty"`
+	// The page number to scroll through the results. Use for pagination, as a single API response can return up to 1,000 articles.
+	//
+	// For details, see [How to paginate large datasets](https://www.newscatcherapi.com/docs/v3/documentation/how-to/paginate-large-datasets).
+	Page *int `json:"-" url:"page,omitempty"`
+	// The number of articles to return per page.
+	PageSize *int `json:"-" url:"page_size,omitempty"`
+	// Determines whether to group similar articles into clusters. If true, the API returns clustered results.
+	//
+	// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
+	ClusteringEnabled *bool `json:"-" url:"clustering_enabled,omitempty"`
+	// Specifies which part of the article to use for determining similarity when clustering.
+	//
+	// Possible values are:
+	// - `content`: Uses the full article content (default).
+	// - `title`: Uses only the article title.
+	// - `summary`: Uses the article summary.
+	//
+	// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
+	ClusteringVariable *LatestHeadlinesGetRequestClusteringVariable `json:"-" url:"clustering_variable,omitempty"`
+	// Sets the similarity threshold for grouping articles into clusters. A lower value creates more inclusive clusters, while a higher value requires greater similarity between articles.
+	//
+	// Examples:
+	// - `0.3`: Results in larger, more diverse clusters.
+	// - `0.6`: Balances cluster size and article similarity (default).
+	// - `0.9`: Creates smaller, tightly related clusters.
+	//
+	// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
 	ClusteringThreshold *float64 `json:"-" url:"clustering_threshold,omitempty"`
-	IncludeNlpData      *bool    `json:"-" url:"include_nlp_data,omitempty"`
-	HasNlp              *bool    `json:"-" url:"has_nlp,omitempty"`
-	Theme               *string  `json:"-" url:"theme,omitempty"`
-	NotTheme            *string  `json:"-" url:"not_theme,omitempty"`
-	OrgEntityName       *string  `json:"-" url:"ORG_entity_name,omitempty"`
-	PerEntityName       *string  `json:"-" url:"PER_entity_name,omitempty"`
-	LocEntityName       *string  `json:"-" url:"LOC_entity_name,omitempty"`
-	MiscEntityName      *string  `json:"-" url:"MISC_entity_name,omitempty"`
-	TitleSentimentMin   *float64 `json:"-" url:"title_sentiment_min,omitempty"`
-	TitleSentimentMax   *float64 `json:"-" url:"title_sentiment_max,omitempty"`
+	// If true, includes an NLP layer with each article in the response. This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
+	//
+	// The NLP layer includes:
+	// - Theme: General topic of the article.
+	// - Summary: A concise overview of the article content.
+	// - Sentiment: Separate scores for title and content (range: -1 to 1).
+	// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
+	// - IPTC tags: Standardized news category tags.
+	// - IAB tags: Content categories for digital advertising.
+	//
+	// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	IncludeNlpData *bool `json:"-" url:"include_nlp_data,omitempty"`
+	// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
+	//
+	// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	HasNlp *bool `json:"-" url:"has_nlp,omitempty"`
+	// Filters articles based on their general topic, as determined by NLP analysis. To select multiple themes, use a comma-separated string.
+	//
+	// Example: `"Finance, Tech"`
+	//
+	// **Note**: The `theme` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	//
+	// Available options: `Business`, `Economics`, `Entertainment`, `Finance`, `Health`, `Politics`, `Science`, `Sports`, `Tech`, `Crime`, `Financial Crime`, `Lifestyle`, `Automotive`, `Travel`, `Weather`, `General`.
+	Theme *string `json:"-" url:"theme,omitempty"`
+	// Inverse of the `theme` parameter. Excludes articles based on their general topic, as determined by NLP analysis. To exclude multiple themes, use a comma-separated string.
+	//
+	// Example: `"Crime, Tech"`
+	//
+	// **Note**: The `not_theme` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	NotTheme *string `json:"-" url:"not_theme,omitempty"`
+	// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string.
+	//
+	// Example: `"Apple, Microsoft"`
+	//
+	// **Note**: The `ORG_entity_name` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+	OrgEntityName *string `json:"-" url:"ORG_entity_name,omitempty"`
+	// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string.
+	//
+	// Example: `"Elon Musk, Jeff Bezos"`
+	//
+	// **Note**: The `PER_entity_name` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+	PerEntityName *string `json:"-" url:"PER_entity_name,omitempty"`
+	// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string.
+	//
+	// Example: `"California, New York"`
+	//
+	// **Note**: The `LOC_entity_name` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+	LocEntityName *string `json:"-" url:"LOC_entity_name,omitempty"`
+	// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string.
+	//
+	// Example: `"Bitcoin, Blockchain"`
+	//
+	// **Note**: The `MISC_entity_name` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+	MiscEntityName *string `json:"-" url:"MISC_entity_name,omitempty"`
+	// Filters articles based on the minimum sentiment score of their titles.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `title_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	TitleSentimentMin *float64 `json:"-" url:"title_sentiment_min,omitempty"`
+	// Filters articles based on the maximum sentiment score of their titles.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `title_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	TitleSentimentMax *float64 `json:"-" url:"title_sentiment_max,omitempty"`
+	// Filters articles based on the minimum sentiment score of their content.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `content_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
 	ContentSentimentMin *float64 `json:"-" url:"content_sentiment_min,omitempty"`
+	// Filters articles based on the maximum sentiment score of their content.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `content_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
 	ContentSentimentMax *float64 `json:"-" url:"content_sentiment_max,omitempty"`
-	IptcTags            string   `json:"-" url:"iptc_tags"`
-	NotIptcTags         string   `json:"-" url:"not_iptc_tags"`
-	IabTags             string   `json:"-" url:"iab_tags"`
-	NotIabTags          string   `json:"-" url:"not_iab_tags"`
+	// Filters articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags, use a comma-separated string of tag IDs.
+	//
+	// Example: `"20000199, 20000209"`
+	//
+	// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+	IptcTags *string `json:"-" url:"iptc_tags,omitempty"`
+	// Inverse of the `iptc_tags` parameter. Excludes articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags to exclude, use a comma-separated string of tag IDs.
+	//
+	// Example: `"20000205, 20000209"`
+	//
+	// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+	NotIptcTags *string `json:"-" url:"not_iptc_tags,omitempty"`
+	// Filters articles based on Interactive Advertising Bureau (IAB) content categories. These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories, use a comma-separated string.
+	//
+	// Example: `"Business, Events"`
+	//
+	// **Note**: The `iab_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
+	IabTags *string `json:"-" url:"iab_tags,omitempty"`
+	// Inverse of the `iab_tags` parameter. Excludes articles based on Interactive Advertising Bureau (IAB) content categories. These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories to exclude, use a comma-separated string.
+	//
+	// Example: `"Agriculture, Metals"`
+	//
+	// **Note**: The `not_iab_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
+	NotIabTags *string `json:"-" url:"not_iab_tags,omitempty"`
+	// Filters articles based on provided taxonomy that is tailored to your specific needs and is accessible only with your API key. To specify tags, use the following pattern:
+	//
+	// - `custom_tags.taxonomy=Tag1,Tag2,Tag3`, where `taxonomy` is the taxonomy name and `Tag1,Tag2,Tag3` is a comma-separated list of tags.
+	//
+	// Example: `custom_tags.industry="Manufacturing, Supply Chain, Logistics"`
+	//
+	// To learn more, see the [Custom tags](/docs/v3/documentation/guides-and-concepts/custom-tags).
+	CustomTags *string `json:"-" url:"custom_tags,omitempty"`
 }
 
-type LatestHeadlinesRequest struct {
-	When                *string                                    `json:"when,omitempty" url:"-"`
-	ByParseDate         *LatestHeadlinesRequestByParseDate         `json:"by_parse_date,omitempty" url:"-"`
-	SortBy              *string                                    `json:"sort_by,omitempty" url:"-"`
-	Lang                interface{}                                `json:"lang,omitempty" url:"-"`
-	NotLang             interface{}                                `json:"not_lang,omitempty" url:"-"`
-	Countries           interface{}                                `json:"countries,omitempty" url:"-"`
-	NotCountries        interface{}                                `json:"not_countries,omitempty" url:"-"`
-	Sources             interface{}                                `json:"sources,omitempty" url:"-"`
-	PredefinedSources   interface{}                                `json:"predefined_sources,omitempty" url:"-"`
-	NotSources          interface{}                                `json:"not_sources,omitempty" url:"-"`
-	NotAuthorName       interface{}                                `json:"not_author_name,omitempty" url:"-"`
-	RankedOnly          *LatestHeadlinesRequestRankedOnly          `json:"ranked_only,omitempty" url:"-"`
-	IsHeadline          *LatestHeadlinesRequestIsHeadline          `json:"is_headline,omitempty" url:"-"`
-	IsOpinion           *LatestHeadlinesRequestIsOpinion           `json:"is_opinion,omitempty" url:"-"`
-	IsPaidContent       *LatestHeadlinesRequestIsPaidContent       `json:"is_paid_content,omitempty" url:"-"`
-	ParentUrl           interface{}                                `json:"parent_url,omitempty" url:"-"`
-	AllLinks            interface{}                                `json:"all_links,omitempty" url:"-"`
-	AllDomainLinks      interface{}                                `json:"all_domain_links,omitempty" url:"-"`
-	WordCountMin        *LatestHeadlinesRequestWordCountMin        `json:"word_count_min,omitempty" url:"-"`
-	WordCountMax        *LatestHeadlinesRequestWordCountMax        `json:"word_count_max,omitempty" url:"-"`
-	Page                *LatestHeadlinesRequestPage                `json:"page,omitempty" url:"-"`
-	PageSize            *LatestHeadlinesRequestPageSize            `json:"page_size,omitempty" url:"-"`
-	ClusteringVariable  *string                                    `json:"clustering_variable,omitempty" url:"-"`
-	ClusteringEnabled   *LatestHeadlinesRequestClusteringEnabled   `json:"clustering_enabled,omitempty" url:"-"`
-	ClusteringThreshold *LatestHeadlinesRequestClusteringThreshold `json:"clustering_threshold,omitempty" url:"-"`
-	IncludeNlpData      *bool                                      `json:"include_nlp_data,omitempty" url:"-"`
-	HasNlp              *bool                                      `json:"has_nlp,omitempty" url:"-"`
-	Theme               *string                                    `json:"theme,omitempty" url:"-"`
-	NotTheme            *string                                    `json:"not_theme,omitempty" url:"-"`
-	OrgEntityName       *string                                    `json:"ORG_entity_name,omitempty" url:"-"`
-	PerEntityName       *string                                    `json:"PER_entity_name,omitempty" url:"-"`
-	LocEntityName       *string                                    `json:"LOC_entity_name,omitempty" url:"-"`
-	MiscEntityName      *string                                    `json:"MISC_entity_name,omitempty" url:"-"`
-	TitleSentimentMin   *float64                                   `json:"title_sentiment_min,omitempty" url:"-"`
-	TitleSentimentMax   *float64                                   `json:"title_sentiment_max,omitempty" url:"-"`
-	ContentSentimentMin *float64                                   `json:"content_sentiment_min,omitempty" url:"-"`
-	ContentSentimentMax *float64                                   `json:"content_sentiment_max,omitempty" url:"-"`
-	IptcTags            interface{}                                `json:"iptc_tags,omitempty" url:"-"`
-	NotIptcTags         interface{}                                `json:"not_iptc_tags,omitempty" url:"-"`
-	IabTags             interface{}                                `json:"iab_tags,omitempty" url:"-"`
-	NotIabTags          interface{}                                `json:"not_iab_tags,omitempty" url:"-"`
+type LatestHeadlinesPostRequest struct {
+	When                *When                `json:"when,omitempty" url:"-"`
+	ByParseDate         *ByParseDate         `json:"by_parse_date,omitempty" url:"-"`
+	Lang                *Lang                `json:"lang,omitempty" url:"-"`
+	NotLang             *NotLang             `json:"not_lang,omitempty" url:"-"`
+	Countries           *Countries           `json:"countries,omitempty" url:"-"`
+	NotCountries        *NotCountries        `json:"not_countries,omitempty" url:"-"`
+	PredefinedSources   *PredefinedSources   `json:"predefined_sources,omitempty" url:"-"`
+	Sources             *Sources             `json:"sources,omitempty" url:"-"`
+	NotSources          *NotSources          `json:"not_sources,omitempty" url:"-"`
+	NotAuthorName       *NotAuthorName       `json:"not_author_name,omitempty" url:"-"`
+	RankedOnly          *RankedOnly          `json:"ranked_only,omitempty" url:"-"`
+	IsHeadline          *IsHeadline          `json:"is_headline,omitempty" url:"-"`
+	IsOpinion           *IsOpinion           `json:"is_opinion,omitempty" url:"-"`
+	IsPaidContent       *IsPaidContent       `json:"is_paid_content,omitempty" url:"-"`
+	ParentUrl           *ParentUrl           `json:"parent_url,omitempty" url:"-"`
+	AllLinks            *AllLinks            `json:"all_links,omitempty" url:"-"`
+	AllDomainLinks      *AllDomainLinks      `json:"all_domain_links,omitempty" url:"-"`
+	WordCountMin        *WordCountMin        `json:"word_count_min,omitempty" url:"-"`
+	WordCountMax        *WordCountMax        `json:"word_count_max,omitempty" url:"-"`
+	Page                *Page                `json:"page,omitempty" url:"-"`
+	PageSize            *PageSize            `json:"page_size,omitempty" url:"-"`
+	ClusteringEnabled   *ClusteringEnabled   `json:"clustering_enabled,omitempty" url:"-"`
+	ClusteringVariable  *ClusteringVariable  `json:"clustering_variable,omitempty" url:"-"`
+	ClusteringThreshold *ClusteringThreshold `json:"clustering_threshold,omitempty" url:"-"`
+	IncludeNlpData      *IncludeNlpData      `json:"include_nlp_data,omitempty" url:"-"`
+	HasNlp              *HasNlp              `json:"has_nlp,omitempty" url:"-"`
+	Theme               *Theme               `json:"theme,omitempty" url:"-"`
+	NotTheme            *NotTheme            `json:"not_theme,omitempty" url:"-"`
+	OrgEntityName       *OrgEntityName       `json:"ORG_entity_name,omitempty" url:"-"`
+	PerEntityName       *PerEntityName       `json:"PER_entity_name,omitempty" url:"-"`
+	LocEntityName       *LocEntityName       `json:"LOC_entity_name,omitempty" url:"-"`
+	MiscEntityName      *MiscEntityName      `json:"MISC_entity_name,omitempty" url:"-"`
+	TitleSentimentMin   *TitleSentimentMin   `json:"title_sentiment_min,omitempty" url:"-"`
+	TitleSentimentMax   *TitleSentimentMax   `json:"title_sentiment_max,omitempty" url:"-"`
+	ContentSentimentMin *ContentSentimentMin `json:"content_sentiment_min,omitempty" url:"-"`
+	ContentSentimentMax *ContentSentimentMax `json:"content_sentiment_max,omitempty" url:"-"`
+	IptcTags            *IptcTags            `json:"iptc_tags,omitempty" url:"-"`
+	NotIptcTags         *NotIptcTags         `json:"not_iptc_tags,omitempty" url:"-"`
+	IabTags             *IabTags             `json:"iab_tags,omitempty" url:"-"`
+	NotIabTags          *NotIabTags          `json:"not_iab_tags,omitempty" url:"-"`
+	CustomTags          *CustomTags          `json:"custom_tags,omitempty" url:"-"`
 }
 
-// LatestHeadlinesResponse DTO class.
-type LatestHeadlinesResponse struct {
-	Status     *string                  `json:"status,omitempty" url:"status,omitempty"`
-	TotalHits  int                      `json:"total_hits" url:"total_hits"`
-	Page       int                      `json:"page" url:"page"`
-	TotalPages int                      `json:"total_pages" url:"total_pages"`
-	PageSize   int                      `json:"page_size" url:"page_size"`
-	Articles   []map[string]interface{} `json:"articles,omitempty" url:"articles,omitempty"`
-	UserInput  map[string]interface{}   `json:"user_input,omitempty" url:"user_input,omitempty"`
+// The time period for which you want to get the latest headlines.
+//
+// Format examples:
+// - `7d`: Last seven days
+// - `30d`: Last 30 days
+// - `1h`: Last hour
+// - `24h`: Last 24 hours
+type When = string
 
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
+type LatestHeadlinesGetRequestClusteringVariable string
 
-func (l *LatestHeadlinesResponse) GetStatus() *string {
-	if l == nil {
-		return nil
+const (
+	LatestHeadlinesGetRequestClusteringVariableContent LatestHeadlinesGetRequestClusteringVariable = "content"
+	LatestHeadlinesGetRequestClusteringVariableTitle   LatestHeadlinesGetRequestClusteringVariable = "title"
+	LatestHeadlinesGetRequestClusteringVariableSummary LatestHeadlinesGetRequestClusteringVariable = "summary"
+)
+
+func NewLatestHeadlinesGetRequestClusteringVariableFromString(s string) (LatestHeadlinesGetRequestClusteringVariable, error) {
+	switch s {
+	case "content":
+		return LatestHeadlinesGetRequestClusteringVariableContent, nil
+	case "title":
+		return LatestHeadlinesGetRequestClusteringVariableTitle, nil
+	case "summary":
+		return LatestHeadlinesGetRequestClusteringVariableSummary, nil
 	}
-	return l.Status
+	var t LatestHeadlinesGetRequestClusteringVariable
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (l *LatestHeadlinesResponse) GetTotalHits() int {
-	if l == nil {
-		return 0
-	}
-	return l.TotalHits
-}
-
-func (l *LatestHeadlinesResponse) GetPage() int {
-	if l == nil {
-		return 0
-	}
-	return l.Page
-}
-
-func (l *LatestHeadlinesResponse) GetTotalPages() int {
-	if l == nil {
-		return 0
-	}
-	return l.TotalPages
-}
-
-func (l *LatestHeadlinesResponse) GetPageSize() int {
-	if l == nil {
-		return 0
-	}
-	return l.PageSize
-}
-
-func (l *LatestHeadlinesResponse) GetArticles() []map[string]interface{} {
-	if l == nil {
-		return nil
-	}
-	return l.Articles
-}
-
-func (l *LatestHeadlinesResponse) GetUserInput() map[string]interface{} {
-	if l == nil {
-		return nil
-	}
-	return l.UserInput
-}
-
-func (l *LatestHeadlinesResponse) GetExtraProperties() map[string]interface{} {
-	return l.extraProperties
-}
-
-func (l *LatestHeadlinesResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler LatestHeadlinesResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*l = LatestHeadlinesResponse(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *l)
-	if err != nil {
-		return err
-	}
-	l.extraProperties = extraProperties
-	l.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (l *LatestHeadlinesResponse) String() string {
-	if len(l.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(l); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", l)
+func (l LatestHeadlinesGetRequestClusteringVariable) Ptr() *LatestHeadlinesGetRequestClusteringVariable {
+	return &l
 }
 
 type LatestHeadlinesGetResponse struct {
-	ClusteringSearchResponse *ClusteringSearchResponse
-	LatestHeadlinesResponse  *LatestHeadlinesResponse
+	SearchResponseDto          *SearchResponseDto
+	ClusteredSearchResponseDto *ClusteredSearchResponseDto
 
 	typ string
 }
 
-func NewLatestHeadlinesGetResponseFromClusteringSearchResponse(value *ClusteringSearchResponse) *LatestHeadlinesGetResponse {
-	return &LatestHeadlinesGetResponse{typ: "ClusteringSearchResponse", ClusteringSearchResponse: value}
+func NewLatestHeadlinesGetResponseFromSearchResponseDto(value *SearchResponseDto) *LatestHeadlinesGetResponse {
+	return &LatestHeadlinesGetResponse{typ: "SearchResponseDto", SearchResponseDto: value}
 }
 
-func NewLatestHeadlinesGetResponseFromLatestHeadlinesResponse(value *LatestHeadlinesResponse) *LatestHeadlinesGetResponse {
-	return &LatestHeadlinesGetResponse{typ: "LatestHeadlinesResponse", LatestHeadlinesResponse: value}
+func NewLatestHeadlinesGetResponseFromClusteredSearchResponseDto(value *ClusteredSearchResponseDto) *LatestHeadlinesGetResponse {
+	return &LatestHeadlinesGetResponse{typ: "ClusteredSearchResponseDto", ClusteredSearchResponseDto: value}
 }
 
-func (l *LatestHeadlinesGetResponse) GetClusteringSearchResponse() *ClusteringSearchResponse {
+func (l *LatestHeadlinesGetResponse) GetSearchResponseDto() *SearchResponseDto {
 	if l == nil {
 		return nil
 	}
-	return l.ClusteringSearchResponse
+	return l.SearchResponseDto
 }
 
-func (l *LatestHeadlinesGetResponse) GetLatestHeadlinesResponse() *LatestHeadlinesResponse {
+func (l *LatestHeadlinesGetResponse) GetClusteredSearchResponseDto() *ClusteredSearchResponseDto {
 	if l == nil {
 		return nil
 	}
-	return l.LatestHeadlinesResponse
+	return l.ClusteredSearchResponseDto
 }
 
 func (l *LatestHeadlinesGetResponse) UnmarshalJSON(data []byte) error {
-	valueClusteringSearchResponse := new(ClusteringSearchResponse)
-	if err := json.Unmarshal(data, &valueClusteringSearchResponse); err == nil {
-		l.typ = "ClusteringSearchResponse"
-		l.ClusteringSearchResponse = valueClusteringSearchResponse
+	valueSearchResponseDto := new(SearchResponseDto)
+	if err := json.Unmarshal(data, &valueSearchResponseDto); err == nil {
+		l.typ = "SearchResponseDto"
+		l.SearchResponseDto = valueSearchResponseDto
 		return nil
 	}
-	valueLatestHeadlinesResponse := new(LatestHeadlinesResponse)
-	if err := json.Unmarshal(data, &valueLatestHeadlinesResponse); err == nil {
-		l.typ = "LatestHeadlinesResponse"
-		l.LatestHeadlinesResponse = valueLatestHeadlinesResponse
+	valueClusteredSearchResponseDto := new(ClusteredSearchResponseDto)
+	if err := json.Unmarshal(data, &valueClusteredSearchResponseDto); err == nil {
+		l.typ = "ClusteredSearchResponseDto"
+		l.ClusteredSearchResponseDto = valueClusteredSearchResponseDto
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
 }
 
 func (l LatestHeadlinesGetResponse) MarshalJSON() ([]byte, error) {
-	if l.typ == "ClusteringSearchResponse" || l.ClusteringSearchResponse != nil {
-		return json.Marshal(l.ClusteringSearchResponse)
+	if l.typ == "SearchResponseDto" || l.SearchResponseDto != nil {
+		return json.Marshal(l.SearchResponseDto)
 	}
-	if l.typ == "LatestHeadlinesResponse" || l.LatestHeadlinesResponse != nil {
-		return json.Marshal(l.LatestHeadlinesResponse)
+	if l.typ == "ClusteredSearchResponseDto" || l.ClusteredSearchResponseDto != nil {
+		return json.Marshal(l.ClusteredSearchResponseDto)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
 }
 
 type LatestHeadlinesGetResponseVisitor interface {
-	VisitClusteringSearchResponse(*ClusteringSearchResponse) error
-	VisitLatestHeadlinesResponse(*LatestHeadlinesResponse) error
+	VisitSearchResponseDto(*SearchResponseDto) error
+	VisitClusteredSearchResponseDto(*ClusteredSearchResponseDto) error
 }
 
 func (l *LatestHeadlinesGetResponse) Accept(visitor LatestHeadlinesGetResponseVisitor) error {
-	if l.typ == "ClusteringSearchResponse" || l.ClusteringSearchResponse != nil {
-		return visitor.VisitClusteringSearchResponse(l.ClusteringSearchResponse)
+	if l.typ == "SearchResponseDto" || l.SearchResponseDto != nil {
+		return visitor.VisitSearchResponseDto(l.SearchResponseDto)
 	}
-	if l.typ == "LatestHeadlinesResponse" || l.LatestHeadlinesResponse != nil {
-		return visitor.VisitLatestHeadlinesResponse(l.LatestHeadlinesResponse)
+	if l.typ == "ClusteredSearchResponseDto" || l.ClusteredSearchResponseDto != nil {
+		return visitor.VisitClusteredSearchResponseDto(l.ClusteredSearchResponseDto)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", l)
 }
 
 type LatestHeadlinesPostResponse struct {
-	ClusteringSearchResponse *ClusteringSearchResponse
-	LatestHeadlinesResponse  *LatestHeadlinesResponse
+	SearchResponseDto          *SearchResponseDto
+	ClusteredSearchResponseDto *ClusteredSearchResponseDto
 
 	typ string
 }
 
-func NewLatestHeadlinesPostResponseFromClusteringSearchResponse(value *ClusteringSearchResponse) *LatestHeadlinesPostResponse {
-	return &LatestHeadlinesPostResponse{typ: "ClusteringSearchResponse", ClusteringSearchResponse: value}
+func NewLatestHeadlinesPostResponseFromSearchResponseDto(value *SearchResponseDto) *LatestHeadlinesPostResponse {
+	return &LatestHeadlinesPostResponse{typ: "SearchResponseDto", SearchResponseDto: value}
 }
 
-func NewLatestHeadlinesPostResponseFromLatestHeadlinesResponse(value *LatestHeadlinesResponse) *LatestHeadlinesPostResponse {
-	return &LatestHeadlinesPostResponse{typ: "LatestHeadlinesResponse", LatestHeadlinesResponse: value}
+func NewLatestHeadlinesPostResponseFromClusteredSearchResponseDto(value *ClusteredSearchResponseDto) *LatestHeadlinesPostResponse {
+	return &LatestHeadlinesPostResponse{typ: "ClusteredSearchResponseDto", ClusteredSearchResponseDto: value}
 }
 
-func (l *LatestHeadlinesPostResponse) GetClusteringSearchResponse() *ClusteringSearchResponse {
+func (l *LatestHeadlinesPostResponse) GetSearchResponseDto() *SearchResponseDto {
 	if l == nil {
 		return nil
 	}
-	return l.ClusteringSearchResponse
+	return l.SearchResponseDto
 }
 
-func (l *LatestHeadlinesPostResponse) GetLatestHeadlinesResponse() *LatestHeadlinesResponse {
+func (l *LatestHeadlinesPostResponse) GetClusteredSearchResponseDto() *ClusteredSearchResponseDto {
 	if l == nil {
 		return nil
 	}
-	return l.LatestHeadlinesResponse
+	return l.ClusteredSearchResponseDto
 }
 
 func (l *LatestHeadlinesPostResponse) UnmarshalJSON(data []byte) error {
-	valueClusteringSearchResponse := new(ClusteringSearchResponse)
-	if err := json.Unmarshal(data, &valueClusteringSearchResponse); err == nil {
-		l.typ = "ClusteringSearchResponse"
-		l.ClusteringSearchResponse = valueClusteringSearchResponse
+	valueSearchResponseDto := new(SearchResponseDto)
+	if err := json.Unmarshal(data, &valueSearchResponseDto); err == nil {
+		l.typ = "SearchResponseDto"
+		l.SearchResponseDto = valueSearchResponseDto
 		return nil
 	}
-	valueLatestHeadlinesResponse := new(LatestHeadlinesResponse)
-	if err := json.Unmarshal(data, &valueLatestHeadlinesResponse); err == nil {
-		l.typ = "LatestHeadlinesResponse"
-		l.LatestHeadlinesResponse = valueLatestHeadlinesResponse
+	valueClusteredSearchResponseDto := new(ClusteredSearchResponseDto)
+	if err := json.Unmarshal(data, &valueClusteredSearchResponseDto); err == nil {
+		l.typ = "ClusteredSearchResponseDto"
+		l.ClusteredSearchResponseDto = valueClusteredSearchResponseDto
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
 }
 
 func (l LatestHeadlinesPostResponse) MarshalJSON() ([]byte, error) {
-	if l.typ == "ClusteringSearchResponse" || l.ClusteringSearchResponse != nil {
-		return json.Marshal(l.ClusteringSearchResponse)
+	if l.typ == "SearchResponseDto" || l.SearchResponseDto != nil {
+		return json.Marshal(l.SearchResponseDto)
 	}
-	if l.typ == "LatestHeadlinesResponse" || l.LatestHeadlinesResponse != nil {
-		return json.Marshal(l.LatestHeadlinesResponse)
+	if l.typ == "ClusteredSearchResponseDto" || l.ClusteredSearchResponseDto != nil {
+		return json.Marshal(l.ClusteredSearchResponseDto)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
 }
 
 type LatestHeadlinesPostResponseVisitor interface {
-	VisitClusteringSearchResponse(*ClusteringSearchResponse) error
-	VisitLatestHeadlinesResponse(*LatestHeadlinesResponse) error
+	VisitSearchResponseDto(*SearchResponseDto) error
+	VisitClusteredSearchResponseDto(*ClusteredSearchResponseDto) error
 }
 
 func (l *LatestHeadlinesPostResponse) Accept(visitor LatestHeadlinesPostResponseVisitor) error {
-	if l.typ == "ClusteringSearchResponse" || l.ClusteringSearchResponse != nil {
-		return visitor.VisitClusteringSearchResponse(l.ClusteringSearchResponse)
-	}
-	if l.typ == "LatestHeadlinesResponse" || l.LatestHeadlinesResponse != nil {
-		return visitor.VisitLatestHeadlinesResponse(l.LatestHeadlinesResponse)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestByParseDate struct {
-	String  string
-	Boolean bool
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestByParseDateFromString(value string) *LatestHeadlinesRequestByParseDate {
-	return &LatestHeadlinesRequestByParseDate{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestByParseDateFromBoolean(value bool) *LatestHeadlinesRequestByParseDate {
-	return &LatestHeadlinesRequestByParseDate{typ: "Boolean", Boolean: value}
-}
-
-func (l *LatestHeadlinesRequestByParseDate) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestByParseDate) GetBoolean() bool {
-	if l == nil {
-		return false
-	}
-	return l.Boolean
-}
-
-func (l *LatestHeadlinesRequestByParseDate) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		l.typ = "Boolean"
-		l.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestByParseDate) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return json.Marshal(l.Boolean)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestByParseDateVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (l *LatestHeadlinesRequestByParseDate) Accept(visitor LatestHeadlinesRequestByParseDateVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return visitor.VisitBoolean(l.Boolean)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestClusteringEnabled struct {
-	String  string
-	Boolean bool
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestClusteringEnabledFromString(value string) *LatestHeadlinesRequestClusteringEnabled {
-	return &LatestHeadlinesRequestClusteringEnabled{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestClusteringEnabledFromBoolean(value bool) *LatestHeadlinesRequestClusteringEnabled {
-	return &LatestHeadlinesRequestClusteringEnabled{typ: "Boolean", Boolean: value}
-}
-
-func (l *LatestHeadlinesRequestClusteringEnabled) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestClusteringEnabled) GetBoolean() bool {
-	if l == nil {
-		return false
-	}
-	return l.Boolean
-}
-
-func (l *LatestHeadlinesRequestClusteringEnabled) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		l.typ = "Boolean"
-		l.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestClusteringEnabled) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return json.Marshal(l.Boolean)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestClusteringEnabledVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (l *LatestHeadlinesRequestClusteringEnabled) Accept(visitor LatestHeadlinesRequestClusteringEnabledVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return visitor.VisitBoolean(l.Boolean)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestClusteringThreshold struct {
-	Double float64
-	String string
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestClusteringThresholdFromDouble(value float64) *LatestHeadlinesRequestClusteringThreshold {
-	return &LatestHeadlinesRequestClusteringThreshold{typ: "Double", Double: value}
-}
-
-func NewLatestHeadlinesRequestClusteringThresholdFromString(value string) *LatestHeadlinesRequestClusteringThreshold {
-	return &LatestHeadlinesRequestClusteringThreshold{typ: "String", String: value}
-}
-
-func (l *LatestHeadlinesRequestClusteringThreshold) GetDouble() float64 {
-	if l == nil {
-		return 0
-	}
-	return l.Double
-}
-
-func (l *LatestHeadlinesRequestClusteringThreshold) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestClusteringThreshold) UnmarshalJSON(data []byte) error {
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		l.typ = "Double"
-		l.Double = valueDouble
-		return nil
-	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestClusteringThreshold) MarshalJSON() ([]byte, error) {
-	if l.typ == "Double" || l.Double != 0 {
-		return json.Marshal(l.Double)
-	}
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestClusteringThresholdVisitor interface {
-	VisitDouble(float64) error
-	VisitString(string) error
-}
-
-func (l *LatestHeadlinesRequestClusteringThreshold) Accept(visitor LatestHeadlinesRequestClusteringThresholdVisitor) error {
-	if l.typ == "Double" || l.Double != 0 {
-		return visitor.VisitDouble(l.Double)
-	}
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestIsHeadline struct {
-	String  string
-	Boolean bool
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestIsHeadlineFromString(value string) *LatestHeadlinesRequestIsHeadline {
-	return &LatestHeadlinesRequestIsHeadline{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestIsHeadlineFromBoolean(value bool) *LatestHeadlinesRequestIsHeadline {
-	return &LatestHeadlinesRequestIsHeadline{typ: "Boolean", Boolean: value}
-}
-
-func (l *LatestHeadlinesRequestIsHeadline) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestIsHeadline) GetBoolean() bool {
-	if l == nil {
-		return false
-	}
-	return l.Boolean
-}
-
-func (l *LatestHeadlinesRequestIsHeadline) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		l.typ = "Boolean"
-		l.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestIsHeadline) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return json.Marshal(l.Boolean)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestIsHeadlineVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (l *LatestHeadlinesRequestIsHeadline) Accept(visitor LatestHeadlinesRequestIsHeadlineVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return visitor.VisitBoolean(l.Boolean)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestIsOpinion struct {
-	String  string
-	Boolean bool
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestIsOpinionFromString(value string) *LatestHeadlinesRequestIsOpinion {
-	return &LatestHeadlinesRequestIsOpinion{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestIsOpinionFromBoolean(value bool) *LatestHeadlinesRequestIsOpinion {
-	return &LatestHeadlinesRequestIsOpinion{typ: "Boolean", Boolean: value}
-}
-
-func (l *LatestHeadlinesRequestIsOpinion) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestIsOpinion) GetBoolean() bool {
-	if l == nil {
-		return false
-	}
-	return l.Boolean
-}
-
-func (l *LatestHeadlinesRequestIsOpinion) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		l.typ = "Boolean"
-		l.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestIsOpinion) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return json.Marshal(l.Boolean)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestIsOpinionVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (l *LatestHeadlinesRequestIsOpinion) Accept(visitor LatestHeadlinesRequestIsOpinionVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return visitor.VisitBoolean(l.Boolean)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestIsPaidContent struct {
-	String  string
-	Boolean bool
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestIsPaidContentFromString(value string) *LatestHeadlinesRequestIsPaidContent {
-	return &LatestHeadlinesRequestIsPaidContent{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestIsPaidContentFromBoolean(value bool) *LatestHeadlinesRequestIsPaidContent {
-	return &LatestHeadlinesRequestIsPaidContent{typ: "Boolean", Boolean: value}
-}
-
-func (l *LatestHeadlinesRequestIsPaidContent) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestIsPaidContent) GetBoolean() bool {
-	if l == nil {
-		return false
-	}
-	return l.Boolean
-}
-
-func (l *LatestHeadlinesRequestIsPaidContent) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		l.typ = "Boolean"
-		l.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestIsPaidContent) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return json.Marshal(l.Boolean)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestIsPaidContentVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (l *LatestHeadlinesRequestIsPaidContent) Accept(visitor LatestHeadlinesRequestIsPaidContentVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return visitor.VisitBoolean(l.Boolean)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestPage struct {
-	String  string
-	Integer int
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestPageFromString(value string) *LatestHeadlinesRequestPage {
-	return &LatestHeadlinesRequestPage{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestPageFromInteger(value int) *LatestHeadlinesRequestPage {
-	return &LatestHeadlinesRequestPage{typ: "Integer", Integer: value}
-}
-
-func (l *LatestHeadlinesRequestPage) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestPage) GetInteger() int {
-	if l == nil {
-		return 0
-	}
-	return l.Integer
-}
-
-func (l *LatestHeadlinesRequestPage) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		l.typ = "Integer"
-		l.Integer = valueInteger
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestPage) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return json.Marshal(l.Integer)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestPageVisitor interface {
-	VisitString(string) error
-	VisitInteger(int) error
-}
-
-func (l *LatestHeadlinesRequestPage) Accept(visitor LatestHeadlinesRequestPageVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return visitor.VisitInteger(l.Integer)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestPageSize struct {
-	String  string
-	Integer int
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestPageSizeFromString(value string) *LatestHeadlinesRequestPageSize {
-	return &LatestHeadlinesRequestPageSize{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestPageSizeFromInteger(value int) *LatestHeadlinesRequestPageSize {
-	return &LatestHeadlinesRequestPageSize{typ: "Integer", Integer: value}
-}
-
-func (l *LatestHeadlinesRequestPageSize) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestPageSize) GetInteger() int {
-	if l == nil {
-		return 0
-	}
-	return l.Integer
-}
-
-func (l *LatestHeadlinesRequestPageSize) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		l.typ = "Integer"
-		l.Integer = valueInteger
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestPageSize) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return json.Marshal(l.Integer)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestPageSizeVisitor interface {
-	VisitString(string) error
-	VisitInteger(int) error
-}
-
-func (l *LatestHeadlinesRequestPageSize) Accept(visitor LatestHeadlinesRequestPageSizeVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return visitor.VisitInteger(l.Integer)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestRankedOnly struct {
-	String  string
-	Boolean bool
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestRankedOnlyFromString(value string) *LatestHeadlinesRequestRankedOnly {
-	return &LatestHeadlinesRequestRankedOnly{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestRankedOnlyFromBoolean(value bool) *LatestHeadlinesRequestRankedOnly {
-	return &LatestHeadlinesRequestRankedOnly{typ: "Boolean", Boolean: value}
-}
-
-func (l *LatestHeadlinesRequestRankedOnly) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestRankedOnly) GetBoolean() bool {
-	if l == nil {
-		return false
-	}
-	return l.Boolean
-}
-
-func (l *LatestHeadlinesRequestRankedOnly) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		l.typ = "Boolean"
-		l.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestRankedOnly) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return json.Marshal(l.Boolean)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestRankedOnlyVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (l *LatestHeadlinesRequestRankedOnly) Accept(visitor LatestHeadlinesRequestRankedOnlyVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Boolean" || l.Boolean != false {
-		return visitor.VisitBoolean(l.Boolean)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestWordCountMax struct {
-	String  string
-	Integer int
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestWordCountMaxFromString(value string) *LatestHeadlinesRequestWordCountMax {
-	return &LatestHeadlinesRequestWordCountMax{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestWordCountMaxFromInteger(value int) *LatestHeadlinesRequestWordCountMax {
-	return &LatestHeadlinesRequestWordCountMax{typ: "Integer", Integer: value}
-}
-
-func (l *LatestHeadlinesRequestWordCountMax) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestWordCountMax) GetInteger() int {
-	if l == nil {
-		return 0
-	}
-	return l.Integer
-}
-
-func (l *LatestHeadlinesRequestWordCountMax) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		l.typ = "Integer"
-		l.Integer = valueInteger
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestWordCountMax) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return json.Marshal(l.Integer)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestWordCountMaxVisitor interface {
-	VisitString(string) error
-	VisitInteger(int) error
-}
-
-func (l *LatestHeadlinesRequestWordCountMax) Accept(visitor LatestHeadlinesRequestWordCountMaxVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return visitor.VisitInteger(l.Integer)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestWordCountMin struct {
-	String  string
-	Integer int
-
-	typ string
-}
-
-func NewLatestHeadlinesRequestWordCountMinFromString(value string) *LatestHeadlinesRequestWordCountMin {
-	return &LatestHeadlinesRequestWordCountMin{typ: "String", String: value}
-}
-
-func NewLatestHeadlinesRequestWordCountMinFromInteger(value int) *LatestHeadlinesRequestWordCountMin {
-	return &LatestHeadlinesRequestWordCountMin{typ: "Integer", Integer: value}
-}
-
-func (l *LatestHeadlinesRequestWordCountMin) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LatestHeadlinesRequestWordCountMin) GetInteger() int {
-	if l == nil {
-		return 0
-	}
-	return l.Integer
-}
-
-func (l *LatestHeadlinesRequestWordCountMin) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		l.typ = "Integer"
-		l.Integer = valueInteger
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LatestHeadlinesRequestWordCountMin) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return json.Marshal(l.Integer)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LatestHeadlinesRequestWordCountMinVisitor interface {
-	VisitString(string) error
-	VisitInteger(int) error
-}
-
-func (l *LatestHeadlinesRequestWordCountMin) Accept(visitor LatestHeadlinesRequestWordCountMinVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "Integer" || l.Integer != 0 {
-		return visitor.VisitInteger(l.Integer)
+	if l.typ == "SearchResponseDto" || l.SearchResponseDto != nil {
+		return visitor.VisitSearchResponseDto(l.SearchResponseDto)
+	}
+	if l.typ == "ClusteredSearchResponseDto" || l.ClusteredSearchResponseDto != nil {
+		return visitor.VisitClusteredSearchResponseDto(l.ClusteredSearchResponseDto)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", l)
 }

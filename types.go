@@ -6,306 +6,54 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/Newscatcher/newscatcher-go/internal"
+	time "time"
 )
 
-// ArticleResult DTO class.
-type ArticleResult struct {
-	Title                  string                                                       `json:"title" url:"title"`
-	Author                 *string                                                      `json:"author,omitempty" url:"author,omitempty"`
-	Authors                *Authors                                                     `json:"authors,omitempty" url:"authors,omitempty"`
-	Journalists            *Journalists                                                 `json:"journalists,omitempty" url:"journalists,omitempty"`
-	PublishedDate          *string                                                      `json:"published_date,omitempty" url:"published_date,omitempty"`
-	PublishedDatePrecision *string                                                      `json:"published_date_precision,omitempty" url:"published_date_precision,omitempty"`
-	UpdatedDate            *string                                                      `json:"updated_date,omitempty" url:"updated_date,omitempty"`
-	UpdatedDatePrecision   *string                                                      `json:"updated_date_precision,omitempty" url:"updated_date_precision,omitempty"`
-	ParseDate              *string                                                      `json:"parse_date,omitempty" url:"parse_date,omitempty"`
-	Link                   string                                                       `json:"link" url:"link"`
-	DomainUrl              string                                                       `json:"domain_url" url:"domain_url"`
-	FullDomainUrl          string                                                       `json:"full_domain_url" url:"full_domain_url"`
-	NameSource             *string                                                      `json:"name_source,omitempty" url:"name_source,omitempty"`
-	IsHeadline             *string                                                      `json:"is_headline,omitempty" url:"is_headline,omitempty"`
-	PaidContent            *bool                                                        `json:"paid_content,omitempty" url:"paid_content,omitempty"`
-	ExtractionData         string                                                       `json:"extraction_data" url:"extraction_data"`
-	Country                *string                                                      `json:"country,omitempty" url:"country,omitempty"`
-	Rights                 *string                                                      `json:"rights,omitempty" url:"rights,omitempty"`
-	Rank                   int                                                          `json:"rank" url:"rank"`
-	Media                  *string                                                      `json:"media,omitempty" url:"media,omitempty"`
-	Language               *string                                                      `json:"language,omitempty" url:"language,omitempty"`
-	Description            *string                                                      `json:"description,omitempty" url:"description,omitempty"`
-	Content                string                                                       `json:"content" url:"content"`
-	TitleTranslatedEn      *string                                                      `json:"title_translated_en,omitempty" url:"title_translated_en,omitempty"`
-	ContentTranslatedEn    *string                                                      `json:"content_translated_en,omitempty" url:"content_translated_en,omitempty"`
-	WordCount              *int                                                         `json:"word_count,omitempty" url:"word_count,omitempty"`
-	IsOpinion              *bool                                                        `json:"is_opinion,omitempty" url:"is_opinion,omitempty"`
-	TwitterAccount         *string                                                      `json:"twitter_account,omitempty" url:"twitter_account,omitempty"`
-	AllLinks               *DtoResponsesMoreLikeThisResponseArticleResultAllLinks       `json:"all_links,omitempty" url:"all_links,omitempty"`
-	AllDomainLinks         *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks `json:"all_domain_links,omitempty" url:"all_domain_links,omitempty"`
-	Nlp                    map[string]interface{}                                       `json:"nlp,omitempty" url:"nlp,omitempty"`
-	Id                     string                                                       `json:"id" url:"id"`
-	Score                  float64                                                      `json:"score" url:"score"`
-	SimilarDocuments       []*SimilarDocument                                           `json:"similar_documents,omitempty" url:"similar_documents,omitempty"`
-	CustomTags             map[string]interface{}                                       `json:"custom_tags,omitempty" url:"custom_tags,omitempty"`
+// Additional information about the domain of the article.
+type AdditionalDomainInfoEntity struct {
+	// Indicates whether the domain is a news domain.
+	IsNewsDomain *bool `json:"is_news_domain,omitempty" url:"is_news_domain,omitempty"`
+	// The type of news content provided by the domain.
+	NewsType *string `json:"news_type,omitempty" url:"news_type,omitempty"`
+	// The type of news domain.
+	NewsDomainType *string `json:"news_domain_type,omitempty" url:"news_domain_type,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (a *ArticleResult) GetTitle() string {
-	if a == nil {
-		return ""
-	}
-	return a.Title
-}
-
-func (a *ArticleResult) GetAuthor() *string {
+func (a *AdditionalDomainInfoEntity) GetIsNewsDomain() *bool {
 	if a == nil {
 		return nil
 	}
-	return a.Author
+	return a.IsNewsDomain
 }
 
-func (a *ArticleResult) GetAuthors() *Authors {
+func (a *AdditionalDomainInfoEntity) GetNewsType() *string {
 	if a == nil {
 		return nil
 	}
-	return a.Authors
+	return a.NewsType
 }
 
-func (a *ArticleResult) GetJournalists() *Journalists {
+func (a *AdditionalDomainInfoEntity) GetNewsDomainType() *string {
 	if a == nil {
 		return nil
 	}
-	return a.Journalists
+	return a.NewsDomainType
 }
 
-func (a *ArticleResult) GetPublishedDate() *string {
-	if a == nil {
-		return nil
-	}
-	return a.PublishedDate
-}
-
-func (a *ArticleResult) GetPublishedDatePrecision() *string {
-	if a == nil {
-		return nil
-	}
-	return a.PublishedDatePrecision
-}
-
-func (a *ArticleResult) GetUpdatedDate() *string {
-	if a == nil {
-		return nil
-	}
-	return a.UpdatedDate
-}
-
-func (a *ArticleResult) GetUpdatedDatePrecision() *string {
-	if a == nil {
-		return nil
-	}
-	return a.UpdatedDatePrecision
-}
-
-func (a *ArticleResult) GetParseDate() *string {
-	if a == nil {
-		return nil
-	}
-	return a.ParseDate
-}
-
-func (a *ArticleResult) GetLink() string {
-	if a == nil {
-		return ""
-	}
-	return a.Link
-}
-
-func (a *ArticleResult) GetDomainUrl() string {
-	if a == nil {
-		return ""
-	}
-	return a.DomainUrl
-}
-
-func (a *ArticleResult) GetFullDomainUrl() string {
-	if a == nil {
-		return ""
-	}
-	return a.FullDomainUrl
-}
-
-func (a *ArticleResult) GetNameSource() *string {
-	if a == nil {
-		return nil
-	}
-	return a.NameSource
-}
-
-func (a *ArticleResult) GetIsHeadline() *string {
-	if a == nil {
-		return nil
-	}
-	return a.IsHeadline
-}
-
-func (a *ArticleResult) GetPaidContent() *bool {
-	if a == nil {
-		return nil
-	}
-	return a.PaidContent
-}
-
-func (a *ArticleResult) GetExtractionData() string {
-	if a == nil {
-		return ""
-	}
-	return a.ExtractionData
-}
-
-func (a *ArticleResult) GetCountry() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Country
-}
-
-func (a *ArticleResult) GetRights() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Rights
-}
-
-func (a *ArticleResult) GetRank() int {
-	if a == nil {
-		return 0
-	}
-	return a.Rank
-}
-
-func (a *ArticleResult) GetMedia() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Media
-}
-
-func (a *ArticleResult) GetLanguage() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Language
-}
-
-func (a *ArticleResult) GetDescription() *string {
-	if a == nil {
-		return nil
-	}
-	return a.Description
-}
-
-func (a *ArticleResult) GetContent() string {
-	if a == nil {
-		return ""
-	}
-	return a.Content
-}
-
-func (a *ArticleResult) GetTitleTranslatedEn() *string {
-	if a == nil {
-		return nil
-	}
-	return a.TitleTranslatedEn
-}
-
-func (a *ArticleResult) GetContentTranslatedEn() *string {
-	if a == nil {
-		return nil
-	}
-	return a.ContentTranslatedEn
-}
-
-func (a *ArticleResult) GetWordCount() *int {
-	if a == nil {
-		return nil
-	}
-	return a.WordCount
-}
-
-func (a *ArticleResult) GetIsOpinion() *bool {
-	if a == nil {
-		return nil
-	}
-	return a.IsOpinion
-}
-
-func (a *ArticleResult) GetTwitterAccount() *string {
-	if a == nil {
-		return nil
-	}
-	return a.TwitterAccount
-}
-
-func (a *ArticleResult) GetAllLinks() *DtoResponsesMoreLikeThisResponseArticleResultAllLinks {
-	if a == nil {
-		return nil
-	}
-	return a.AllLinks
-}
-
-func (a *ArticleResult) GetAllDomainLinks() *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks {
-	if a == nil {
-		return nil
-	}
-	return a.AllDomainLinks
-}
-
-func (a *ArticleResult) GetNlp() map[string]interface{} {
-	if a == nil {
-		return nil
-	}
-	return a.Nlp
-}
-
-func (a *ArticleResult) GetId() string {
-	if a == nil {
-		return ""
-	}
-	return a.Id
-}
-
-func (a *ArticleResult) GetScore() float64 {
-	if a == nil {
-		return 0
-	}
-	return a.Score
-}
-
-func (a *ArticleResult) GetSimilarDocuments() []*SimilarDocument {
-	if a == nil {
-		return nil
-	}
-	return a.SimilarDocuments
-}
-
-func (a *ArticleResult) GetCustomTags() map[string]interface{} {
-	if a == nil {
-		return nil
-	}
-	return a.CustomTags
-}
-
-func (a *ArticleResult) GetExtraProperties() map[string]interface{} {
+func (a *AdditionalDomainInfoEntity) GetExtraProperties() map[string]interface{} {
 	return a.extraProperties
 }
 
-func (a *ArticleResult) UnmarshalJSON(data []byte) error {
-	type unmarshaler ArticleResult
+func (a *AdditionalDomainInfoEntity) UnmarshalJSON(data []byte) error {
+	type unmarshaler AdditionalDomainInfoEntity
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*a = ArticleResult(value)
+	*a = AdditionalDomainInfoEntity(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *a)
 	if err != nil {
 		return err
@@ -315,7 +63,7 @@ func (a *ArticleResult) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (a *ArticleResult) String() string {
+func (a *AdditionalDomainInfoEntity) String() string {
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -327,6 +75,640 @@ func (a *ArticleResult) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
+// The domain(s) mentioned in the article. For multiple domains, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"who.int, nih.gov"`
+// - `["who.int", "nih.gov"]`
+//
+// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+type AllDomainLinks struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewAllDomainLinksFromString(value string) *AllDomainLinks {
+	return &AllDomainLinks{typ: "String", String: value}
+}
+
+func NewAllDomainLinksFromStringList(value []string) *AllDomainLinks {
+	return &AllDomainLinks{typ: "StringList", StringList: value}
+}
+
+func (a *AllDomainLinks) GetString() string {
+	if a == nil {
+		return ""
+	}
+	return a.String
+}
+
+func (a *AllDomainLinks) GetStringList() []string {
+	if a == nil {
+		return nil
+	}
+	return a.StringList
+}
+
+func (a *AllDomainLinks) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		a.typ = "String"
+		a.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		a.typ = "StringList"
+		a.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
+}
+
+func (a AllDomainLinks) MarshalJSON() ([]byte, error) {
+	if a.typ == "String" || a.String != "" {
+		return json.Marshal(a.String)
+	}
+	if a.typ == "StringList" || a.StringList != nil {
+		return json.Marshal(a.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+type AllDomainLinksVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (a *AllDomainLinks) Accept(visitor AllDomainLinksVisitor) error {
+	if a.typ == "String" || a.String != "" {
+		return visitor.VisitString(a.String)
+	}
+	if a.typ == "StringList" || a.StringList != nil {
+		return visitor.VisitStringList(a.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+// The complete URL(s) mentioned in the article. For multiple URLs, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"https://aiindex.stanford.edu/report/, https://www.stateof.ai/"`
+// - `["https://aiindex.stanford.edu/report/", "https://www.stateof.ai/"]`
+//
+// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+type AllLinks struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewAllLinksFromString(value string) *AllLinks {
+	return &AllLinks{typ: "String", String: value}
+}
+
+func NewAllLinksFromStringList(value []string) *AllLinks {
+	return &AllLinks{typ: "StringList", StringList: value}
+}
+
+func (a *AllLinks) GetString() string {
+	if a == nil {
+		return ""
+	}
+	return a.String
+}
+
+func (a *AllLinks) GetStringList() []string {
+	if a == nil {
+		return nil
+	}
+	return a.StringList
+}
+
+func (a *AllLinks) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		a.typ = "String"
+		a.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		a.typ = "StringList"
+		a.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
+}
+
+func (a AllLinks) MarshalJSON() ([]byte, error) {
+	if a.typ == "String" || a.String != "" {
+		return json.Marshal(a.String)
+	}
+	if a.typ == "StringList" || a.StringList != nil {
+		return json.Marshal(a.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+type AllLinksVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (a *AllLinks) Accept(visitor AllLinksVisitor) error {
+	if a.typ == "String" || a.String != "" {
+		return visitor.VisitString(a.String)
+	}
+	if a.typ == "StringList" || a.StringList != nil {
+		return visitor.VisitStringList(a.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+// The data model representing a single article in the search results.
+type ArticleEntity struct {
+	// The title of the article.
+	Title string `json:"title" url:"title"`
+	// The primary author of the article.
+	Author *string `json:"author,omitempty" url:"author,omitempty"`
+	// A list of authors of the article.
+	Authors *Authors `json:"authors,omitempty" url:"authors,omitempty"`
+	// A list of journalists associated with the article.
+	Journalists *Journalists `json:"journalists,omitempty" url:"journalists,omitempty"`
+	// The date the article was published.
+	PublishedDate *string `json:"published_date,omitempty" url:"published_date,omitempty"`
+	// The precision of the published date.
+	PublishedDatePrecision *string `json:"published_date_precision,omitempty" url:"published_date_precision,omitempty"`
+	// The date the article was last updated.
+	UpdatedDate *string `json:"updated_date,omitempty" url:"updated_date,omitempty"`
+	// The precision of the updated date.
+	UpdatedDatePrecision *string `json:"updated_date_precision,omitempty" url:"updated_date_precision,omitempty"`
+	// The date the article was parsed.
+	ParseDate *string `json:"parse_date,omitempty" url:"parse_date,omitempty"`
+	// The URL link to the article.
+	Link string `json:"link" url:"link"`
+	// The domain URL of the article.
+	DomainUrl string `json:"domain_url" url:"domain_url"`
+	// The full domain URL of the article.
+	FullDomainUrl string `json:"full_domain_url" url:"full_domain_url"`
+	// The name of the source where the article was published.
+	NameSource *string `json:"name_source,omitempty" url:"name_source,omitempty"`
+	// Indicates if the article is a headline.
+	IsHeadline *bool `json:"is_headline,omitempty" url:"is_headline,omitempty"`
+	// Indicates if the article is paid content.
+	PaidContent *bool `json:"paid_content,omitempty" url:"paid_content,omitempty"`
+	// The categorical URL of the article.
+	ParentUrl string `json:"parent_url" url:"parent_url"`
+	// The country where the article was published.
+	Country *string `json:"country,omitempty" url:"country,omitempty"`
+	// The rights information for the article.
+	Rights *string `json:"rights,omitempty" url:"rights,omitempty"`
+	// The rank of the article's source.
+	Rank int `json:"rank" url:"rank"`
+	// The media associated with the article.
+	Media *string `json:"media,omitempty" url:"media,omitempty"`
+	// The language in which the article is written.
+	Language *string `json:"language,omitempty" url:"language,omitempty"`
+	// A brief description of the article.
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
+	// The content of the article.
+	Content string `json:"content" url:"content"`
+	// The word count of the article.
+	WordCount *int `json:"word_count,omitempty" url:"word_count,omitempty"`
+	// Indicates if the article is an opinion piece.
+	IsOpinion *bool `json:"is_opinion,omitempty" url:"is_opinion,omitempty"`
+	// The Twitter account associated with the article.
+	TwitterAccount *string `json:"twitter_account,omitempty" url:"twitter_account,omitempty"`
+	// A list of all URLs mentioned in the article.
+	AllLinks *ArticleEntityAllLinks `json:"all_links,omitempty" url:"all_links,omitempty"`
+	// A list of all domain URLs mentioned in the article.
+	AllDomainLinks *ArticleEntityAllDomainLinks `json:"all_domain_links,omitempty" url:"all_domain_links,omitempty"`
+	Nlp            *NlpDataEntity               `json:"nlp,omitempty" url:"nlp,omitempty"`
+	// The unique identifier for the article.
+	Id string `json:"id" url:"id"`
+	// The relevance score of the article.
+	Score float64 `json:"score" url:"score"`
+	// An object that contains custom tags associated with an article, where each key is a taxonomy name, and the value is an array of tags.
+	CustomTags           map[string][]string         `json:"custom_tags,omitempty" url:"custom_tags,omitempty"`
+	AdditionalDomainInfo *AdditionalDomainInfoEntity `json:"additional_domain_info,omitempty" url:"additional_domain_info,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *ArticleEntity) GetTitle() string {
+	if a == nil {
+		return ""
+	}
+	return a.Title
+}
+
+func (a *ArticleEntity) GetAuthor() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Author
+}
+
+func (a *ArticleEntity) GetAuthors() *Authors {
+	if a == nil {
+		return nil
+	}
+	return a.Authors
+}
+
+func (a *ArticleEntity) GetJournalists() *Journalists {
+	if a == nil {
+		return nil
+	}
+	return a.Journalists
+}
+
+func (a *ArticleEntity) GetPublishedDate() *string {
+	if a == nil {
+		return nil
+	}
+	return a.PublishedDate
+}
+
+func (a *ArticleEntity) GetPublishedDatePrecision() *string {
+	if a == nil {
+		return nil
+	}
+	return a.PublishedDatePrecision
+}
+
+func (a *ArticleEntity) GetUpdatedDate() *string {
+	if a == nil {
+		return nil
+	}
+	return a.UpdatedDate
+}
+
+func (a *ArticleEntity) GetUpdatedDatePrecision() *string {
+	if a == nil {
+		return nil
+	}
+	return a.UpdatedDatePrecision
+}
+
+func (a *ArticleEntity) GetParseDate() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ParseDate
+}
+
+func (a *ArticleEntity) GetLink() string {
+	if a == nil {
+		return ""
+	}
+	return a.Link
+}
+
+func (a *ArticleEntity) GetDomainUrl() string {
+	if a == nil {
+		return ""
+	}
+	return a.DomainUrl
+}
+
+func (a *ArticleEntity) GetFullDomainUrl() string {
+	if a == nil {
+		return ""
+	}
+	return a.FullDomainUrl
+}
+
+func (a *ArticleEntity) GetNameSource() *string {
+	if a == nil {
+		return nil
+	}
+	return a.NameSource
+}
+
+func (a *ArticleEntity) GetIsHeadline() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.IsHeadline
+}
+
+func (a *ArticleEntity) GetPaidContent() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.PaidContent
+}
+
+func (a *ArticleEntity) GetParentUrl() string {
+	if a == nil {
+		return ""
+	}
+	return a.ParentUrl
+}
+
+func (a *ArticleEntity) GetCountry() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Country
+}
+
+func (a *ArticleEntity) GetRights() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Rights
+}
+
+func (a *ArticleEntity) GetRank() int {
+	if a == nil {
+		return 0
+	}
+	return a.Rank
+}
+
+func (a *ArticleEntity) GetMedia() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Media
+}
+
+func (a *ArticleEntity) GetLanguage() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Language
+}
+
+func (a *ArticleEntity) GetDescription() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Description
+}
+
+func (a *ArticleEntity) GetContent() string {
+	if a == nil {
+		return ""
+	}
+	return a.Content
+}
+
+func (a *ArticleEntity) GetWordCount() *int {
+	if a == nil {
+		return nil
+	}
+	return a.WordCount
+}
+
+func (a *ArticleEntity) GetIsOpinion() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.IsOpinion
+}
+
+func (a *ArticleEntity) GetTwitterAccount() *string {
+	if a == nil {
+		return nil
+	}
+	return a.TwitterAccount
+}
+
+func (a *ArticleEntity) GetAllLinks() *ArticleEntityAllLinks {
+	if a == nil {
+		return nil
+	}
+	return a.AllLinks
+}
+
+func (a *ArticleEntity) GetAllDomainLinks() *ArticleEntityAllDomainLinks {
+	if a == nil {
+		return nil
+	}
+	return a.AllDomainLinks
+}
+
+func (a *ArticleEntity) GetNlp() *NlpDataEntity {
+	if a == nil {
+		return nil
+	}
+	return a.Nlp
+}
+
+func (a *ArticleEntity) GetId() string {
+	if a == nil {
+		return ""
+	}
+	return a.Id
+}
+
+func (a *ArticleEntity) GetScore() float64 {
+	if a == nil {
+		return 0
+	}
+	return a.Score
+}
+
+func (a *ArticleEntity) GetCustomTags() map[string][]string {
+	if a == nil {
+		return nil
+	}
+	return a.CustomTags
+}
+
+func (a *ArticleEntity) GetAdditionalDomainInfo() *AdditionalDomainInfoEntity {
+	if a == nil {
+		return nil
+	}
+	return a.AdditionalDomainInfo
+}
+
+func (a *ArticleEntity) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *ArticleEntity) UnmarshalJSON(data []byte) error {
+	type unmarshaler ArticleEntity
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ArticleEntity(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ArticleEntity) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// A list of all domain URLs mentioned in the article.
+type ArticleEntityAllDomainLinks struct {
+	StringList []string
+	String     string
+
+	typ string
+}
+
+func NewArticleEntityAllDomainLinksFromStringList(value []string) *ArticleEntityAllDomainLinks {
+	return &ArticleEntityAllDomainLinks{typ: "StringList", StringList: value}
+}
+
+func NewArticleEntityAllDomainLinksFromString(value string) *ArticleEntityAllDomainLinks {
+	return &ArticleEntityAllDomainLinks{typ: "String", String: value}
+}
+
+func (a *ArticleEntityAllDomainLinks) GetStringList() []string {
+	if a == nil {
+		return nil
+	}
+	return a.StringList
+}
+
+func (a *ArticleEntityAllDomainLinks) GetString() string {
+	if a == nil {
+		return ""
+	}
+	return a.String
+}
+
+func (a *ArticleEntityAllDomainLinks) UnmarshalJSON(data []byte) error {
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		a.typ = "StringList"
+		a.StringList = valueStringList
+		return nil
+	}
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		a.typ = "String"
+		a.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
+}
+
+func (a ArticleEntityAllDomainLinks) MarshalJSON() ([]byte, error) {
+	if a.typ == "StringList" || a.StringList != nil {
+		return json.Marshal(a.StringList)
+	}
+	if a.typ == "String" || a.String != "" {
+		return json.Marshal(a.String)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+type ArticleEntityAllDomainLinksVisitor interface {
+	VisitStringList([]string) error
+	VisitString(string) error
+}
+
+func (a *ArticleEntityAllDomainLinks) Accept(visitor ArticleEntityAllDomainLinksVisitor) error {
+	if a.typ == "StringList" || a.StringList != nil {
+		return visitor.VisitStringList(a.StringList)
+	}
+	if a.typ == "String" || a.String != "" {
+		return visitor.VisitString(a.String)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+// A list of all URLs mentioned in the article.
+type ArticleEntityAllLinks struct {
+	StringList []string
+	String     string
+
+	typ string
+}
+
+func NewArticleEntityAllLinksFromStringList(value []string) *ArticleEntityAllLinks {
+	return &ArticleEntityAllLinks{typ: "StringList", StringList: value}
+}
+
+func NewArticleEntityAllLinksFromString(value string) *ArticleEntityAllLinks {
+	return &ArticleEntityAllLinks{typ: "String", String: value}
+}
+
+func (a *ArticleEntityAllLinks) GetStringList() []string {
+	if a == nil {
+		return nil
+	}
+	return a.StringList
+}
+
+func (a *ArticleEntityAllLinks) GetString() string {
+	if a == nil {
+		return ""
+	}
+	return a.String
+}
+
+func (a *ArticleEntityAllLinks) UnmarshalJSON(data []byte) error {
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		a.typ = "StringList"
+		a.StringList = valueStringList
+		return nil
+	}
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		a.typ = "String"
+		a.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
+}
+
+func (a ArticleEntityAllLinks) MarshalJSON() ([]byte, error) {
+	if a.typ == "StringList" || a.StringList != nil {
+		return json.Marshal(a.StringList)
+	}
+	if a.typ == "String" || a.String != "" {
+		return json.Marshal(a.String)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+type ArticleEntityAllLinksVisitor interface {
+	VisitStringList([]string) error
+	VisitString(string) error
+}
+
+func (a *ArticleEntityAllLinks) Accept(visitor ArticleEntityAllLinksVisitor) error {
+	if a.typ == "StringList" || a.StringList != nil {
+		return visitor.VisitStringList(a.StringList)
+	}
+	if a.typ == "String" || a.String != "" {
+		return visitor.VisitString(a.String)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", a)
+}
+
+// A list of articles matching the search criteria.
+type Articles = []*ArticleEntity
+
+// A list of authors of the article.
 type Authors struct {
 	StringList []string
 	String     string
@@ -397,48 +779,138 @@ func (a *Authors) Accept(visitor AuthorsVisitor) error {
 	return fmt.Errorf("type %T does not include a non-empty union type", a)
 }
 
-// Cluster DTO class.
-type Cluster struct {
-	ClusterId   string                   `json:"cluster_id" url:"cluster_id"`
-	ClusterSize int                      `json:"cluster_size" url:"cluster_size"`
-	Articles    []map[string]interface{} `json:"articles,omitempty" url:"articles,omitempty"`
+// The base response model containing common fields for search operations.
+type BaseSearchResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize int `json:"page_size" url:"page_size"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (c *Cluster) GetClusterId() string {
+func (b *BaseSearchResponseDto) GetStatus() string {
+	if b == nil {
+		return ""
+	}
+	return b.Status
+}
+
+func (b *BaseSearchResponseDto) GetTotalHits() int {
+	if b == nil {
+		return 0
+	}
+	return b.TotalHits
+}
+
+func (b *BaseSearchResponseDto) GetPage() int {
+	if b == nil {
+		return 0
+	}
+	return b.Page
+}
+
+func (b *BaseSearchResponseDto) GetTotalPages() int {
+	if b == nil {
+		return 0
+	}
+	return b.TotalPages
+}
+
+func (b *BaseSearchResponseDto) GetPageSize() int {
+	if b == nil {
+		return 0
+	}
+	return b.PageSize
+}
+
+func (b *BaseSearchResponseDto) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BaseSearchResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler BaseSearchResponseDto
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BaseSearchResponseDto(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+	b.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BaseSearchResponseDto) String() string {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
+}
+
+// If true, the `from_` and `to_` parameters use article parse dates instead of published dates. Additionally, the `parse_date` variable is added to the output for each article object.
+type ByParseDate = bool
+
+// The data model representing a single cluster of articles.
+type ClusterEntity struct {
+	// The unique identifier for the cluster.
+	ClusterId string `json:"cluster_id" url:"cluster_id"`
+	// The number of articles in the cluster.
+	ClusterSize int `json:"cluster_size" url:"cluster_size"`
+	// A list of articles in the cluster.
+	Articles []*ArticleEntity `json:"articles,omitempty" url:"articles,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ClusterEntity) GetClusterId() string {
 	if c == nil {
 		return ""
 	}
 	return c.ClusterId
 }
 
-func (c *Cluster) GetClusterSize() int {
+func (c *ClusterEntity) GetClusterSize() int {
 	if c == nil {
 		return 0
 	}
 	return c.ClusterSize
 }
 
-func (c *Cluster) GetArticles() []map[string]interface{} {
+func (c *ClusterEntity) GetArticles() []*ArticleEntity {
 	if c == nil {
 		return nil
 	}
 	return c.Articles
 }
 
-func (c *Cluster) GetExtraProperties() map[string]interface{} {
+func (c *ClusterEntity) GetExtraProperties() map[string]interface{} {
 	return c.extraProperties
 }
 
-func (c *Cluster) UnmarshalJSON(data []byte) error {
-	type unmarshaler Cluster
+func (c *ClusterEntity) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClusterEntity
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*c = Cluster(value)
+	*c = ClusterEntity(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *c)
 	if err != nil {
 		return err
@@ -448,7 +920,7 @@ func (c *Cluster) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (c *Cluster) String() string {
+func (c *ClusterEntity) String() string {
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -460,88 +932,41 @@ func (c *Cluster) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// ClusteringSearchResponse DTO class.
-type ClusteringSearchResponse struct {
-	Status        *string                `json:"status,omitempty" url:"status,omitempty"`
-	TotalHits     int                    `json:"total_hits" url:"total_hits"`
-	Page          int                    `json:"page" url:"page"`
-	TotalPages    int                    `json:"total_pages" url:"total_pages"`
-	PageSize      int                    `json:"page_size" url:"page_size"`
-	ClustersCount int                    `json:"clusters_count" url:"clusters_count"`
-	Clusters      []*Cluster             `json:"clusters,omitempty" url:"clusters,omitempty"`
-	UserInput     map[string]interface{} `json:"user_input,omitempty" url:"user_input,omitempty"`
+type ClusteredArticlesDto struct {
+	// The number of clusters in the search results.
+	ClustersCount int `json:"clusters_count" url:"clusters_count"`
+	// A list of clusters found in the search results.
+	Clusters []*ClusterEntity `json:"clusters,omitempty" url:"clusters,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (c *ClusteringSearchResponse) GetStatus() *string {
-	if c == nil {
-		return nil
-	}
-	return c.Status
-}
-
-func (c *ClusteringSearchResponse) GetTotalHits() int {
-	if c == nil {
-		return 0
-	}
-	return c.TotalHits
-}
-
-func (c *ClusteringSearchResponse) GetPage() int {
-	if c == nil {
-		return 0
-	}
-	return c.Page
-}
-
-func (c *ClusteringSearchResponse) GetTotalPages() int {
-	if c == nil {
-		return 0
-	}
-	return c.TotalPages
-}
-
-func (c *ClusteringSearchResponse) GetPageSize() int {
-	if c == nil {
-		return 0
-	}
-	return c.PageSize
-}
-
-func (c *ClusteringSearchResponse) GetClustersCount() int {
+func (c *ClusteredArticlesDto) GetClustersCount() int {
 	if c == nil {
 		return 0
 	}
 	return c.ClustersCount
 }
 
-func (c *ClusteringSearchResponse) GetClusters() []*Cluster {
+func (c *ClusteredArticlesDto) GetClusters() []*ClusterEntity {
 	if c == nil {
 		return nil
 	}
 	return c.Clusters
 }
 
-func (c *ClusteringSearchResponse) GetUserInput() map[string]interface{} {
-	if c == nil {
-		return nil
-	}
-	return c.UserInput
-}
-
-func (c *ClusteringSearchResponse) GetExtraProperties() map[string]interface{} {
+func (c *ClusteredArticlesDto) GetExtraProperties() map[string]interface{} {
 	return c.extraProperties
 }
 
-func (c *ClusteringSearchResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClusteringSearchResponse
+func (c *ClusteredArticlesDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClusteredArticlesDto
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*c = ClusteringSearchResponse(value)
+	*c = ClusteredArticlesDto(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *c)
 	if err != nil {
 		return err
@@ -551,7 +976,7 @@ func (c *ClusteringSearchResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (c *ClusteringSearchResponse) String() string {
+func (c *ClusteredArticlesDto) String() string {
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -563,427 +988,691 @@ func (c *ClusteringSearchResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-type DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks struct {
-	StringList []string
-	String     string
-
-	typ string
-}
-
-func NewDtoResponsesAuthorSearchResponseArticleResultAllDomainLinksFromStringList(value []string) *DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks {
-	return &DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks{typ: "StringList", StringList: value}
-}
-
-func NewDtoResponsesAuthorSearchResponseArticleResultAllDomainLinksFromString(value string) *DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks {
-	return &DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks{typ: "String", String: value}
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks) GetStringList() []string {
-	if d == nil {
-		return nil
-	}
-	return d.StringList
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks) GetString() string {
-	if d == nil {
-		return ""
-	}
-	return d.String
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks) UnmarshalJSON(data []byte) error {
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		d.typ = "StringList"
-		d.StringList = valueStringList
-		return nil
-	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		d.typ = "String"
-		d.String = valueString
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks) MarshalJSON() ([]byte, error) {
-	if d.typ == "StringList" || d.StringList != nil {
-		return json.Marshal(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return json.Marshal(d.String)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-type DtoResponsesAuthorSearchResponseArticleResultAllDomainLinksVisitor interface {
-	VisitStringList([]string) error
-	VisitString(string) error
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllDomainLinks) Accept(visitor DtoResponsesAuthorSearchResponseArticleResultAllDomainLinksVisitor) error {
-	if d.typ == "StringList" || d.StringList != nil {
-		return visitor.VisitStringList(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return visitor.VisitString(d.String)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-type DtoResponsesAuthorSearchResponseArticleResultAllLinks struct {
-	StringList []string
-	String     string
-
-	typ string
-}
-
-func NewDtoResponsesAuthorSearchResponseArticleResultAllLinksFromStringList(value []string) *DtoResponsesAuthorSearchResponseArticleResultAllLinks {
-	return &DtoResponsesAuthorSearchResponseArticleResultAllLinks{typ: "StringList", StringList: value}
-}
-
-func NewDtoResponsesAuthorSearchResponseArticleResultAllLinksFromString(value string) *DtoResponsesAuthorSearchResponseArticleResultAllLinks {
-	return &DtoResponsesAuthorSearchResponseArticleResultAllLinks{typ: "String", String: value}
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllLinks) GetStringList() []string {
-	if d == nil {
-		return nil
-	}
-	return d.StringList
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllLinks) GetString() string {
-	if d == nil {
-		return ""
-	}
-	return d.String
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllLinks) UnmarshalJSON(data []byte) error {
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		d.typ = "StringList"
-		d.StringList = valueStringList
-		return nil
-	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		d.typ = "String"
-		d.String = valueString
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DtoResponsesAuthorSearchResponseArticleResultAllLinks) MarshalJSON() ([]byte, error) {
-	if d.typ == "StringList" || d.StringList != nil {
-		return json.Marshal(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return json.Marshal(d.String)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-type DtoResponsesAuthorSearchResponseArticleResultAllLinksVisitor interface {
-	VisitStringList([]string) error
-	VisitString(string) error
-}
-
-func (d *DtoResponsesAuthorSearchResponseArticleResultAllLinks) Accept(visitor DtoResponsesAuthorSearchResponseArticleResultAllLinksVisitor) error {
-	if d.typ == "StringList" || d.StringList != nil {
-		return visitor.VisitStringList(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return visitor.VisitString(d.String)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-type DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks struct {
-	StringList []string
-	String     string
-
-	typ string
-}
-
-func NewDtoResponsesMoreLikeThisResponseArticleResultAllDomainLinksFromStringList(value []string) *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks {
-	return &DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks{typ: "StringList", StringList: value}
-}
-
-func NewDtoResponsesMoreLikeThisResponseArticleResultAllDomainLinksFromString(value string) *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks {
-	return &DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks{typ: "String", String: value}
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks) GetStringList() []string {
-	if d == nil {
-		return nil
-	}
-	return d.StringList
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks) GetString() string {
-	if d == nil {
-		return ""
-	}
-	return d.String
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks) UnmarshalJSON(data []byte) error {
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		d.typ = "StringList"
-		d.StringList = valueStringList
-		return nil
-	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		d.typ = "String"
-		d.String = valueString
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks) MarshalJSON() ([]byte, error) {
-	if d.typ == "StringList" || d.StringList != nil {
-		return json.Marshal(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return json.Marshal(d.String)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-type DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinksVisitor interface {
-	VisitStringList([]string) error
-	VisitString(string) error
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinks) Accept(visitor DtoResponsesMoreLikeThisResponseArticleResultAllDomainLinksVisitor) error {
-	if d.typ == "StringList" || d.StringList != nil {
-		return visitor.VisitStringList(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return visitor.VisitString(d.String)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-type DtoResponsesMoreLikeThisResponseArticleResultAllLinks struct {
-	StringList []string
-	String     string
-
-	typ string
-}
-
-func NewDtoResponsesMoreLikeThisResponseArticleResultAllLinksFromStringList(value []string) *DtoResponsesMoreLikeThisResponseArticleResultAllLinks {
-	return &DtoResponsesMoreLikeThisResponseArticleResultAllLinks{typ: "StringList", StringList: value}
-}
-
-func NewDtoResponsesMoreLikeThisResponseArticleResultAllLinksFromString(value string) *DtoResponsesMoreLikeThisResponseArticleResultAllLinks {
-	return &DtoResponsesMoreLikeThisResponseArticleResultAllLinks{typ: "String", String: value}
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllLinks) GetStringList() []string {
-	if d == nil {
-		return nil
-	}
-	return d.StringList
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllLinks) GetString() string {
-	if d == nil {
-		return ""
-	}
-	return d.String
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllLinks) UnmarshalJSON(data []byte) error {
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		d.typ = "StringList"
-		d.StringList = valueStringList
-		return nil
-	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		d.typ = "String"
-		d.String = valueString
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DtoResponsesMoreLikeThisResponseArticleResultAllLinks) MarshalJSON() ([]byte, error) {
-	if d.typ == "StringList" || d.StringList != nil {
-		return json.Marshal(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return json.Marshal(d.String)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-type DtoResponsesMoreLikeThisResponseArticleResultAllLinksVisitor interface {
-	VisitStringList([]string) error
-	VisitString(string) error
-}
-
-func (d *DtoResponsesMoreLikeThisResponseArticleResultAllLinks) Accept(visitor DtoResponsesMoreLikeThisResponseArticleResultAllLinksVisitor) error {
-	if d.typ == "StringList" || d.StringList != nil {
-		return visitor.VisitStringList(d.StringList)
-	}
-	if d.typ == "String" || d.String != "" {
-		return visitor.VisitString(d.String)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", d)
-}
-
-// FailedSearchResponse DTO class.
-type FailedSearchResponse struct {
-	Status     *string                `json:"status,omitempty" url:"status,omitempty"`
-	TotalHits  *int                   `json:"total_hits,omitempty" url:"total_hits,omitempty"`
-	Page       *int                   `json:"page,omitempty" url:"page,omitempty"`
-	TotalPages *int                   `json:"total_pages,omitempty" url:"total_pages,omitempty"`
-	PageSize   *int                   `json:"page_size,omitempty" url:"page_size,omitempty"`
-	Articles   []*ArticleResult       `json:"articles,omitempty" url:"articles,omitempty"`
-	UserInput  map[string]interface{} `json:"user_input,omitempty" url:"user_input,omitempty"`
+// The response model when clustering is enabled, grouping similar articles into clusters. Applies to the `Search` and `Latest headlines` requests. Response field behavior:
+// - Required fields are guaranteed to be present and non-null.
+// - Optional fields may be `null`/`undefined` if the data couldn't be extracted
+// during processing.
+// - To access article properties in the `articles` response array,
+// use array index notation. For example, `articles[n].title`, where `n`
+// is the zero-based index of the article object (0, 1, 2, etc.).
+// - The `nlp` property within the article object `articles[n].nlp`
+// is only available with NLP-enabled subscription plans.
+type ClusteredSearchResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize int `json:"page_size" url:"page_size"`
+	// The number of clusters in the search results.
+	ClustersCount int `json:"clusters_count" url:"clusters_count"`
+	// A list of clusters found in the search results.
+	Clusters  []*ClusterEntity `json:"clusters,omitempty" url:"clusters,omitempty"`
+	UserInput *UserInputDto    `json:"user_input,omitempty" url:"user_input,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (f *FailedSearchResponse) GetStatus() *string {
-	if f == nil {
+func (c *ClusteredSearchResponseDto) GetStatus() string {
+	if c == nil {
+		return ""
+	}
+	return c.Status
+}
+
+func (c *ClusteredSearchResponseDto) GetTotalHits() int {
+	if c == nil {
+		return 0
+	}
+	return c.TotalHits
+}
+
+func (c *ClusteredSearchResponseDto) GetPage() int {
+	if c == nil {
+		return 0
+	}
+	return c.Page
+}
+
+func (c *ClusteredSearchResponseDto) GetTotalPages() int {
+	if c == nil {
+		return 0
+	}
+	return c.TotalPages
+}
+
+func (c *ClusteredSearchResponseDto) GetPageSize() int {
+	if c == nil {
+		return 0
+	}
+	return c.PageSize
+}
+
+func (c *ClusteredSearchResponseDto) GetClustersCount() int {
+	if c == nil {
+		return 0
+	}
+	return c.ClustersCount
+}
+
+func (c *ClusteredSearchResponseDto) GetClusters() []*ClusterEntity {
+	if c == nil {
 		return nil
 	}
-	return f.Status
+	return c.Clusters
 }
 
-func (f *FailedSearchResponse) GetTotalHits() *int {
-	if f == nil {
+func (c *ClusteredSearchResponseDto) GetUserInput() *UserInputDto {
+	if c == nil {
 		return nil
 	}
-	return f.TotalHits
+	return c.UserInput
 }
 
-func (f *FailedSearchResponse) GetPage() *int {
-	if f == nil {
-		return nil
-	}
-	return f.Page
+func (c *ClusteredSearchResponseDto) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
 }
 
-func (f *FailedSearchResponse) GetTotalPages() *int {
-	if f == nil {
-		return nil
-	}
-	return f.TotalPages
-}
-
-func (f *FailedSearchResponse) GetPageSize() *int {
-	if f == nil {
-		return nil
-	}
-	return f.PageSize
-}
-
-func (f *FailedSearchResponse) GetArticles() []*ArticleResult {
-	if f == nil {
-		return nil
-	}
-	return f.Articles
-}
-
-func (f *FailedSearchResponse) GetUserInput() map[string]interface{} {
-	if f == nil {
-		return nil
-	}
-	return f.UserInput
-}
-
-func (f *FailedSearchResponse) GetExtraProperties() map[string]interface{} {
-	return f.extraProperties
-}
-
-func (f *FailedSearchResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler FailedSearchResponse
+func (c *ClusteredSearchResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler ClusteredSearchResponseDto
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*f = FailedSearchResponse(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	*c = ClusteredSearchResponseDto(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
 	if err != nil {
 		return err
 	}
-	f.extraProperties = extraProperties
-	f.rawJSON = json.RawMessage(data)
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (f *FailedSearchResponse) String() string {
-	if len(f.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+func (c *ClusteredSearchResponseDto) String() string {
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := internal.StringifyJSON(f); err == nil {
+	if value, err := internal.StringifyJSON(c); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", f)
+	return fmt.Sprintf("%#v", c)
 }
 
-type HttpValidationError struct {
-	Detail []*ValidationError `json:"detail,omitempty" url:"detail,omitempty"`
+// Determines whether to group similar articles into clusters. If true, the API returns clustered results.
+//
+// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
+type ClusteringEnabled = bool
+
+// Sets the similarity threshold for grouping articles into clusters. A lower value creates more inclusive clusters, while a higher value requires greater similarity between articles.
+//
+// For example:
+// - `0.3`: Results in larger, more diverse clusters.
+// - `0.6`: Balances cluster size and article similarity (default).
+// - `0.9`: Creates smaller, tightly related clusters.
+//
+// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
+type ClusteringThreshold = float64
+
+// Specifies which part of the article to use for determining similarity when clustering. Possible values are:
+// - `content`: Uses the full article content (default).
+// - `title`: Uses only the article title.
+// - `summary`: Uses the article summary.
+//
+// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
+type ClusteringVariable string
+
+const (
+	ClusteringVariableContent ClusteringVariable = "content"
+	ClusteringVariableTitle   ClusteringVariable = "title"
+	ClusteringVariableSummary ClusteringVariable = "summary"
+)
+
+func NewClusteringVariableFromString(s string) (ClusteringVariable, error) {
+	switch s {
+	case "content":
+		return ClusteringVariableContent, nil
+	case "title":
+		return ClusteringVariableTitle, nil
+	case "summary":
+		return ClusteringVariableSummary, nil
+	}
+	var t ClusteringVariable
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ClusteringVariable) Ptr() *ClusteringVariable {
+	return &c
+}
+
+// Filters articles based on the maximum sentiment score of their content.
+//
+// Range is `-1.0` to `1.0`, where:
+// - Negative values indicate negative sentiment.
+// - Positive values indicate positive sentiment.
+// - Values close to 0 indicate neutral sentiment.
+//
+// **Note**: The `content_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+type ContentSentimentMax = float64
+
+// Filters articles based on the minimum sentiment score of their content.
+//
+// Range is `-1.0` to `1.0`, where:
+// - Negative values indicate negative sentiment.
+// - Positive values indicate positive sentiment.
+// - Values close to 0 indicate neutral sentiment.
+//
+// **Note**: The `content_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+type ContentSentimentMin = float64
+
+// The countries where the news publisher is located. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To select multiple countries, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"US,CA"`
+// - `["US", "CA"]`
+//
+// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+type Countries struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewCountriesFromString(value string) *Countries {
+	return &Countries{typ: "String", String: value}
+}
+
+func NewCountriesFromStringList(value []string) *Countries {
+	return &Countries{typ: "StringList", StringList: value}
+}
+
+func (c *Countries) GetString() string {
+	if c == nil {
+		return ""
+	}
+	return c.String
+}
+
+func (c *Countries) GetStringList() []string {
+	if c == nil {
+		return nil
+	}
+	return c.StringList
+}
+
+func (c *Countries) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typ = "String"
+		c.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		c.typ = "StringList"
+		c.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c Countries) MarshalJSON() ([]byte, error) {
+	if c.typ == "String" || c.String != "" {
+		return json.Marshal(c.String)
+	}
+	if c.typ == "StringList" || c.StringList != nil {
+		return json.Marshal(c.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", c)
+}
+
+type CountriesVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (c *Countries) Accept(visitor CountriesVisitor) error {
+	if c.typ == "String" || c.String != "" {
+		return visitor.VisitString(c.String)
+	}
+	if c.typ == "StringList" || c.StringList != nil {
+		return visitor.VisitStringList(c.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", c)
+}
+
+// Filters articles based on provided taxonomy that is tailored to your specific needs and is accessible only with your API key. To specify tags, use the following pattern:
+//
+// - `custom_tags.taxonomy=Tag1,Tag2,Tag3`, where `taxonomy` is the taxonomy name and `Tag1,Tag2,Tag3` are comma-separated tags. For POST requests, you can also specify tags as an array of strings.
+//
+// Examples:
+// - `custom_tags.industry="Manufacturing, Supply Chain, Logistics"`
+// - `"custom_tags.industry": ["Manufacturing", "Supply Chain", "Logistics"]`
+//
+// To learn more, see the [Custom tags](/docs/v3/documentation/guides-and-concepts/custom-tags).
+type CustomTags struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewCustomTagsFromString(value string) *CustomTags {
+	return &CustomTags{typ: "String", String: value}
+}
+
+func NewCustomTagsFromStringList(value []string) *CustomTags {
+	return &CustomTags{typ: "StringList", StringList: value}
+}
+
+func (c *CustomTags) GetString() string {
+	if c == nil {
+		return ""
+	}
+	return c.String
+}
+
+func (c *CustomTags) GetStringList() []string {
+	if c == nil {
+		return nil
+	}
+	return c.StringList
+}
+
+func (c *CustomTags) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		c.typ = "String"
+		c.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		c.typ = "StringList"
+		c.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+}
+
+func (c CustomTags) MarshalJSON() ([]byte, error) {
+	if c.typ == "String" || c.String != "" {
+		return json.Marshal(c.String)
+	}
+	if c.typ == "StringList" || c.StringList != nil {
+		return json.Marshal(c.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", c)
+}
+
+type CustomTagsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (c *CustomTags) Accept(visitor CustomTagsVisitor) error {
+	if c.typ == "String" || c.String != "" {
+		return visitor.VisitString(c.String)
+	}
+	if c.typ == "StringList" || c.StringList != nil {
+		return visitor.VisitStringList(c.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", c)
+}
+
+type Error struct {
+	// A detailed description of the error.
+	Message string `json:"message" url:"message"`
+	// The HTTP status code of the error.
+	StatusCode int `json:"status_code" url:"status_code"`
+	// A short description of the status code.
+	Status string `json:"status" url:"status"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (h *HttpValidationError) GetDetail() []*ValidationError {
-	if h == nil {
-		return nil
+func (e *Error) GetMessage() string {
+	if e == nil {
+		return ""
 	}
-	return h.Detail
+	return e.Message
 }
 
-func (h *HttpValidationError) GetExtraProperties() map[string]interface{} {
-	return h.extraProperties
+func (e *Error) GetStatusCode() int {
+	if e == nil {
+		return 0
+	}
+	return e.StatusCode
 }
 
-func (h *HttpValidationError) UnmarshalJSON(data []byte) error {
-	type unmarshaler HttpValidationError
+func (e *Error) GetStatus() string {
+	if e == nil {
+		return ""
+	}
+	return e.Status
+}
+
+func (e *Error) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *Error) UnmarshalJSON(data []byte) error {
+	type unmarshaler Error
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*h = HttpValidationError(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *h)
+	*e = Error(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
 	if err != nil {
 		return err
 	}
-	h.extraProperties = extraProperties
-	h.rawJSON = json.RawMessage(data)
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (h *HttpValidationError) String() string {
-	if len(h.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
+func (e *Error) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := internal.StringifyJSON(h); err == nil {
+	if value, err := internal.StringifyJSON(e); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", h)
+	return fmt.Sprintf("%#v", e)
 }
 
+// The starting point in time to search from. Accepts date-time strings in ISO 8601 format and plain text strings. The default time zone is UTC.
+//
+// Formats with examples:
+// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+// - YYYY-MM-dd: `2024-07-01`
+// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+// - YYYY/mm/dd: `2024/07/01`
+// - English phrases: `1 day ago`, `today`
+//
+// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
+type From struct {
+	DateTime time.Time
+	String   string
+
+	typ string
+}
+
+func NewFromFromDateTime(value time.Time) *From {
+	return &From{typ: "DateTime", DateTime: value}
+}
+
+func NewFromFromString(value string) *From {
+	return &From{typ: "String", String: value}
+}
+
+func (f *From) GetDateTime() time.Time {
+	if f == nil {
+		return time.Time{}
+	}
+	return f.DateTime
+}
+
+func (f *From) GetString() string {
+	if f == nil {
+		return ""
+	}
+	return f.String
+}
+
+func (f *From) UnmarshalJSON(data []byte) error {
+	var valueDateTime *internal.DateTime
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		f.typ = "DateTime"
+		f.DateTime = valueDateTime.Time()
+		return nil
+	}
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		f.typ = "String"
+		f.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
+}
+
+func (f From) MarshalJSON() ([]byte, error) {
+	if f.typ == "DateTime" || !f.DateTime.IsZero() {
+		return json.Marshal(internal.NewDateTime(f.DateTime))
+	}
+	if f.typ == "String" || f.String != "" {
+		return json.Marshal(f.String)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", f)
+}
+
+type FromVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitString(string) error
+}
+
+func (f *From) Accept(visitor FromVisitor) error {
+	if f.typ == "DateTime" || !f.DateTime.IsZero() {
+		return visitor.VisitDateTime(f.DateTime)
+	}
+	if f.typ == "String" || f.String != "" {
+		return visitor.VisitString(f.String)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", f)
+}
+
+// The lowest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+type FromRank = int
+
+// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
+//
+// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+type HasNlp = bool
+
+// Filters articles based on Interactive Advertising Bureau (IAB) content categories.These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"Business, Events"`
+// - `["Business", "Events"]`
+//
+// **Note**: The `iab_tags` parameter is only available if tags are included in your subscription plan.
+//
+// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
+type IabTags struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewIabTagsFromString(value string) *IabTags {
+	return &IabTags{typ: "String", String: value}
+}
+
+func NewIabTagsFromStringList(value []string) *IabTags {
+	return &IabTags{typ: "StringList", StringList: value}
+}
+
+func (i *IabTags) GetString() string {
+	if i == nil {
+		return ""
+	}
+	return i.String
+}
+
+func (i *IabTags) GetStringList() []string {
+	if i == nil {
+		return nil
+	}
+	return i.StringList
+}
+
+func (i *IabTags) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typ = "String"
+		i.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typ = "StringList"
+		i.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IabTags) MarshalJSON() ([]byte, error) {
+	if i.typ == "String" || i.String != "" {
+		return json.Marshal(i.String)
+	}
+	if i.typ == "StringList" || i.StringList != nil {
+		return json.Marshal(i.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
+}
+
+type IabTagsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (i *IabTags) Accept(visitor IabTagsVisitor) error {
+	if i.typ == "String" || i.String != "" {
+		return visitor.VisitString(i.String)
+	}
+	if i.typ == "StringList" || i.StringList != nil {
+		return visitor.VisitStringList(i.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
+}
+
+// If true, includes an NLP layer with each article in the response.  This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
+//
+// The NLP layer includes:
+// - Theme: General topic of the article.
+// - Summary: A concise overview of the article content.
+// - Sentiment: Separate scores for title and content (range: -1 to 1).
+// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
+// - IPTC tags: Standardized news category tags.
+// - IAB tags: Content categories for digital advertising.
+//
+// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+type IncludeNlpData = bool
+
+// Filters articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"20000199, 20000209"`
+// - `["20000199", "20000209"]`
+//
+// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+//
+// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+type IptcTags struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewIptcTagsFromString(value string) *IptcTags {
+	return &IptcTags{typ: "String", String: value}
+}
+
+func NewIptcTagsFromStringList(value []string) *IptcTags {
+	return &IptcTags{typ: "StringList", StringList: value}
+}
+
+func (i *IptcTags) GetString() string {
+	if i == nil {
+		return ""
+	}
+	return i.String
+}
+
+func (i *IptcTags) GetStringList() []string {
+	if i == nil {
+		return nil
+	}
+	return i.StringList
+}
+
+func (i *IptcTags) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typ = "String"
+		i.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typ = "StringList"
+		i.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IptcTags) MarshalJSON() ([]byte, error) {
+	if i.typ == "String" || i.String != "" {
+		return json.Marshal(i.String)
+	}
+	if i.typ == "StringList" || i.StringList != nil {
+		return json.Marshal(i.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
+}
+
+type IptcTagsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (i *IptcTags) Accept(visitor IptcTagsVisitor) error {
+	if i.typ == "String" || i.String != "" {
+		return visitor.VisitString(i.String)
+	}
+	if i.typ == "StringList" || i.StringList != nil {
+		return visitor.VisitStringList(i.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
+}
+
+// If true, only returns articles that were posted on the home page of a given news domain.
+type IsHeadline = bool
+
+// If true, filters results to include only news domains.
+type IsNewsDomain = bool
+
+// If true, returns only opinion pieces. If false, excludes opinion-based articles and returns news only.
+type IsOpinion = bool
+
+// If false, returns only articles that have publicly available complete content. Some publishers partially block content, so this setting ensures that only full articles are retrieved.
+type IsPaidContent = bool
+
+// A list of journalists associated with the article.
 type Journalists struct {
 	StringList []string
 	String     string
@@ -1054,80 +1743,1553 @@ func (j *Journalists) Accept(visitor JournalistsVisitor) error {
 	return fmt.Errorf("type %T does not include a non-empty union type", j)
 }
 
-// SearchResponse DTO class.
-type SearchResponse struct {
-	Status     *string                  `json:"status,omitempty" url:"status,omitempty"`
-	TotalHits  int                      `json:"total_hits" url:"total_hits"`
-	Page       int                      `json:"page" url:"page"`
-	TotalPages int                      `json:"total_pages" url:"total_pages"`
-	PageSize   int                      `json:"page_size" url:"page_size"`
-	Articles   []map[string]interface{} `json:"articles,omitempty" url:"articles,omitempty"`
-	UserInput  map[string]interface{}   `json:"user_input,omitempty" url:"user_input,omitempty"`
+// The language(s) of the search. The only accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To select multiple languages, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"en,es"`
+// - `["en", "es"]`
+//
+// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+type Lang struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewLangFromString(value string) *Lang {
+	return &Lang{typ: "String", String: value}
+}
+
+func NewLangFromStringList(value []string) *Lang {
+	return &Lang{typ: "StringList", StringList: value}
+}
+
+func (l *Lang) GetString() string {
+	if l == nil {
+		return ""
+	}
+	return l.String
+}
+
+func (l *Lang) GetStringList() []string {
+	if l == nil {
+		return nil
+	}
+	return l.StringList
+}
+
+func (l *Lang) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		l.typ = "String"
+		l.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		l.typ = "StringList"
+		l.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
+}
+
+func (l Lang) MarshalJSON() ([]byte, error) {
+	if l.typ == "String" || l.String != "" {
+		return json.Marshal(l.String)
+	}
+	if l.typ == "StringList" || l.StringList != nil {
+		return json.Marshal(l.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
+}
+
+type LangVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (l *Lang) Accept(visitor LangVisitor) error {
+	if l.typ == "String" || l.String != "" {
+		return visitor.VisitString(l.String)
+	}
+	if l.typ == "StringList" || l.StringList != nil {
+		return visitor.VisitStringList(l.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", l)
+}
+
+// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"California, New York"`
+// - `["California", "New York"]`
+//
+// **Note**: The `LOC_entity_name` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+type LocEntityName struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewLocEntityNameFromString(value string) *LocEntityName {
+	return &LocEntityName{typ: "String", String: value}
+}
+
+func NewLocEntityNameFromStringList(value []string) *LocEntityName {
+	return &LocEntityName{typ: "StringList", StringList: value}
+}
+
+func (l *LocEntityName) GetString() string {
+	if l == nil {
+		return ""
+	}
+	return l.String
+}
+
+func (l *LocEntityName) GetStringList() []string {
+	if l == nil {
+		return nil
+	}
+	return l.StringList
+}
+
+func (l *LocEntityName) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		l.typ = "String"
+		l.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		l.typ = "StringList"
+		l.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
+}
+
+func (l LocEntityName) MarshalJSON() ([]byte, error) {
+	if l.typ == "String" || l.String != "" {
+		return json.Marshal(l.String)
+	}
+	if l.typ == "StringList" || l.StringList != nil {
+		return json.Marshal(l.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
+}
+
+type LocEntityNameVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (l *LocEntityName) Accept(visitor LocEntityNameVisitor) error {
+	if l.typ == "String" || l.String != "" {
+		return visitor.VisitString(l.String)
+	}
+	if l.typ == "StringList" || l.StringList != nil {
+		return visitor.VisitStringList(l.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", l)
+}
+
+// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"Bitcoin, Blockchain"`
+// - `["Bitcoin", "Blockchain"]`
+//
+// **Note**: The `MISC_entity_name` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+type MiscEntityName struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewMiscEntityNameFromString(value string) *MiscEntityName {
+	return &MiscEntityName{typ: "String", String: value}
+}
+
+func NewMiscEntityNameFromStringList(value []string) *MiscEntityName {
+	return &MiscEntityName{typ: "StringList", StringList: value}
+}
+
+func (m *MiscEntityName) GetString() string {
+	if m == nil {
+		return ""
+	}
+	return m.String
+}
+
+func (m *MiscEntityName) GetStringList() []string {
+	if m == nil {
+		return nil
+	}
+	return m.StringList
+}
+
+func (m *MiscEntityName) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		m.typ = "String"
+		m.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		m.typ = "StringList"
+		m.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, m)
+}
+
+func (m MiscEntityName) MarshalJSON() ([]byte, error) {
+	if m.typ == "String" || m.String != "" {
+		return json.Marshal(m.String)
+	}
+	if m.typ == "StringList" || m.StringList != nil {
+		return json.Marshal(m.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", m)
+}
+
+type MiscEntityNameVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (m *MiscEntityName) Accept(visitor MiscEntityNameVisitor) error {
+	if m.typ == "String" || m.String != "" {
+		return visitor.VisitString(m.String)
+	}
+	if m.typ == "StringList" || m.StringList != nil {
+		return visitor.VisitStringList(m.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", m)
+}
+
+// A list of named entities identified in the article.
+type NamedEntityList = []*NamedEntityListItem
+
+type NamedEntityListItem struct {
+	// The name of the entity identified in the article.
+	EntityName *string `json:"entity_name,omitempty" url:"entity_name,omitempty"`
+	// The number of times this entity appears in the article.
+	Count *int `json:"count,omitempty" url:"count,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (s *SearchResponse) GetStatus() *string {
-	if s == nil {
+func (n *NamedEntityListItem) GetEntityName() *string {
+	if n == nil {
 		return nil
+	}
+	return n.EntityName
+}
+
+func (n *NamedEntityListItem) GetCount() *int {
+	if n == nil {
+		return nil
+	}
+	return n.Count
+}
+
+func (n *NamedEntityListItem) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
+}
+
+func (n *NamedEntityListItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler NamedEntityListItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NamedEntityListItem(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NamedEntityListItem) String() string {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+// The name of person, organization, location, product or other named entity to search for. To specify multiple names use a comma-separated string.
+//
+// Example: `"Tesla, Amazon"`
+type NerName = string
+
+// Filters results based on the news domain type. Possible values are:
+// - `Original Content`: Sources that produce their own content.
+// - `Aggregator`: Sources that collect content from various other sources.
+// - `Press Releases`: Sources primarily publishing press releases.
+// - `Republisher`: Sources that republish content from other sources.
+// - `Other`: Sources that don't fit into main categories.
+type NewsDomainType string
+
+const (
+	NewsDomainTypeOriginalContent NewsDomainType = "Original Content"
+	NewsDomainTypeAggregator      NewsDomainType = "Aggregator"
+	NewsDomainTypePressReleases   NewsDomainType = "Press Releases"
+	NewsDomainTypeRepublisher     NewsDomainType = "Republisher"
+	NewsDomainTypeOther           NewsDomainType = "Other"
+)
+
+func NewNewsDomainTypeFromString(s string) (NewsDomainType, error) {
+	switch s {
+	case "Original Content":
+		return NewsDomainTypeOriginalContent, nil
+	case "Aggregator":
+		return NewsDomainTypeAggregator, nil
+	case "Press Releases":
+		return NewsDomainTypePressReleases, nil
+	case "Republisher":
+		return NewsDomainTypeRepublisher, nil
+	case "Other":
+		return NewsDomainTypeOther, nil
+	}
+	var t NewsDomainType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (n NewsDomainType) Ptr() *NewsDomainType {
+	return &n
+}
+
+// Filters results based on the news type. Multiple types can be specified using a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"General News Outlets,Tech News and Updates"`
+// - `["General News Outlets", "Tech News and Updates"]`
+//
+// For a complete list of available news types, see [Enumerated parameters > News type](/docs/v3/api-reference/overview/enumerated-parameters#news-type-news-type).
+type NewsType struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNewsTypeFromString(value string) *NewsType {
+	return &NewsType{typ: "String", String: value}
+}
+
+func NewNewsTypeFromStringList(value []string) *NewsType {
+	return &NewsType{typ: "StringList", StringList: value}
+}
+
+func (n *NewsType) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NewsType) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NewsType) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NewsType) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NewsTypeVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NewsType) Accept(visitor NewsTypeVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// Natural Language Processing data for the article.
+type NlpDataEntity struct {
+	// The themes or categories identified in the article.
+	Theme *string `json:"theme,omitempty" url:"theme,omitempty"`
+	// A brief AI-generated summary of the article content.
+	Summary   *string          `json:"summary,omitempty" url:"summary,omitempty"`
+	Sentiment *SentimentScores `json:"sentiment,omitempty" url:"sentiment,omitempty"`
+	// A dense 1024-dimensional vector representation of the article content, generated using  the [multilingual-e5-large](https://huggingface.co/intfloat/multilingual-e5-large) model.
+	//
+	// **Note**: The `new_embedding` field is only available in the `v3_local_news_nlp_embeddings` subscription plan.
+	NewEmbedding []float64 `json:"new_embedding,omitempty" url:"new_embedding,omitempty"`
+	// Named Entity Recognition for person entities (individuals' names).
+	NerPer *NamedEntityList `json:"ner_PER,omitempty" url:"ner_PER,omitempty"`
+	// Named Entity Recognition for organization entities (company names, institutions).
+	NerOrg *NamedEntityList `json:"ner_ORG,omitempty" url:"ner_ORG,omitempty"`
+	// Named Entity Recognition for miscellaneous entities (events, nationalities, products).
+	NerMisc *NamedEntityList `json:"ner_MISC,omitempty" url:"ner_MISC,omitempty"`
+	// Named Entity Recognition for location entities (cities, countries, geographic features).
+	NerLoc *NamedEntityList `json:"ner_LOC,omitempty" url:"ner_LOC,omitempty"`
+	// IPTC media topic taxonomy paths identified in the article content. Each path represents a hierarchical category following the IPTC standard.
+	IptcTagsName []string `json:"iptc_tags_name,omitempty" url:"iptc_tags_name,omitempty"`
+	// IPTC media topic numeric codes identified in the article content. These codes correspond to the standardized IPTC media topic taxonomy.
+	IptcTagsId []string `json:"iptc_tags_id,omitempty" url:"iptc_tags_id,omitempty"`
+	// IAB content taxonomy paths identified in the article content. Each path represents a hierarchical category following the IAB content standard.
+	IabTagsName []string `json:"iab_tags_name,omitempty" url:"iab_tags_name,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (n *NlpDataEntity) GetTheme() *string {
+	if n == nil {
+		return nil
+	}
+	return n.Theme
+}
+
+func (n *NlpDataEntity) GetSummary() *string {
+	if n == nil {
+		return nil
+	}
+	return n.Summary
+}
+
+func (n *NlpDataEntity) GetSentiment() *SentimentScores {
+	if n == nil {
+		return nil
+	}
+	return n.Sentiment
+}
+
+func (n *NlpDataEntity) GetNewEmbedding() []float64 {
+	if n == nil {
+		return nil
+	}
+	return n.NewEmbedding
+}
+
+func (n *NlpDataEntity) GetNerPer() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.NerPer
+}
+
+func (n *NlpDataEntity) GetNerOrg() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.NerOrg
+}
+
+func (n *NlpDataEntity) GetNerMisc() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.NerMisc
+}
+
+func (n *NlpDataEntity) GetNerLoc() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.NerLoc
+}
+
+func (n *NlpDataEntity) GetIptcTagsName() []string {
+	if n == nil {
+		return nil
+	}
+	return n.IptcTagsName
+}
+
+func (n *NlpDataEntity) GetIptcTagsId() []string {
+	if n == nil {
+		return nil
+	}
+	return n.IptcTagsId
+}
+
+func (n *NlpDataEntity) GetIabTagsName() []string {
+	if n == nil {
+		return nil
+	}
+	return n.IabTagsName
+}
+
+func (n *NlpDataEntity) GetExtraProperties() map[string]interface{} {
+	return n.extraProperties
+}
+
+func (n *NlpDataEntity) UnmarshalJSON(data []byte) error {
+	type unmarshaler NlpDataEntity
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*n = NlpDataEntity(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *n)
+	if err != nil {
+		return err
+	}
+	n.extraProperties = extraProperties
+	n.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (n *NlpDataEntity) String() string {
+	if len(n.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(n); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", n)
+}
+
+// The list of author names to exclude from your search. To exclude articles by specific authors, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"John Doe, Jane Doe"`
+// - `["John Doe", "Jane Doe"]`
+type NotAuthorName struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNotAuthorNameFromString(value string) *NotAuthorName {
+	return &NotAuthorName{typ: "String", String: value}
+}
+
+func NewNotAuthorNameFromStringList(value []string) *NotAuthorName {
+	return &NotAuthorName{typ: "StringList", StringList: value}
+}
+
+func (n *NotAuthorName) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NotAuthorName) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NotAuthorName) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NotAuthorName) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NotAuthorNameVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NotAuthorName) Accept(visitor NotAuthorNameVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// The publisher location countries to exclude from the search. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To exclude multiple countries, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"UK,FR"`
+// - `["UK", "FR"]`
+//
+// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+type NotCountries struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNotCountriesFromString(value string) *NotCountries {
+	return &NotCountries{typ: "String", String: value}
+}
+
+func NewNotCountriesFromStringList(value []string) *NotCountries {
+	return &NotCountries{typ: "StringList", StringList: value}
+}
+
+func (n *NotCountries) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NotCountries) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NotCountries) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NotCountries) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NotCountriesVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NotCountries) Accept(visitor NotCountriesVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// Inverse of the `iab_tags` parameter. Excludes articles based on Interactive Advertising Bureau (IAB) content categories. These tags provide a standardized taxonomy for digital advertising content categorization. To specify multiple IAB categories to exclude, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"Agriculture, Metals"`
+// - `["Agriculture", "Metals"]`
+//
+// **Note**: The `not_iab_tags` parameter is only available if tags are included in your subscription plan.
+//
+// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
+type NotIabTags struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNotIabTagsFromString(value string) *NotIabTags {
+	return &NotIabTags{typ: "String", String: value}
+}
+
+func NewNotIabTagsFromStringList(value []string) *NotIabTags {
+	return &NotIabTags{typ: "StringList", StringList: value}
+}
+
+func (n *NotIabTags) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NotIabTags) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NotIabTags) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NotIabTags) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NotIabTagsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NotIabTags) Accept(visitor NotIabTagsVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// Inverse of the `iptc_tags` parameter. Excludes articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags to exclude, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"20000205, 20000209"`
+// - `["20000205", "20000209"]`
+//
+// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+//
+// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+type NotIptcTags struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNotIptcTagsFromString(value string) *NotIptcTags {
+	return &NotIptcTags{typ: "String", String: value}
+}
+
+func NewNotIptcTagsFromStringList(value []string) *NotIptcTags {
+	return &NotIptcTags{typ: "StringList", StringList: value}
+}
+
+func (n *NotIptcTags) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NotIptcTags) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NotIptcTags) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NotIptcTags) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NotIptcTagsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NotIptcTags) Accept(visitor NotIptcTagsVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// The language(s) to exclude from the search. The accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To exclude multiple languages, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"fr,de"`
+// - `["fr", "de"]`
+//
+// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+type NotLang struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNotLangFromString(value string) *NotLang {
+	return &NotLang{typ: "String", String: value}
+}
+
+func NewNotLangFromStringList(value []string) *NotLang {
+	return &NotLang{typ: "StringList", StringList: value}
+}
+
+func (n *NotLang) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NotLang) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NotLang) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NotLang) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NotLangVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NotLang) Accept(visitor NotLangVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// The news sources to exclude from the search. To exclude multiple sources, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"cnn.com, wsj.com"`
+// - `["cnn.com", "wsj.com"]`
+type NotSources struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNotSourcesFromString(value string) *NotSources {
+	return &NotSources{typ: "String", String: value}
+}
+
+func NewNotSourcesFromStringList(value []string) *NotSources {
+	return &NotSources{typ: "StringList", StringList: value}
+}
+
+func (n *NotSources) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NotSources) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NotSources) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NotSources) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NotSourcesVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NotSources) Accept(visitor NotSourcesVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// Inverse of the `theme` parameter. Excludes articles based on their general topic, as determined by NLP analysis. To exclude multiple themes, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"Crime, Tech"`
+// - `["Crime", "Tech"]`
+//
+// **Note**: The `not_theme` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+type NotTheme struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewNotThemeFromString(value string) *NotTheme {
+	return &NotTheme{typ: "String", String: value}
+}
+
+func NewNotThemeFromStringList(value []string) *NotTheme {
+	return &NotTheme{typ: "StringList", StringList: value}
+}
+
+func (n *NotTheme) GetString() string {
+	if n == nil {
+		return ""
+	}
+	return n.String
+}
+
+func (n *NotTheme) GetStringList() []string {
+	if n == nil {
+		return nil
+	}
+	return n.StringList
+}
+
+func (n *NotTheme) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		n.typ = "String"
+		n.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		n.typ = "StringList"
+		n.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
+}
+
+func (n NotTheme) MarshalJSON() ([]byte, error) {
+	if n.typ == "String" || n.String != "" {
+		return json.Marshal(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return json.Marshal(n.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+type NotThemeVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (n *NotTheme) Accept(visitor NotThemeVisitor) error {
+	if n.typ == "String" || n.String != "" {
+		return visitor.VisitString(n.String)
+	}
+	if n.typ == "StringList" || n.StringList != nil {
+		return visitor.VisitStringList(n.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", n)
+}
+
+// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"Apple, Microsoft"`
+// - `["Apple", "Microsoft"]`
+//
+// **Note**: The `ORG_entity_name` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+type OrgEntityName struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewOrgEntityNameFromString(value string) *OrgEntityName {
+	return &OrgEntityName{typ: "String", String: value}
+}
+
+func NewOrgEntityNameFromStringList(value []string) *OrgEntityName {
+	return &OrgEntityName{typ: "StringList", StringList: value}
+}
+
+func (o *OrgEntityName) GetString() string {
+	if o == nil {
+		return ""
+	}
+	return o.String
+}
+
+func (o *OrgEntityName) GetStringList() []string {
+	if o == nil {
+		return nil
+	}
+	return o.StringList
+}
+
+func (o *OrgEntityName) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		o.typ = "String"
+		o.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		o.typ = "StringList"
+		o.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, o)
+}
+
+func (o OrgEntityName) MarshalJSON() ([]byte, error) {
+	if o.typ == "String" || o.String != "" {
+		return json.Marshal(o.String)
+	}
+	if o.typ == "StringList" || o.StringList != nil {
+		return json.Marshal(o.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", o)
+}
+
+type OrgEntityNameVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (o *OrgEntityName) Accept(visitor OrgEntityNameVisitor) error {
+	if o.typ == "String" || o.String != "" {
+		return visitor.VisitString(o.String)
+	}
+	if o.typ == "StringList" || o.StringList != nil {
+		return visitor.VisitStringList(o.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", o)
+}
+
+// The page number to scroll through the results. Use for pagination, as a single API response can return up to 1,000 articles.
+//
+// For details, see [How to paginate large datasets](https://www.newscatcherapi.com/docs/v3/documentation/how-to/paginate-large-datasets).
+type Page = int
+
+// The number of articles to return per page.
+type PageSize = int
+
+// The categorical URL(s) to filter your search. To filter your search by multiple categorical URLs, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"wsj.com/politics,wsj.com/tech"`
+// - `["wsj.com/politics", "wsj.com/tech"]`
+type ParentUrl struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewParentUrlFromString(value string) *ParentUrl {
+	return &ParentUrl{typ: "String", String: value}
+}
+
+func NewParentUrlFromStringList(value []string) *ParentUrl {
+	return &ParentUrl{typ: "StringList", StringList: value}
+}
+
+func (p *ParentUrl) GetString() string {
+	if p == nil {
+		return ""
+	}
+	return p.String
+}
+
+func (p *ParentUrl) GetStringList() []string {
+	if p == nil {
+		return nil
+	}
+	return p.StringList
+}
+
+func (p *ParentUrl) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		p.typ = "String"
+		p.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		p.typ = "StringList"
+		p.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
+}
+
+func (p ParentUrl) MarshalJSON() ([]byte, error) {
+	if p.typ == "String" || p.String != "" {
+		return json.Marshal(p.String)
+	}
+	if p.typ == "StringList" || p.StringList != nil {
+		return json.Marshal(p.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+type ParentUrlVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (p *ParentUrl) Accept(visitor ParentUrlVisitor) error {
+	if p.typ == "String" || p.String != "" {
+		return visitor.VisitString(p.String)
+	}
+	if p.typ == "StringList" || p.StringList != nil {
+		return visitor.VisitStringList(p.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"Elon Musk, Jeff Bezos"`
+// - `["Elon Musk", "Jeff Bezos"]`
+//
+// **Note**: The `PER_entity_name` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
+type PerEntityName struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewPerEntityNameFromString(value string) *PerEntityName {
+	return &PerEntityName{typ: "String", String: value}
+}
+
+func NewPerEntityNameFromStringList(value []string) *PerEntityName {
+	return &PerEntityName{typ: "StringList", StringList: value}
+}
+
+func (p *PerEntityName) GetString() string {
+	if p == nil {
+		return ""
+	}
+	return p.String
+}
+
+func (p *PerEntityName) GetStringList() []string {
+	if p == nil {
+		return nil
+	}
+	return p.StringList
+}
+
+func (p *PerEntityName) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		p.typ = "String"
+		p.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		p.typ = "StringList"
+		p.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
+}
+
+func (p PerEntityName) MarshalJSON() ([]byte, error) {
+	if p.typ == "String" || p.String != "" {
+		return json.Marshal(p.String)
+	}
+	if p.typ == "StringList" || p.StringList != nil {
+		return json.Marshal(p.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+type PerEntityNameVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (p *PerEntityName) Accept(visitor PerEntityNameVisitor) error {
+	if p.typ == "String" || p.String != "" {
+		return visitor.VisitString(p.String)
+	}
+	if p.typ == "StringList" || p.StringList != nil {
+		return visitor.VisitStringList(p.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+// Predefined top news sources per country.
+//
+// Format: start with the word `top`, followed by the number of desired sources, and then the two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Multiple countries with the number of top sources can be specified as a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"top 100 US"`
+// - `"top 33 AT"`
+// - `"top 50 US, top 20 GB"`
+// - `["top 50 US", "top 20 GB"]`
+type PredefinedSources struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewPredefinedSourcesFromString(value string) *PredefinedSources {
+	return &PredefinedSources{typ: "String", String: value}
+}
+
+func NewPredefinedSourcesFromStringList(value []string) *PredefinedSources {
+	return &PredefinedSources{typ: "StringList", StringList: value}
+}
+
+func (p *PredefinedSources) GetString() string {
+	if p == nil {
+		return ""
+	}
+	return p.String
+}
+
+func (p *PredefinedSources) GetStringList() []string {
+	if p == nil {
+		return nil
+	}
+	return p.StringList
+}
+
+func (p *PredefinedSources) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		p.typ = "String"
+		p.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		p.typ = "StringList"
+		p.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
+}
+
+func (p PredefinedSources) MarshalJSON() ([]byte, error) {
+	if p.typ == "String" || p.String != "" {
+		return json.Marshal(p.String)
+	}
+	if p.typ == "StringList" || p.StringList != nil {
+		return json.Marshal(p.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+type PredefinedSourcesVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (p *PredefinedSources) Accept(visitor PredefinedSourcesVisitor) error {
+	if p.typ == "String" || p.String != "" {
+		return visitor.VisitString(p.String)
+	}
+	if p.typ == "StringList" || p.StringList != nil {
+		return visitor.VisitStringList(p.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", p)
+}
+
+// The precision of the published date. There are three types:
+// - `full`: The day and time of an article is correctly identified with the appropriate timezone.
+// - `timezone unknown`: The day and time of an article is correctly identified without timezone.
+// - `date`: Only the day is identified without an exact time.
+type PublishedDatePrecision string
+
+const (
+	PublishedDatePrecisionFull            PublishedDatePrecision = "full"
+	PublishedDatePrecisionTimezoneUnknown PublishedDatePrecision = "timezone unknown"
+	PublishedDatePrecisionDate            PublishedDatePrecision = "date"
+)
+
+func NewPublishedDatePrecisionFromString(s string) (PublishedDatePrecision, error) {
+	switch s {
+	case "full":
+		return PublishedDatePrecisionFull, nil
+	case "timezone unknown":
+		return PublishedDatePrecisionTimezoneUnknown, nil
+	case "date":
+		return PublishedDatePrecisionDate, nil
+	}
+	var t PublishedDatePrecision
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (p PublishedDatePrecision) Ptr() *PublishedDatePrecision {
+	return &p
+}
+
+// The keyword(s) to search for in articles. Query syntax supports logical operators (`AND`, `OR`, `NOT`) and wildcards:
+//
+// - For an exact match, use double quotes. For example, `"technology news"`.
+// - Use `*` to search for any keyword.
+// - Use `+` to include and `-` to exclude specific words or phrases. For example, `+Apple`, `-Google`.
+// - Use `AND`, `OR`, and `NOT` to refine search results. For example, `technology AND (Apple OR Microsoft) NOT Google`.
+//
+// For more details, see [Advanced querying](/docs/v3/documentation/guides-and-concepts/advanced-querying).
+type Q = string
+
+// If true, limits the search to sources ranked in the top 1 million online websites. If false, includes unranked sources which are assigned a rank of 999999.
+type RankedOnly = bool
+
+// The article fields to search in. To search in multiple fields, use a comma-separated string.
+//
+// Example: `"title, summary"`
+//
+// **Note**: The `summary` option is available if NLP is enabled in your plan.
+//
+// Available options: `title`, `summary`, `content`.
+type SearchIn = string
+
+// The response model for the search requests applies to the `Search`, `Latest Headlines`, `Search by link`, and `Authors` endpoints. Response field behavior:
+// - Required fields are guaranteed to be present and non-null.
+// - Optional fields may be `null`/`undefined` if the data couldn't be extracted during processing.
+// - To access article properties in the `articles` response array, use array index notation. For example, `articles[n].title`, where `n` is the zero-based index of the article object (0, 1, 2, etc.).
+// - The `nlp` property within the article object `articles[n].nlp` is only available with NLP-enabled subscription plans.
+type SearchResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize  int           `json:"page_size" url:"page_size"`
+	Articles  *Articles     `json:"articles,omitempty" url:"articles,omitempty"`
+	UserInput *UserInputDto `json:"user_input,omitempty" url:"user_input,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SearchResponseDto) GetStatus() string {
+	if s == nil {
+		return ""
 	}
 	return s.Status
 }
 
-func (s *SearchResponse) GetTotalHits() int {
+func (s *SearchResponseDto) GetTotalHits() int {
 	if s == nil {
 		return 0
 	}
 	return s.TotalHits
 }
 
-func (s *SearchResponse) GetPage() int {
+func (s *SearchResponseDto) GetPage() int {
 	if s == nil {
 		return 0
 	}
 	return s.Page
 }
 
-func (s *SearchResponse) GetTotalPages() int {
+func (s *SearchResponseDto) GetTotalPages() int {
 	if s == nil {
 		return 0
 	}
 	return s.TotalPages
 }
 
-func (s *SearchResponse) GetPageSize() int {
+func (s *SearchResponseDto) GetPageSize() int {
 	if s == nil {
 		return 0
 	}
 	return s.PageSize
 }
 
-func (s *SearchResponse) GetArticles() []map[string]interface{} {
+func (s *SearchResponseDto) GetArticles() *Articles {
 	if s == nil {
 		return nil
 	}
 	return s.Articles
 }
 
-func (s *SearchResponse) GetUserInput() map[string]interface{} {
+func (s *SearchResponseDto) GetUserInput() *UserInputDto {
 	if s == nil {
 		return nil
 	}
 	return s.UserInput
 }
 
-func (s *SearchResponse) GetExtraProperties() map[string]interface{} {
+func (s *SearchResponseDto) GetExtraProperties() map[string]interface{} {
 	return s.extraProperties
 }
 
-func (s *SearchResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler SearchResponse
+func (s *SearchResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler SearchResponseDto
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*s = SearchResponse(value)
+	*s = SearchResponseDto(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *s)
 	if err != nil {
 		return err
@@ -1137,7 +3299,7 @@ func (s *SearchResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s *SearchResponse) String() string {
+func (s *SearchResponseDto) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -1149,56 +3311,42 @@ func (s *SearchResponse) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// SimilarDocument DTO class.
-type SimilarDocument struct {
-	Id    string  `json:"id" url:"id"`
-	Score float64 `json:"score" url:"score"`
-	Title string  `json:"title" url:"title"`
-	Link  string  `json:"link" url:"link"`
+// Sentiment scores for the article's title and content.
+type SentimentScores struct {
+	// The sentiment score for the article title (-1.0 to 1.0).
+	Title *float64 `json:"title,omitempty" url:"title,omitempty"`
+	// The sentiment score for the article content (-1.0 to 1.0).
+	Content *float64 `json:"content,omitempty" url:"content,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (s *SimilarDocument) GetId() string {
+func (s *SentimentScores) GetTitle() *float64 {
 	if s == nil {
-		return ""
-	}
-	return s.Id
-}
-
-func (s *SimilarDocument) GetScore() float64 {
-	if s == nil {
-		return 0
-	}
-	return s.Score
-}
-
-func (s *SimilarDocument) GetTitle() string {
-	if s == nil {
-		return ""
+		return nil
 	}
 	return s.Title
 }
 
-func (s *SimilarDocument) GetLink() string {
+func (s *SentimentScores) GetContent() *float64 {
 	if s == nil {
-		return ""
+		return nil
 	}
-	return s.Link
+	return s.Content
 }
 
-func (s *SimilarDocument) GetExtraProperties() map[string]interface{} {
+func (s *SentimentScores) GetExtraProperties() map[string]interface{} {
 	return s.extraProperties
 }
 
-func (s *SimilarDocument) UnmarshalJSON(data []byte) error {
-	type unmarshaler SimilarDocument
+func (s *SentimentScores) UnmarshalJSON(data []byte) error {
+	type unmarshaler SentimentScores
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*s = SimilarDocument(value)
+	*s = SentimentScores(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *s)
 	if err != nil {
 		return err
@@ -1208,7 +3356,7 @@ func (s *SimilarDocument) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s *SimilarDocument) String() string {
+func (s *SentimentScores) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -1220,134 +3368,381 @@ func (s *SimilarDocument) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-type ValidationError struct {
-	Loc  []*ValidationErrorLocItem `json:"loc,omitempty" url:"loc,omitempty"`
-	Msg  string                    `json:"msg" url:"msg"`
-	Type string                    `json:"type" url:"type"`
+// The sorting order of the results. Possible values are:
+// - `relevancy`: The most relevant results first.
+// - `date`: The most recently published results first.
+// - `rank`: The results from the highest-ranked sources first.
+type SortBy string
 
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
+const (
+	SortByRelevancy SortBy = "relevancy"
+	SortByDate      SortBy = "date"
+	SortByRank      SortBy = "rank"
+)
+
+func NewSortByFromString(s string) (SortBy, error) {
+	switch s {
+	case "relevancy":
+		return SortByRelevancy, nil
+	case "date":
+		return SortByDate, nil
+	case "rank":
+		return SortByRank, nil
+	}
+	var t SortBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (v *ValidationError) GetLoc() []*ValidationErrorLocItem {
-	if v == nil {
-		return nil
-	}
-	return v.Loc
+func (s SortBy) Ptr() *SortBy {
+	return &s
 }
 
-func (v *ValidationError) GetMsg() string {
-	if v == nil {
-		return ""
-	}
-	return v.Msg
-}
-
-func (v *ValidationError) GetType() string {
-	if v == nil {
-		return ""
-	}
-	return v.Type
-}
-
-func (v *ValidationError) GetExtraProperties() map[string]interface{} {
-	return v.extraProperties
-}
-
-func (v *ValidationError) UnmarshalJSON(data []byte) error {
-	type unmarshaler ValidationError
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = ValidationError(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *v)
-	if err != nil {
-		return err
-	}
-	v.extraProperties = extraProperties
-	v.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (v *ValidationError) String() string {
-	if len(v.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(v); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", v)
-}
-
-type ValidationErrorLocItem struct {
-	String  string
-	Integer int
+// Specifies terms to search within the source names. To specify multiple terms, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"sport, tech"`
+// - `["sport", "tech"]`
+//
+// **Note**: The search does not require an exact match and returns all sources that include the specified terms anywhere in their names. You can use any word, phrase, or outlet name, such as `"sport"`, or `"new york times"`. For example, using `"sport"` as a term returns sources like `"Motorsport"`, `"Dot Esport"`, and `"Tuttosport"`.
+type SourceName struct {
+	String     string
+	StringList []string
 
 	typ string
 }
 
-func NewValidationErrorLocItemFromString(value string) *ValidationErrorLocItem {
-	return &ValidationErrorLocItem{typ: "String", String: value}
+func NewSourceNameFromString(value string) *SourceName {
+	return &SourceName{typ: "String", String: value}
 }
 
-func NewValidationErrorLocItemFromInteger(value int) *ValidationErrorLocItem {
-	return &ValidationErrorLocItem{typ: "Integer", Integer: value}
+func NewSourceNameFromStringList(value []string) *SourceName {
+	return &SourceName{typ: "StringList", StringList: value}
 }
 
-func (v *ValidationErrorLocItem) GetString() string {
-	if v == nil {
+func (s *SourceName) GetString() string {
+	if s == nil {
 		return ""
 	}
-	return v.String
+	return s.String
 }
 
-func (v *ValidationErrorLocItem) GetInteger() int {
-	if v == nil {
-		return 0
+func (s *SourceName) GetStringList() []string {
+	if s == nil {
+		return nil
 	}
-	return v.Integer
+	return s.StringList
 }
 
-func (v *ValidationErrorLocItem) UnmarshalJSON(data []byte) error {
+func (s *SourceName) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		v.typ = "String"
-		v.String = valueString
+		s.typ = "String"
+		s.String = valueString
 		return nil
 	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		v.typ = "Integer"
-		v.Integer = valueInteger
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		s.typ = "StringList"
+		s.StringList = valueStringList
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
-func (v ValidationErrorLocItem) MarshalJSON() ([]byte, error) {
-	if v.typ == "String" || v.String != "" {
-		return json.Marshal(v.String)
+func (s SourceName) MarshalJSON() ([]byte, error) {
+	if s.typ == "String" || s.String != "" {
+		return json.Marshal(s.String)
 	}
-	if v.typ == "Integer" || v.Integer != 0 {
-		return json.Marshal(v.Integer)
+	if s.typ == "StringList" || s.StringList != nil {
+		return json.Marshal(s.StringList)
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", v)
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
-type ValidationErrorLocItemVisitor interface {
+type SourceNameVisitor interface {
 	VisitString(string) error
-	VisitInteger(int) error
+	VisitStringList([]string) error
 }
 
-func (v *ValidationErrorLocItem) Accept(visitor ValidationErrorLocItemVisitor) error {
-	if v.typ == "String" || v.String != "" {
-		return visitor.VisitString(v.String)
+func (s *SourceName) Accept(visitor SourceNameVisitor) error {
+	if s.typ == "String" || s.String != "" {
+		return visitor.VisitString(s.String)
 	}
-	if v.typ == "Integer" || v.Integer != 0 {
-		return visitor.VisitInteger(v.Integer)
+	if s.typ == "StringList" || s.StringList != nil {
+		return visitor.VisitStringList(s.StringList)
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", v)
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }
+
+// One or more news sources to narrow down the search. The format must be a domain URL. Subdomains, such as `finance.yahoo.com`, are also acceptable. To specify multiple sources, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"nytimes.com, theguardian.com"`
+// - `["nytimes.com", "theguardian.com"]`
+type Sources struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewSourcesFromString(value string) *Sources {
+	return &Sources{typ: "String", String: value}
+}
+
+func NewSourcesFromStringList(value []string) *Sources {
+	return &Sources{typ: "StringList", StringList: value}
+}
+
+func (s *Sources) GetString() string {
+	if s == nil {
+		return ""
+	}
+	return s.String
+}
+
+func (s *Sources) GetStringList() []string {
+	if s == nil {
+		return nil
+	}
+	return s.StringList
+}
+
+func (s *Sources) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		s.typ = "String"
+		s.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		s.typ = "StringList"
+		s.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
+}
+
+func (s Sources) MarshalJSON() ([]byte, error) {
+	if s.typ == "String" || s.String != "" {
+		return json.Marshal(s.String)
+	}
+	if s.typ == "StringList" || s.StringList != nil {
+		return json.Marshal(s.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
+}
+
+type SourcesVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (s *Sources) Accept(visitor SourcesVisitor) error {
+	if s.typ == "String" || s.String != "" {
+		return visitor.VisitString(s.String)
+	}
+	if s.typ == "StringList" || s.StringList != nil {
+		return visitor.VisitStringList(s.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
+}
+
+// Filters articles based on their general topic, as determined by NLP analysis. To select multiple themes, use a comma-separated string or an array of strings.
+//
+// Examples:
+// - `"Finance, Tech"`
+// - `["Finance", "Tech"]`
+//
+// **Note**: The `theme` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+//
+// Available options: `Business`, `Economics`, `Entertainment`, `Finance`, `Health`, `Politics`, `Science`, `Sports`, `Tech`, `Crime`, `Financial Crime`, `Lifestyle`, `Automotive`, `Travel`, `Weather`, `General`.
+type Theme struct {
+	String     string
+	StringList []string
+
+	typ string
+}
+
+func NewThemeFromString(value string) *Theme {
+	return &Theme{typ: "String", String: value}
+}
+
+func NewThemeFromStringList(value []string) *Theme {
+	return &Theme{typ: "StringList", StringList: value}
+}
+
+func (t *Theme) GetString() string {
+	if t == nil {
+		return ""
+	}
+	return t.String
+}
+
+func (t *Theme) GetStringList() []string {
+	if t == nil {
+		return nil
+	}
+	return t.StringList
+}
+
+func (t *Theme) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typ = "String"
+		t.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		t.typ = "StringList"
+		t.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t Theme) MarshalJSON() ([]byte, error) {
+	if t.typ == "String" || t.String != "" {
+		return json.Marshal(t.String)
+	}
+	if t.typ == "StringList" || t.StringList != nil {
+		return json.Marshal(t.StringList)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
+}
+
+type ThemeVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (t *Theme) Accept(visitor ThemeVisitor) error {
+	if t.typ == "String" || t.String != "" {
+		return visitor.VisitString(t.String)
+	}
+	if t.typ == "StringList" || t.StringList != nil {
+		return visitor.VisitStringList(t.StringList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
+}
+
+// Filters articles based on the maximum sentiment score of their titles.
+//
+// Range is `-1.0` to `1.0`, where:
+// - Negative values indicate negative sentiment.
+// - Positive values indicate positive sentiment.
+// - Values close to 0 indicate neutral sentiment.
+//
+// **Note**: The `title_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+type TitleSentimentMax = float64
+
+// Filters articles based on the minimum sentiment score of their titles.
+//
+// Range is `-1.0` to `1.0`, where:
+// - Negative values indicate negative sentiment.
+// - Positive values indicate positive sentiment.
+// - Values close to 0 indicate neutral sentiment.
+//
+// **Note**: The `title_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+//
+// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+type TitleSentimentMin = float64
+
+// The ending point in time to search up to. Accepts date-time strings in ISO 8601 format and plain text strings. The default time zone is UTC.
+//
+// Formats with examples:
+// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+// - YYYY-MM-dd: `2024-07-01`
+// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+// - YYYY/mm/dd: `2024/07/01`
+// - English phrases: `1 day ago`, `today`
+//
+// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
+type To struct {
+	DateTime time.Time
+	String   string
+
+	typ string
+}
+
+func NewToFromDateTime(value time.Time) *To {
+	return &To{typ: "DateTime", DateTime: value}
+}
+
+func NewToFromString(value string) *To {
+	return &To{typ: "String", String: value}
+}
+
+func (t *To) GetDateTime() time.Time {
+	if t == nil {
+		return time.Time{}
+	}
+	return t.DateTime
+}
+
+func (t *To) GetString() string {
+	if t == nil {
+		return ""
+	}
+	return t.String
+}
+
+func (t *To) UnmarshalJSON(data []byte) error {
+	var valueDateTime *internal.DateTime
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		t.typ = "DateTime"
+		t.DateTime = valueDateTime.Time()
+		return nil
+	}
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typ = "String"
+		t.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t To) MarshalJSON() ([]byte, error) {
+	if t.typ == "DateTime" || !t.DateTime.IsZero() {
+		return json.Marshal(internal.NewDateTime(t.DateTime))
+	}
+	if t.typ == "String" || t.String != "" {
+		return json.Marshal(t.String)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
+}
+
+type ToVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitString(string) error
+}
+
+func (t *To) Accept(visitor ToVisitor) error {
+	if t.typ == "DateTime" || !t.DateTime.IsZero() {
+		return visitor.VisitDateTime(t.DateTime)
+	}
+	if t.typ == "String" || t.String != "" {
+		return visitor.VisitString(t.String)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
+}
+
+// The highest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+type ToRank = int
+
+// The user input parameters for the request.
+type UserInputDto = map[string]interface{}
+
+// The maximum number of words an article can contain.
+// To be used for avoiding articles with large content.
+type WordCountMax = int
+
+// The minimum number of words an article must contain. To be used for avoiding articles with small content.
+type WordCountMin = int
