@@ -31,7 +31,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-// This endpoint allows you to search for articles by author. You need to specify the author name. You can also filter by language, country, source, and more.
+// Searches for articles written by a specified author. You can filter results by language, country, source, and more.
 func (c *Client) Get(
 	ctx context.Context,
 	request *newscatchergo.AuthorsGetRequest,
@@ -56,8 +56,38 @@ func (c *Client) Get(
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
+				APIError: apiError,
+			}
+		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
 				APIError: apiError,
 			}
 		},
@@ -83,10 +113,10 @@ func (c *Client) Get(
 	return response, nil
 }
 
-// This endpoint allows you to search for articles by author. You need to specify the author name. You can also filter by language, country, source, and more.
+// Searches for articles by author. You can filter results by language, country, source, and more.
 func (c *Client) Post(
 	ctx context.Context,
-	request *newscatchergo.AuthorSearchRequest,
+	request *newscatchergo.AuthorsPostRequest,
 	opts ...option.RequestOption,
 ) (*newscatchergo.AuthorsPostResponse, error) {
 	options := core.NewRequestOptions(opts...)
@@ -102,8 +132,38 @@ func (c *Client) Post(
 	)
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
+				APIError: apiError,
+			}
+		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
 				APIError: apiError,
 			}
 		},

@@ -31,11 +31,11 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-// This endpoint allows you to get info about your subscription plan.
+// Retrieves information about your subscription plan.
 func (c *Client) Get(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*newscatchergo.SubscriptionResponse, error) {
+) (*newscatchergo.SubscriptionResponseDto, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -48,14 +48,44 @@ func (c *Client) Get(
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
+				APIError: apiError,
+			}
+		},
 	}
 
-	var response *newscatchergo.SubscriptionResponse
+	var response *newscatchergo.SubscriptionResponseDto
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -75,11 +105,11 @@ func (c *Client) Get(
 	return response, nil
 }
 
-// This endpoint allows you to get info about your subscription plan.
+// Retrieves information about your subscription plan.
 func (c *Client) Post(
 	ctx context.Context,
 	opts ...option.RequestOption,
-) (*newscatchergo.SubscriptionResponse, error) {
+) (*newscatchergo.SubscriptionResponseDto, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -92,14 +122,44 @@ func (c *Client) Post(
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
+				APIError: apiError,
+			}
+		},
 	}
 
-	var response *newscatchergo.SubscriptionResponse
+	var response *newscatchergo.SubscriptionResponseDto
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

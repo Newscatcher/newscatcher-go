@@ -3,6 +3,7 @@
 package client
 
 import (
+	aggregation "github.com/Newscatcher/newscatcher-go/aggregation"
 	authors "github.com/Newscatcher/newscatcher-go/authors"
 	core "github.com/Newscatcher/newscatcher-go/core"
 	internal "github.com/Newscatcher/newscatcher-go/internal"
@@ -27,6 +28,7 @@ type Client struct {
 	SearchLink      *searchlink.Client
 	Searchsimilar   *searchsimilar.Client
 	Sources         *sources.Client
+	Aggregation     *aggregation.Client
 	Subscription    *subscription.Client
 }
 
@@ -47,6 +49,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		SearchLink:      searchlink.NewClient(opts...),
 		Searchsimilar:   searchsimilar.NewClient(opts...),
 		Sources:         sources.NewClient(opts...),
+		Aggregation:     aggregation.NewClient(opts...),
 		Subscription:    subscription.NewClient(opts...),
 	}
 }

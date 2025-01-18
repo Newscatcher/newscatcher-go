@@ -10,437 +10,1126 @@ import (
 )
 
 type SearchSimilarGetRequest struct {
-	Q                       string   `json:"-" url:"q"`
-	SearchIn                *string  `json:"-" url:"search_in,omitempty"`
-	IncludeSimilarDocuments *bool    `json:"-" url:"include_similar_documents,omitempty"`
-	SimilarDocumentsNumber  *int     `json:"-" url:"similar_documents_number,omitempty"`
-	SimilarDocumentsFields  *string  `json:"-" url:"similar_documents_fields,omitempty"`
-	PredefinedSources       string   `json:"-" url:"predefined_sources"`
-	Sources                 string   `json:"-" url:"sources"`
-	NotSources              string   `json:"-" url:"not_sources"`
-	Lang                    string   `json:"-" url:"lang"`
-	NotLang                 string   `json:"-" url:"not_lang"`
-	Countries               string   `json:"-" url:"countries"`
-	NotCountries            string   `json:"-" url:"not_countries"`
-	From                    *string  `json:"-" url:"from_,omitempty"`
-	To                      *string  `json:"-" url:"to_,omitempty"`
-	ByParseDate             *bool    `json:"-" url:"by_parse_date,omitempty"`
-	PublishedDatePrecision  *string  `json:"-" url:"published_date_precision,omitempty"`
-	SortBy                  *string  `json:"-" url:"sort_by,omitempty"`
-	RankedOnly              *string  `json:"-" url:"ranked_only,omitempty"`
-	FromRank                *int     `json:"-" url:"from_rank,omitempty"`
-	ToRank                  *int     `json:"-" url:"to_rank,omitempty"`
-	IsHeadline              *bool    `json:"-" url:"is_headline,omitempty"`
-	IsOpinion               *bool    `json:"-" url:"is_opinion,omitempty"`
-	IsPaidContent           *bool    `json:"-" url:"is_paid_content,omitempty"`
-	ParentUrl               string   `json:"-" url:"parent_url"`
-	AllLinks                string   `json:"-" url:"all_links"`
-	AllDomainLinks          string   `json:"-" url:"all_domain_links"`
-	WordCountMin            *int     `json:"-" url:"word_count_min,omitempty"`
-	WordCountMax            *int     `json:"-" url:"word_count_max,omitempty"`
-	Page                    *int     `json:"-" url:"page,omitempty"`
-	PageSize                *int     `json:"-" url:"page_size,omitempty"`
-	IncludeNlpData          *bool    `json:"-" url:"include_nlp_data,omitempty"`
-	HasNlp                  *bool    `json:"-" url:"has_nlp,omitempty"`
-	Theme                   *string  `json:"-" url:"theme,omitempty"`
-	NotTheme                *string  `json:"-" url:"not_theme,omitempty"`
-	TitleSentimentMin       *float64 `json:"-" url:"title_sentiment_min,omitempty"`
-	TitleSentimentMax       *float64 `json:"-" url:"title_sentiment_max,omitempty"`
-	ContentSentimentMin     *float64 `json:"-" url:"content_sentiment_min,omitempty"`
-	ContentSentimentMax     *float64 `json:"-" url:"content_sentiment_max,omitempty"`
-	IptcTags                string   `json:"-" url:"iptc_tags"`
-	NotIptcTags             string   `json:"-" url:"not_iptc_tags"`
+	// The keyword(s) to search for in articles. Query syntax supports logical operators (`AND`, `OR`, `NOT`) and wildcards:
+	//
+	//   - For an exact match, use double quotes. For example, `"technology news"`.
+	//   - Use `*` to search for any keyword.
+	//   - Use `+` to include and `-` to exclude specific words or phrases.
+	//     For example, `+Apple`, `-Google`.
+	//   - Use `AND`, `OR`, and `NOT` to refine search results.
+	//     For example, `technology AND (Apple OR Microsoft) NOT Google`.
+	//
+	// For more details, see [Advanced querying](/docs/v3/documentation/guides-and-concepts/advanced-querying).
+	Q string `json:"-" url:"q"`
+	// The article fields to search in. To search in multiple fields, use a comma-separated string.
+	//
+	// Example: `"title, summary"`
+	//
+	// **Note**: The `summary` option is available if NLP is enabled in your plan.
+	//
+	// Available options: `title`, `summary`, `content`.
+	SearchIn *string `json:"-" url:"search_in,omitempty"`
+	// If true, includes similar documents in the response.
+	IncludeSimilarDocuments *bool `json:"-" url:"include_similar_documents,omitempty"`
+	// The number of similar documents to return.
+	SimilarDocumentsNumber *int `json:"-" url:"similar_documents_number,omitempty"`
+	// The fields to consider for finding similar documents.
+	SimilarDocumentsFields *string `json:"-" url:"similar_documents_fields,omitempty"`
+	// Predefined top news sources per country.
+	//
+	// Format: start with the word `top`, followed by the number of desired sources, and then the two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Multiple countries with the number of top sources can be specified as a comma-separated string.
+	//
+	// Examples:
+	// - `"top 100 US"`
+	// - `"top 33 AT"`
+	// - `"top 50 US, top 20 GB"`
+	// - `"top 33 AT, top 50 IT"`
+	PredefinedSources *string `json:"-" url:"predefined_sources,omitempty"`
+	// One or more news sources to narrow down the search. The format must be a domain URL. Subdomains, such as `finance.yahoo.com`, are also acceptable.To specify multiple sources, use a comma-separated string.
+	//
+	// Examples:
+	// - `"nytimes.com"`
+	// - `"theguardian.com, finance.yahoo.com"`
+	Sources *string `json:"-" url:"sources,omitempty"`
+	// The news sources to exclude from the search. To exclude multiple sources, use a comma-separated string.
+	//
+	// Example: `"cnn.com, wsj.com"`
+	NotSources *string `json:"-" url:"not_sources,omitempty"`
+	// The language(s) of the search. The only accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To select multiple languages, use a comma-separated string.
+	//
+	// Example: `"en, es"`
+	//
+	// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+	Lang *string `json:"-" url:"lang,omitempty"`
+	// The language(s) to exclude from the search. The accepted format is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) code. To exclude multiple languages, use a comma-separated string.
+	//
+	// Example: `"fr, de"`
+	//
+	// To learn more, see [Enumerated parameters > Language](/docs/v3/api-reference/overview/enumerated-parameters#language-lang-and-not-lang).
+	NotLang *string `json:"-" url:"not_lang,omitempty"`
+	// The countries where the news publisher is located. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To select multiple countries, use a comma-separated string.
+	//
+	// Example: `"US, CA"`
+	//
+	// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+	Countries *string `json:"-" url:"countries,omitempty"`
+	// The publisher location countries to exclude from the search. The accepted format is the two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code. To exclude multiple countries, use a comma-separated string.
+	//
+	// Example:`"US, CA"`
+	//
+	// To learn more, see [Enumerated parameters > Country](/docs/v3/api-reference/overview/enumerated-parameters#country-country-and-not-country).
+	NotCountries *string `json:"-" url:"not_countries,omitempty"`
+	// The starting point in time to search from. Accepts date-time strings in ISO 8601 format and plain text. The default time zone is UTC.
+	//
+	// Formats with examples:
+	// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+	// - YYYY-MM-dd: `2024-07-01`
+	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+	// - YYYY/mm/dd: `2024/07/01`
+	// - English phrases: `1 day ago`, `today`
+	//
+	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
+	From *time.Time `json:"-" url:"from_,omitempty"`
+	// The ending point in time to search up to. Accepts date-time strings in ISO 8601 format and plain text. The default time zone is UTC.
+	//
+	// Formats with examples:
+	// - YYYY-mm-ddTHH:MM:SS: `2024-07-01T00:00:00`
+	// - YYYY-MM-dd: `2024-07-01`
+	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
+	// - YYYY/mm/dd: `2024/07/01`
+	// - English phrases: `1 day ago`, `today`
+	//
+	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
+	To *time.Time `json:"-" url:"to_,omitempty"`
+	// If true, the `from_` and `to_` parameters use article parse dates instead of published dates. Additionally, the `parse_date` variable is added to the output for each article object.
+	ByParseDate *bool `json:"-" url:"by_parse_date,omitempty"`
+	// The precision of the published date. There are three types:
+	// - `full`: The day and time of an article is correctly identified with the appropriate timezone.
+	// - `timezone unknown`: The day and time of an article is correctly identified without timezone.
+	// - `date`: Only the day is identified without an exact time.
+	PublishedDatePrecision *SearchSimilarGetRequestPublishedDatePrecision `json:"-" url:"published_date_precision,omitempty"`
+	// The sorting order of the results. Possible values are:
+	// - `relevancy`: The most relevant results first.
+	// - `date`: The most recently published results first.
+	// - `rank`: The results from the highest-ranked sources first.
+	SortBy *SearchSimilarGetRequestSortBy `json:"-" url:"sort_by,omitempty"`
+	// If true, limits the search to sources ranked in the top 1 million online websites. If false, includes unranked sources which are assigned a rank of 999999.
+	RankedOnly *bool `json:"-" url:"ranked_only,omitempty"`
+	// The lowest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+	FromRank *int `json:"-" url:"from_rank,omitempty"`
+	// The highest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
+	ToRank *int `json:"-" url:"to_rank,omitempty"`
+	// If true, only returns articles that were posted on the home page of a given news domain.
+	IsHeadline *bool `json:"-" url:"is_headline,omitempty"`
+	// If true, returns only opinion pieces. If false, excludes opinion-based articles and returns news only.
+	IsOpinion *bool `json:"-" url:"is_opinion,omitempty"`
+	// If false, returns only articles that have publicly available complete content. Some publishers partially block content, so this setting ensures that only full articles are retrieved.
+	IsPaidContent *bool `json:"-" url:"is_paid_content,omitempty"`
+	// The categorical URL(s) to filter your search. To filter your search by multiple categorical URLs, use a comma-separated string.
+	//
+	// Example: `"wsj.com/politics, wsj.com/tech"`
+	ParentUrl *string `json:"-" url:"parent_url,omitempty"`
+	// The complete URL(s) mentioned in the article. For multiple URLs, use a comma-separated string.
+	//
+	// Example: `"https://aiindex.stanford.edu/report, https://www.stateof.ai"`
+	//
+	// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+	AllLinks *string `json:"-" url:"all_links,omitempty"`
+	// The domain(s) mentioned in the article. For multiple domains, use a comma-separated string.
+	//
+	// Example: `"who.int, nih.gov"`
+	//
+	// For more details, see [Search by URL](/docs/v3/documentation/how-to/search-by-url).
+	AllDomainLinks *string `json:"-" url:"all_domain_links,omitempty"`
+	// The minimum number of words an article must contain. To be used for avoiding articles with small content.
+	WordCountMin *int `json:"-" url:"word_count_min,omitempty"`
+	// The maximum number of words an article can contain. To be used for avoiding articles with large content.
+	WordCountMax *int `json:"-" url:"word_count_max,omitempty"`
+	// The page number to scroll through the results. Use for pagination, as a single API response can return up to 1,000 articles.
+	//
+	// For details, see [How to paginate large datasets](https://www.newscatcherapi.com/docs/v3/documentation/how-to/paginate-large-datasets).
+	Page *int `json:"-" url:"page,omitempty"`
+	// The number of articles to return per page.
+	PageSize *int `json:"-" url:"page_size,omitempty"`
+	// If true, includes an NLP layer with each article in the response. This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
+	//
+	// The NLP layer includes:
+	// - Theme: General topic of the article.
+	// - Summary: A concise overview of the article content.
+	// - Sentiment: Separate scores for title and content (range: -1 to 1).
+	// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
+	// - IPTC tags: Standardized news category tags.
+	// - IAB tags: Content categories for digital advertising.
+	//
+	// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	IncludeNlpData *bool `json:"-" url:"include_nlp_data,omitempty"`
+	// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
+	//
+	// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	HasNlp *bool `json:"-" url:"has_nlp,omitempty"`
+	// Filters articles based on their general topic, as determined by NLP analysis. To select multiple themes, use a comma-separated string.
+	//
+	// Example: `"Finance, Tech"`
+	//
+	// **Note**: The `theme` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	//
+	// Available options: `Business`, `Economics`, `Entertainment`, `Finance`, `Health`, `Politics`, `Science`, `Sports`, `Tech`, `Crime`, `Financial Crime`, `Lifestyle`, `Automotive`, `Travel`, `Weather`, `General`.
+	Theme *string `json:"-" url:"theme,omitempty"`
+	// Inverse of the `theme` parameter. Excludes articles based on their general topic, as determined by NLP analysis. To exclude multiple themes, use a comma-separated string.
+	//
+	// Example: `"Crime, Tech"`
+	//
+	// **Note**: The `not_theme` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	NotTheme *string `json:"-" url:"not_theme,omitempty"`
+	// The name of person, organization, location, product or other named entity to search for. To specify multiple names use a comma-separated string.
+	//
+	// Example: `"Tesla, Amazon"`
+	NerName *string `json:"-" url:"ner_name,omitempty"`
+	// Filters articles based on the minimum sentiment score of their titles.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `title_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	TitleSentimentMin *float64 `json:"-" url:"title_sentiment_min,omitempty"`
+	// Filters articles based on the maximum sentiment score of their titles.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `title_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	TitleSentimentMax *float64 `json:"-" url:"title_sentiment_max,omitempty"`
+	// Filters articles based on the minimum sentiment score of their content.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `content_sentiment_min` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	ContentSentimentMin *float64 `json:"-" url:"content_sentiment_min,omitempty"`
+	// Filters articles based on the maximum sentiment score of their content.
+	//
+	// Range is `-1.0` to `1.0`, where:
+	// - Negative values indicate negative sentiment.
+	// - Positive values indicate positive sentiment.
+	// - Values close to 0 indicate neutral sentiment.
+	//
+	// **Note**: The `content_sentiment_max` parameter is only available if NLP is included in your subscription plan.
+	//
+	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
+	ContentSentimentMax *float64 `json:"-" url:"content_sentiment_max,omitempty"`
+	// Filters articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags, use a comma-separated string of tag IDs.
+	//
+	// Example: `"20000199, 20000209"`
+	//
+	// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+	IptcTags *string `json:"-" url:"iptc_tags,omitempty"`
+	// Inverse of the `iptc_tags` parameter. Excludes articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags to exclude, use a comma-separated string of tag IDs.
+	//
+	// Example: `"20000205, 20000209"`
+	//
+	// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+	//
+	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
+	NotIptcTags *string `json:"-" url:"not_iptc_tags,omitempty"`
+	// Filters articles based on provided taxonomy that is tailored to your specific needs and is accessible only with your API key. To specify tags, use the following pattern:
+	//
+	// - `custom_tags.taxonomy=Tag1,Tag2,Tag3`, where `taxonomy` is the taxonomy name and `Tag1,Tag2,Tag3` is a comma-separated list of tags.
+	//
+	// Example: `custom_tags.industry="Manufacturing, Supply Chain, Logistics"`
+	//
+	// To learn more, see the [Custom tags](/docs/v3/documentation/guides-and-concepts/custom-tags).
+	CustomTags *string `json:"-" url:"custom_tags,omitempty"`
 }
 
-type MoreLikeThisRequest struct {
-	Q                       string                         `json:"q" url:"-"`
-	SearchIn                *string                        `json:"search_in,omitempty" url:"-"`
-	IncludeSimilarDocuments *bool                          `json:"include_similar_documents,omitempty" url:"-"`
-	SimilarDocumentsNumber  *int                           `json:"similar_documents_number,omitempty" url:"-"`
-	SimilarDocumentsFields  *string                        `json:"similar_documents_fields,omitempty" url:"-"`
-	PredefinedSources       interface{}                    `json:"predefined_sources,omitempty" url:"-"`
-	Sources                 interface{}                    `json:"sources,omitempty" url:"-"`
-	NotSources              interface{}                    `json:"not_sources,omitempty" url:"-"`
-	Lang                    interface{}                    `json:"lang,omitempty" url:"-"`
-	NotLang                 interface{}                    `json:"not_lang,omitempty" url:"-"`
-	Countries               interface{}                    `json:"countries,omitempty" url:"-"`
-	NotCountries            interface{}                    `json:"not_countries,omitempty" url:"-"`
-	From                    *MoreLikeThisRequestFrom       `json:"from_,omitempty" url:"-"`
-	To                      *MoreLikeThisRequestTo         `json:"to_,omitempty" url:"-"`
-	ByParseDate             *bool                          `json:"by_parse_date,omitempty" url:"-"`
-	PublishedDatePrecision  *string                        `json:"published_date_precision,omitempty" url:"-"`
-	SortBy                  *string                        `json:"sort_by,omitempty" url:"-"`
-	RankedOnly              *MoreLikeThisRequestRankedOnly `json:"ranked_only,omitempty" url:"-"`
-	FromRank                *int                           `json:"from_rank,omitempty" url:"-"`
-	ToRank                  *int                           `json:"to_rank,omitempty" url:"-"`
-	IsHeadline              *bool                          `json:"is_headline,omitempty" url:"-"`
-	IsOpinion               *bool                          `json:"is_opinion,omitempty" url:"-"`
-	IsPaidContent           *bool                          `json:"is_paid_content,omitempty" url:"-"`
-	ParentUrl               interface{}                    `json:"parent_url,omitempty" url:"-"`
-	AllLinks                interface{}                    `json:"all_links,omitempty" url:"-"`
-	AllDomainLinks          interface{}                    `json:"all_domain_links,omitempty" url:"-"`
-	WordCountMin            *int                           `json:"word_count_min,omitempty" url:"-"`
-	WordCountMax            *int                           `json:"word_count_max,omitempty" url:"-"`
-	Page                    *int                           `json:"page,omitempty" url:"-"`
-	PageSize                *int                           `json:"page_size,omitempty" url:"-"`
-	IncludeNlpData          *bool                          `json:"include_nlp_data,omitempty" url:"-"`
-	HasNlp                  *bool                          `json:"has_nlp,omitempty" url:"-"`
-	Theme                   *string                        `json:"theme,omitempty" url:"-"`
-	NotTheme                *string                        `json:"not_theme,omitempty" url:"-"`
-	TitleSentimentMin       *float64                       `json:"title_sentiment_min,omitempty" url:"-"`
-	TitleSentimentMax       *float64                       `json:"title_sentiment_max,omitempty" url:"-"`
-	ContentSentimentMin     *float64                       `json:"content_sentiment_min,omitempty" url:"-"`
-	ContentSentimentMax     *float64                       `json:"content_sentiment_max,omitempty" url:"-"`
-	IptcTags                interface{}                    `json:"iptc_tags,omitempty" url:"-"`
-	NotIptcTags             interface{}                    `json:"not_iptc_tags,omitempty" url:"-"`
+type SearchSimilarPostRequest struct {
+	Q                       Q                        `json:"q" url:"-"`
+	SearchIn                *SearchIn                `json:"search_in,omitempty" url:"-"`
+	IncludeSimilarDocuments *IncludeSimilarDocuments `json:"include_similar_documents,omitempty" url:"-"`
+	SimilarDocumentsNumber  *SimilarDocumentsNumber  `json:"similar_documents_number,omitempty" url:"-"`
+	SimilarDocumentsFields  *SimilarDocumentsFields  `json:"similar_documents_fields,omitempty" url:"-"`
+	PredefinedSources       *PredefinedSources       `json:"predefined_sources,omitempty" url:"-"`
+	Sources                 *Sources                 `json:"sources,omitempty" url:"-"`
+	NotSources              *NotSources              `json:"not_sources,omitempty" url:"-"`
+	Lang                    *Lang                    `json:"lang,omitempty" url:"-"`
+	NotLang                 *NotLang                 `json:"not_lang,omitempty" url:"-"`
+	Countries               *Countries               `json:"countries,omitempty" url:"-"`
+	NotCountries            *NotCountries            `json:"not_countries,omitempty" url:"-"`
+	From                    *From                    `json:"from_,omitempty" url:"-"`
+	To                      *To                      `json:"to_,omitempty" url:"-"`
+	ByParseDate             *ByParseDate             `json:"by_parse_date,omitempty" url:"-"`
+	PublishedDatePrecision  *PublishedDatePrecision  `json:"published_date_precision,omitempty" url:"-"`
+	SortBy                  *SortBy                  `json:"sort_by,omitempty" url:"-"`
+	RankedOnly              *RankedOnly              `json:"ranked_only,omitempty" url:"-"`
+	FromRank                *FromRank                `json:"from_rank,omitempty" url:"-"`
+	ToRank                  *ToRank                  `json:"to_rank,omitempty" url:"-"`
+	IsHeadline              *IsHeadline              `json:"is_headline,omitempty" url:"-"`
+	IsOpinion               *IsOpinion               `json:"is_opinion,omitempty" url:"-"`
+	IsPaidContent           *IsPaidContent           `json:"is_paid_content,omitempty" url:"-"`
+	ParentUrl               *ParentUrl               `json:"parent_url,omitempty" url:"-"`
+	AllLinks                *AllLinks                `json:"all_links,omitempty" url:"-"`
+	AllDomainLinks          *AllDomainLinks          `json:"all_domain_links,omitempty" url:"-"`
+	WordCountMin            *WordCountMin            `json:"word_count_min,omitempty" url:"-"`
+	WordCountMax            *WordCountMax            `json:"word_count_max,omitempty" url:"-"`
+	Page                    *Page                    `json:"page,omitempty" url:"-"`
+	PageSize                *PageSize                `json:"page_size,omitempty" url:"-"`
+	IncludeNlpData          *IncludeNlpData          `json:"include_nlp_data,omitempty" url:"-"`
+	HasNlp                  *HasNlp                  `json:"has_nlp,omitempty" url:"-"`
+	Theme                   *Theme                   `json:"theme,omitempty" url:"-"`
+	NotTheme                *NotTheme                `json:"not_theme,omitempty" url:"-"`
+	NerName                 *NerName                 `json:"ner_name,omitempty" url:"-"`
+	TitleSentimentMin       *TitleSentimentMin       `json:"title_sentiment_min,omitempty" url:"-"`
+	TitleSentimentMax       *TitleSentimentMax       `json:"title_sentiment_max,omitempty" url:"-"`
+	ContentSentimentMin     *ContentSentimentMin     `json:"content_sentiment_min,omitempty" url:"-"`
+	ContentSentimentMax     *ContentSentimentMax     `json:"content_sentiment_max,omitempty" url:"-"`
+	IptcTags                *IptcTags                `json:"iptc_tags,omitempty" url:"-"`
+	NotIptcTags             *NotIptcTags             `json:"not_iptc_tags,omitempty" url:"-"`
+	CustomTags              *CustomTags              `json:"custom_tags,omitempty" url:"-"`
 }
 
-type MoreLikeThisRequestFrom struct {
-	String   string
-	DateTime time.Time
+// The response model for a failed `Search Similar` request.
+type FailedSearchSimilarResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize int `json:"page_size" url:"page_size"`
+	// An empty list of articles, as no matches were found.
+	Articles  []map[string]interface{} `json:"articles,omitempty" url:"articles,omitempty"`
+	UserInput *UserInputDto            `json:"user_input,omitempty" url:"user_input,omitempty"`
 
-	typ string
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
 }
 
-func NewMoreLikeThisRequestFromFromString(value string) *MoreLikeThisRequestFrom {
-	return &MoreLikeThisRequestFrom{typ: "String", String: value}
-}
-
-func NewMoreLikeThisRequestFromFromDateTime(value time.Time) *MoreLikeThisRequestFrom {
-	return &MoreLikeThisRequestFrom{typ: "DateTime", DateTime: value}
-}
-
-func (m *MoreLikeThisRequestFrom) GetString() string {
-	if m == nil {
+func (f *FailedSearchSimilarResponseDto) GetStatus() string {
+	if f == nil {
 		return ""
 	}
-	return m.String
+	return f.Status
 }
 
-func (m *MoreLikeThisRequestFrom) GetDateTime() time.Time {
-	if m == nil {
-		return time.Time{}
+func (f *FailedSearchSimilarResponseDto) GetTotalHits() int {
+	if f == nil {
+		return 0
 	}
-	return m.DateTime
+	return f.TotalHits
 }
 
-func (m *MoreLikeThisRequestFrom) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		m.typ = "String"
-		m.String = valueString
+func (f *FailedSearchSimilarResponseDto) GetPage() int {
+	if f == nil {
+		return 0
+	}
+	return f.Page
+}
+
+func (f *FailedSearchSimilarResponseDto) GetTotalPages() int {
+	if f == nil {
+		return 0
+	}
+	return f.TotalPages
+}
+
+func (f *FailedSearchSimilarResponseDto) GetPageSize() int {
+	if f == nil {
+		return 0
+	}
+	return f.PageSize
+}
+
+func (f *FailedSearchSimilarResponseDto) GetArticles() []map[string]interface{} {
+	if f == nil {
 		return nil
 	}
-	var valueDateTime *internal.DateTime
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		m.typ = "DateTime"
-		m.DateTime = valueDateTime.Time()
+	return f.Articles
+}
+
+func (f *FailedSearchSimilarResponseDto) GetUserInput() *UserInputDto {
+	if f == nil {
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, m)
+	return f.UserInput
 }
 
-func (m MoreLikeThisRequestFrom) MarshalJSON() ([]byte, error) {
-	if m.typ == "String" || m.String != "" {
-		return json.Marshal(m.String)
+func (f *FailedSearchSimilarResponseDto) GetExtraProperties() map[string]interface{} {
+	return f.extraProperties
+}
+
+func (f *FailedSearchSimilarResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler FailedSearchSimilarResponseDto
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	if m.typ == "DateTime" || !m.DateTime.IsZero() {
-		return json.Marshal(internal.NewDateTime(m.DateTime))
+	*f = FailedSearchSimilarResponseDto(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", m)
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
 }
 
-type MoreLikeThisRequestFromVisitor interface {
-	VisitString(string) error
-	VisitDateTime(time.Time) error
-}
-
-func (m *MoreLikeThisRequestFrom) Accept(visitor MoreLikeThisRequestFromVisitor) error {
-	if m.typ == "String" || m.String != "" {
-		return visitor.VisitString(m.String)
+func (f *FailedSearchSimilarResponseDto) String() string {
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
 	}
-	if m.typ == "DateTime" || !m.DateTime.IsZero() {
-		return visitor.VisitDateTime(m.DateTime)
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", m)
+	return fmt.Sprintf("%#v", f)
 }
 
-type MoreLikeThisRequestRankedOnly struct {
-	String  string
-	Boolean bool
+// If true, includes similar documents in the response.
+type IncludeSimilarDocuments = bool
 
-	typ string
+// The response model for a successful `Search similar` request. Response field behavior:
+// - Required fields are guaranteed to be present and non-null.
+// - Optional fields may be `null`/`undefined` if the data couldn't be extracted during processing.
+// - To access article properties in the `articles` response array, use array index notation. For example, `articles[n].title`, where `n` is the zero-based index of the article object (0, 1, 2, etc.).
+// - The `nlp` property within the article object `articles[n].nlp` is only available with NLP-enabled subscription plans.
+type SearchSimilarResponseDto struct {
+	// The status of the response.
+	Status string `json:"status" url:"status"`
+	// The total number of articles matching the search criteria.
+	TotalHits int `json:"total_hits" url:"total_hits"`
+	// The current page number of the results.
+	Page int `json:"page" url:"page"`
+	// The total number of pages available for the given search criteria.
+	TotalPages int `json:"total_pages" url:"total_pages"`
+	// The number of articles per page.
+	PageSize int `json:"page_size" url:"page_size"`
+	// A list of articles matching the search criteria.
+	Articles  []*SimilarArticleEntity `json:"articles,omitempty" url:"articles,omitempty"`
+	UserInput *UserInputDto           `json:"user_input,omitempty" url:"user_input,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
 }
 
-func NewMoreLikeThisRequestRankedOnlyFromString(value string) *MoreLikeThisRequestRankedOnly {
-	return &MoreLikeThisRequestRankedOnly{typ: "String", String: value}
-}
-
-func NewMoreLikeThisRequestRankedOnlyFromBoolean(value bool) *MoreLikeThisRequestRankedOnly {
-	return &MoreLikeThisRequestRankedOnly{typ: "Boolean", Boolean: value}
-}
-
-func (m *MoreLikeThisRequestRankedOnly) GetString() string {
-	if m == nil {
+func (s *SearchSimilarResponseDto) GetStatus() string {
+	if s == nil {
 		return ""
 	}
-	return m.String
+	return s.Status
 }
 
-func (m *MoreLikeThisRequestRankedOnly) GetBoolean() bool {
-	if m == nil {
-		return false
+func (s *SearchSimilarResponseDto) GetTotalHits() int {
+	if s == nil {
+		return 0
 	}
-	return m.Boolean
+	return s.TotalHits
 }
 
-func (m *MoreLikeThisRequestRankedOnly) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		m.typ = "String"
-		m.String = valueString
+func (s *SearchSimilarResponseDto) GetPage() int {
+	if s == nil {
+		return 0
+	}
+	return s.Page
+}
+
+func (s *SearchSimilarResponseDto) GetTotalPages() int {
+	if s == nil {
+		return 0
+	}
+	return s.TotalPages
+}
+
+func (s *SearchSimilarResponseDto) GetPageSize() int {
+	if s == nil {
+		return 0
+	}
+	return s.PageSize
+}
+
+func (s *SearchSimilarResponseDto) GetArticles() []*SimilarArticleEntity {
+	if s == nil {
 		return nil
 	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		m.typ = "Boolean"
-		m.Boolean = valueBoolean
+	return s.Articles
+}
+
+func (s *SearchSimilarResponseDto) GetUserInput() *UserInputDto {
+	if s == nil {
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, m)
+	return s.UserInput
 }
 
-func (m MoreLikeThisRequestRankedOnly) MarshalJSON() ([]byte, error) {
-	if m.typ == "String" || m.String != "" {
-		return json.Marshal(m.String)
+func (s *SearchSimilarResponseDto) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SearchSimilarResponseDto) UnmarshalJSON(data []byte) error {
+	type unmarshaler SearchSimilarResponseDto
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	if m.typ == "Boolean" || m.Boolean != false {
-		return json.Marshal(m.Boolean)
+	*s = SearchSimilarResponseDto(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", m)
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
 }
 
-type MoreLikeThisRequestRankedOnlyVisitor interface {
-	VisitString(string) error
-	VisitBoolean(bool) error
-}
-
-func (m *MoreLikeThisRequestRankedOnly) Accept(visitor MoreLikeThisRequestRankedOnlyVisitor) error {
-	if m.typ == "String" || m.String != "" {
-		return visitor.VisitString(m.String)
+func (s *SearchSimilarResponseDto) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
 	}
-	if m.typ == "Boolean" || m.Boolean != false {
-		return visitor.VisitBoolean(m.Boolean)
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", m)
+	return fmt.Sprintf("%#v", s)
 }
 
-type MoreLikeThisRequestTo struct {
-	String   string
-	DateTime time.Time
+// The data model for an article result in the `Search similar` articles request. Response field behavior:
+// - Required fields are guaranteed to be present and non-null.
+// - Optional fields may be `null`/`undefined` if the data couldn't be extracted
+// during processing.
+type SimilarArticleEntity struct {
+	// The title of the article.
+	Title string `json:"title" url:"title"`
+	// The primary author of the article.
+	Author *string `json:"author,omitempty" url:"author,omitempty"`
+	// A list of authors of the article.
+	Authors *Authors `json:"authors,omitempty" url:"authors,omitempty"`
+	// A list of journalists associated with the article.
+	Journalists *Journalists `json:"journalists,omitempty" url:"journalists,omitempty"`
+	// The date the article was published.
+	PublishedDate *string `json:"published_date,omitempty" url:"published_date,omitempty"`
+	// The precision of the published date.
+	PublishedDatePrecision *string `json:"published_date_precision,omitempty" url:"published_date_precision,omitempty"`
+	// The date the article was last updated.
+	UpdatedDate *string `json:"updated_date,omitempty" url:"updated_date,omitempty"`
+	// The precision of the updated date.
+	UpdatedDatePrecision *string `json:"updated_date_precision,omitempty" url:"updated_date_precision,omitempty"`
+	// The date the article was parsed.
+	ParseDate *string `json:"parse_date,omitempty" url:"parse_date,omitempty"`
+	// The URL link to the article.
+	Link string `json:"link" url:"link"`
+	// The domain URL of the article.
+	DomainUrl string `json:"domain_url" url:"domain_url"`
+	// The full domain URL of the article.
+	FullDomainUrl string `json:"full_domain_url" url:"full_domain_url"`
+	// The name of the source where the article was published.
+	NameSource *string `json:"name_source,omitempty" url:"name_source,omitempty"`
+	// Indicates if the article is a headline.
+	IsHeadline *bool `json:"is_headline,omitempty" url:"is_headline,omitempty"`
+	// Indicates if the article is paid content.
+	PaidContent *bool `json:"paid_content,omitempty" url:"paid_content,omitempty"`
+	// The categorical URL of the article.
+	ParentUrl string `json:"parent_url" url:"parent_url"`
+	// The country where the article was published.
+	Country *string `json:"country,omitempty" url:"country,omitempty"`
+	// The rights information for the article.
+	Rights *string `json:"rights,omitempty" url:"rights,omitempty"`
+	// The rank of the article's source.
+	Rank int `json:"rank" url:"rank"`
+	// The media associated with the article.
+	Media *string `json:"media,omitempty" url:"media,omitempty"`
+	// The language in which the article is written.
+	Language *string `json:"language,omitempty" url:"language,omitempty"`
+	// A brief description of the article.
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
+	// The content of the article.
+	Content string `json:"content" url:"content"`
+	// The word count of the article.
+	WordCount *int `json:"word_count,omitempty" url:"word_count,omitempty"`
+	// Indicates if the article is an opinion piece.
+	IsOpinion *bool `json:"is_opinion,omitempty" url:"is_opinion,omitempty"`
+	// The Twitter account associated with the article.
+	TwitterAccount *string `json:"twitter_account,omitempty" url:"twitter_account,omitempty"`
+	// A list of all URLs mentioned in the article.
+	AllLinks *ArticleEntityAllLinks `json:"all_links,omitempty" url:"all_links,omitempty"`
+	// A list of all domain URLs mentioned in the article.
+	AllDomainLinks *ArticleEntityAllDomainLinks `json:"all_domain_links,omitempty" url:"all_domain_links,omitempty"`
+	Nlp            *NlpDataEntity               `json:"nlp,omitempty" url:"nlp,omitempty"`
+	// The unique identifier for the article.
+	Id string `json:"id" url:"id"`
+	// The relevance score of the article.
+	Score float64 `json:"score" url:"score"`
+	// An object that contains custom tags associated with an article, where each key is a taxonomy name, and the value is an array of tags.
+	CustomTags           map[string][]string         `json:"custom_tags,omitempty" url:"custom_tags,omitempty"`
+	AdditionalDomainInfo *AdditionalDomainInfoEntity `json:"additional_domain_info,omitempty" url:"additional_domain_info,omitempty"`
+	// A list of documents similar to the article.
+	SimilarDocuments []*SimilarDocument `json:"similar_documents,omitempty" url:"similar_documents,omitempty"`
 
-	typ string
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
 }
 
-func NewMoreLikeThisRequestToFromString(value string) *MoreLikeThisRequestTo {
-	return &MoreLikeThisRequestTo{typ: "String", String: value}
-}
-
-func NewMoreLikeThisRequestToFromDateTime(value time.Time) *MoreLikeThisRequestTo {
-	return &MoreLikeThisRequestTo{typ: "DateTime", DateTime: value}
-}
-
-func (m *MoreLikeThisRequestTo) GetString() string {
-	if m == nil {
+func (s *SimilarArticleEntity) GetTitle() string {
+	if s == nil {
 		return ""
 	}
-	return m.String
+	return s.Title
 }
 
-func (m *MoreLikeThisRequestTo) GetDateTime() time.Time {
-	if m == nil {
-		return time.Time{}
-	}
-	return m.DateTime
-}
-
-func (m *MoreLikeThisRequestTo) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		m.typ = "String"
-		m.String = valueString
+func (s *SimilarArticleEntity) GetAuthor() *string {
+	if s == nil {
 		return nil
 	}
-	var valueDateTime *internal.DateTime
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		m.typ = "DateTime"
-		m.DateTime = valueDateTime.Time()
+	return s.Author
+}
+
+func (s *SimilarArticleEntity) GetAuthors() *Authors {
+	if s == nil {
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, m)
+	return s.Authors
 }
 
-func (m MoreLikeThisRequestTo) MarshalJSON() ([]byte, error) {
-	if m.typ == "String" || m.String != "" {
-		return json.Marshal(m.String)
+func (s *SimilarArticleEntity) GetJournalists() *Journalists {
+	if s == nil {
+		return nil
 	}
-	if m.typ == "DateTime" || !m.DateTime.IsZero() {
-		return json.Marshal(internal.NewDateTime(m.DateTime))
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", m)
+	return s.Journalists
 }
 
-type MoreLikeThisRequestToVisitor interface {
-	VisitString(string) error
-	VisitDateTime(time.Time) error
+func (s *SimilarArticleEntity) GetPublishedDate() *string {
+	if s == nil {
+		return nil
+	}
+	return s.PublishedDate
 }
 
-func (m *MoreLikeThisRequestTo) Accept(visitor MoreLikeThisRequestToVisitor) error {
-	if m.typ == "String" || m.String != "" {
-		return visitor.VisitString(m.String)
+func (s *SimilarArticleEntity) GetPublishedDatePrecision() *string {
+	if s == nil {
+		return nil
 	}
-	if m.typ == "DateTime" || !m.DateTime.IsZero() {
-		return visitor.VisitDateTime(m.DateTime)
+	return s.PublishedDatePrecision
+}
+
+func (s *SimilarArticleEntity) GetUpdatedDate() *string {
+	if s == nil {
+		return nil
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", m)
+	return s.UpdatedDate
+}
+
+func (s *SimilarArticleEntity) GetUpdatedDatePrecision() *string {
+	if s == nil {
+		return nil
+	}
+	return s.UpdatedDatePrecision
+}
+
+func (s *SimilarArticleEntity) GetParseDate() *string {
+	if s == nil {
+		return nil
+	}
+	return s.ParseDate
+}
+
+func (s *SimilarArticleEntity) GetLink() string {
+	if s == nil {
+		return ""
+	}
+	return s.Link
+}
+
+func (s *SimilarArticleEntity) GetDomainUrl() string {
+	if s == nil {
+		return ""
+	}
+	return s.DomainUrl
+}
+
+func (s *SimilarArticleEntity) GetFullDomainUrl() string {
+	if s == nil {
+		return ""
+	}
+	return s.FullDomainUrl
+}
+
+func (s *SimilarArticleEntity) GetNameSource() *string {
+	if s == nil {
+		return nil
+	}
+	return s.NameSource
+}
+
+func (s *SimilarArticleEntity) GetIsHeadline() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.IsHeadline
+}
+
+func (s *SimilarArticleEntity) GetPaidContent() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.PaidContent
+}
+
+func (s *SimilarArticleEntity) GetParentUrl() string {
+	if s == nil {
+		return ""
+	}
+	return s.ParentUrl
+}
+
+func (s *SimilarArticleEntity) GetCountry() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Country
+}
+
+func (s *SimilarArticleEntity) GetRights() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Rights
+}
+
+func (s *SimilarArticleEntity) GetRank() int {
+	if s == nil {
+		return 0
+	}
+	return s.Rank
+}
+
+func (s *SimilarArticleEntity) GetMedia() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Media
+}
+
+func (s *SimilarArticleEntity) GetLanguage() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Language
+}
+
+func (s *SimilarArticleEntity) GetDescription() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Description
+}
+
+func (s *SimilarArticleEntity) GetContent() string {
+	if s == nil {
+		return ""
+	}
+	return s.Content
+}
+
+func (s *SimilarArticleEntity) GetWordCount() *int {
+	if s == nil {
+		return nil
+	}
+	return s.WordCount
+}
+
+func (s *SimilarArticleEntity) GetIsOpinion() *bool {
+	if s == nil {
+		return nil
+	}
+	return s.IsOpinion
+}
+
+func (s *SimilarArticleEntity) GetTwitterAccount() *string {
+	if s == nil {
+		return nil
+	}
+	return s.TwitterAccount
+}
+
+func (s *SimilarArticleEntity) GetAllLinks() *ArticleEntityAllLinks {
+	if s == nil {
+		return nil
+	}
+	return s.AllLinks
+}
+
+func (s *SimilarArticleEntity) GetAllDomainLinks() *ArticleEntityAllDomainLinks {
+	if s == nil {
+		return nil
+	}
+	return s.AllDomainLinks
+}
+
+func (s *SimilarArticleEntity) GetNlp() *NlpDataEntity {
+	if s == nil {
+		return nil
+	}
+	return s.Nlp
+}
+
+func (s *SimilarArticleEntity) GetId() string {
+	if s == nil {
+		return ""
+	}
+	return s.Id
+}
+
+func (s *SimilarArticleEntity) GetScore() float64 {
+	if s == nil {
+		return 0
+	}
+	return s.Score
+}
+
+func (s *SimilarArticleEntity) GetCustomTags() map[string][]string {
+	if s == nil {
+		return nil
+	}
+	return s.CustomTags
+}
+
+func (s *SimilarArticleEntity) GetAdditionalDomainInfo() *AdditionalDomainInfoEntity {
+	if s == nil {
+		return nil
+	}
+	return s.AdditionalDomainInfo
+}
+
+func (s *SimilarArticleEntity) GetSimilarDocuments() []*SimilarDocument {
+	if s == nil {
+		return nil
+	}
+	return s.SimilarDocuments
+}
+
+func (s *SimilarArticleEntity) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SimilarArticleEntity) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimilarArticleEntity
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimilarArticleEntity(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimilarArticleEntity) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+// The data model for a similar document in the `Search similar` articles request.
+type SimilarDocument struct {
+	// The unique identifier of the similar document.
+	Id string `json:"id" url:"id"`
+	// The relevance score of the similar document.
+	Score float64 `json:"score" url:"score"`
+	// The title of the similar document.
+	Title string `json:"title" url:"title"`
+	// The link to the similar document.
+	Link string `json:"link" url:"link"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *SimilarDocument) GetId() string {
+	if s == nil {
+		return ""
+	}
+	return s.Id
+}
+
+func (s *SimilarDocument) GetScore() float64 {
+	if s == nil {
+		return 0
+	}
+	return s.Score
+}
+
+func (s *SimilarDocument) GetTitle() string {
+	if s == nil {
+		return ""
+	}
+	return s.Title
+}
+
+func (s *SimilarDocument) GetLink() string {
+	if s == nil {
+		return ""
+	}
+	return s.Link
+}
+
+func (s *SimilarDocument) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SimilarDocument) UnmarshalJSON(data []byte) error {
+	type unmarshaler SimilarDocument
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SimilarDocument(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SimilarDocument) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+// The fields to consider for finding similar documents.
+type SimilarDocumentsFields = string
+
+// The number of similar documents to return.
+type SimilarDocumentsNumber = int
+
+type SearchSimilarGetRequestPublishedDatePrecision string
+
+const (
+	SearchSimilarGetRequestPublishedDatePrecisionFull            SearchSimilarGetRequestPublishedDatePrecision = "full"
+	SearchSimilarGetRequestPublishedDatePrecisionTimezoneUnknown SearchSimilarGetRequestPublishedDatePrecision = "timezone unknown"
+	SearchSimilarGetRequestPublishedDatePrecisionDate            SearchSimilarGetRequestPublishedDatePrecision = "date"
+)
+
+func NewSearchSimilarGetRequestPublishedDatePrecisionFromString(s string) (SearchSimilarGetRequestPublishedDatePrecision, error) {
+	switch s {
+	case "full":
+		return SearchSimilarGetRequestPublishedDatePrecisionFull, nil
+	case "timezone unknown":
+		return SearchSimilarGetRequestPublishedDatePrecisionTimezoneUnknown, nil
+	case "date":
+		return SearchSimilarGetRequestPublishedDatePrecisionDate, nil
+	}
+	var t SearchSimilarGetRequestPublishedDatePrecision
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SearchSimilarGetRequestPublishedDatePrecision) Ptr() *SearchSimilarGetRequestPublishedDatePrecision {
+	return &s
+}
+
+type SearchSimilarGetRequestSortBy string
+
+const (
+	SearchSimilarGetRequestSortByRelevancy SearchSimilarGetRequestSortBy = "relevancy"
+	SearchSimilarGetRequestSortByDate      SearchSimilarGetRequestSortBy = "date"
+	SearchSimilarGetRequestSortByRank      SearchSimilarGetRequestSortBy = "rank"
+)
+
+func NewSearchSimilarGetRequestSortByFromString(s string) (SearchSimilarGetRequestSortBy, error) {
+	switch s {
+	case "relevancy":
+		return SearchSimilarGetRequestSortByRelevancy, nil
+	case "date":
+		return SearchSimilarGetRequestSortByDate, nil
+	case "rank":
+		return SearchSimilarGetRequestSortByRank, nil
+	}
+	var t SearchSimilarGetRequestSortBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SearchSimilarGetRequestSortBy) Ptr() *SearchSimilarGetRequestSortBy {
+	return &s
 }
 
 type SearchSimilarGetResponse struct {
-	SearchResponse       *SearchResponse
-	FailedSearchResponse *FailedSearchResponse
+	SearchSimilarResponseDto       *SearchSimilarResponseDto
+	FailedSearchSimilarResponseDto *FailedSearchSimilarResponseDto
 
 	typ string
 }
 
-func NewSearchSimilarGetResponseFromSearchResponse(value *SearchResponse) *SearchSimilarGetResponse {
-	return &SearchSimilarGetResponse{typ: "SearchResponse", SearchResponse: value}
+func NewSearchSimilarGetResponseFromSearchSimilarResponseDto(value *SearchSimilarResponseDto) *SearchSimilarGetResponse {
+	return &SearchSimilarGetResponse{typ: "SearchSimilarResponseDto", SearchSimilarResponseDto: value}
 }
 
-func NewSearchSimilarGetResponseFromFailedSearchResponse(value *FailedSearchResponse) *SearchSimilarGetResponse {
-	return &SearchSimilarGetResponse{typ: "FailedSearchResponse", FailedSearchResponse: value}
+func NewSearchSimilarGetResponseFromFailedSearchSimilarResponseDto(value *FailedSearchSimilarResponseDto) *SearchSimilarGetResponse {
+	return &SearchSimilarGetResponse{typ: "FailedSearchSimilarResponseDto", FailedSearchSimilarResponseDto: value}
 }
 
-func (s *SearchSimilarGetResponse) GetSearchResponse() *SearchResponse {
+func (s *SearchSimilarGetResponse) GetSearchSimilarResponseDto() *SearchSimilarResponseDto {
 	if s == nil {
 		return nil
 	}
-	return s.SearchResponse
+	return s.SearchSimilarResponseDto
 }
 
-func (s *SearchSimilarGetResponse) GetFailedSearchResponse() *FailedSearchResponse {
+func (s *SearchSimilarGetResponse) GetFailedSearchSimilarResponseDto() *FailedSearchSimilarResponseDto {
 	if s == nil {
 		return nil
 	}
-	return s.FailedSearchResponse
+	return s.FailedSearchSimilarResponseDto
 }
 
 func (s *SearchSimilarGetResponse) UnmarshalJSON(data []byte) error {
-	valueSearchResponse := new(SearchResponse)
-	if err := json.Unmarshal(data, &valueSearchResponse); err == nil {
-		s.typ = "SearchResponse"
-		s.SearchResponse = valueSearchResponse
+	valueSearchSimilarResponseDto := new(SearchSimilarResponseDto)
+	if err := json.Unmarshal(data, &valueSearchSimilarResponseDto); err == nil {
+		s.typ = "SearchSimilarResponseDto"
+		s.SearchSimilarResponseDto = valueSearchSimilarResponseDto
 		return nil
 	}
-	valueFailedSearchResponse := new(FailedSearchResponse)
-	if err := json.Unmarshal(data, &valueFailedSearchResponse); err == nil {
-		s.typ = "FailedSearchResponse"
-		s.FailedSearchResponse = valueFailedSearchResponse
+	valueFailedSearchSimilarResponseDto := new(FailedSearchSimilarResponseDto)
+	if err := json.Unmarshal(data, &valueFailedSearchSimilarResponseDto); err == nil {
+		s.typ = "FailedSearchSimilarResponseDto"
+		s.FailedSearchSimilarResponseDto = valueFailedSearchSimilarResponseDto
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
 func (s SearchSimilarGetResponse) MarshalJSON() ([]byte, error) {
-	if s.typ == "SearchResponse" || s.SearchResponse != nil {
-		return json.Marshal(s.SearchResponse)
+	if s.typ == "SearchSimilarResponseDto" || s.SearchSimilarResponseDto != nil {
+		return json.Marshal(s.SearchSimilarResponseDto)
 	}
-	if s.typ == "FailedSearchResponse" || s.FailedSearchResponse != nil {
-		return json.Marshal(s.FailedSearchResponse)
+	if s.typ == "FailedSearchSimilarResponseDto" || s.FailedSearchSimilarResponseDto != nil {
+		return json.Marshal(s.FailedSearchSimilarResponseDto)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type SearchSimilarGetResponseVisitor interface {
-	VisitSearchResponse(*SearchResponse) error
-	VisitFailedSearchResponse(*FailedSearchResponse) error
+	VisitSearchSimilarResponseDto(*SearchSimilarResponseDto) error
+	VisitFailedSearchSimilarResponseDto(*FailedSearchSimilarResponseDto) error
 }
 
 func (s *SearchSimilarGetResponse) Accept(visitor SearchSimilarGetResponseVisitor) error {
-	if s.typ == "SearchResponse" || s.SearchResponse != nil {
-		return visitor.VisitSearchResponse(s.SearchResponse)
+	if s.typ == "SearchSimilarResponseDto" || s.SearchSimilarResponseDto != nil {
+		return visitor.VisitSearchSimilarResponseDto(s.SearchSimilarResponseDto)
 	}
-	if s.typ == "FailedSearchResponse" || s.FailedSearchResponse != nil {
-		return visitor.VisitFailedSearchResponse(s.FailedSearchResponse)
+	if s.typ == "FailedSearchSimilarResponseDto" || s.FailedSearchSimilarResponseDto != nil {
+		return visitor.VisitFailedSearchSimilarResponseDto(s.FailedSearchSimilarResponseDto)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type SearchSimilarPostResponse struct {
-	SearchResponse       *SearchResponse
-	FailedSearchResponse *FailedSearchResponse
+	SearchSimilarResponseDto       *SearchSimilarResponseDto
+	FailedSearchSimilarResponseDto *FailedSearchSimilarResponseDto
 
 	typ string
 }
 
-func NewSearchSimilarPostResponseFromSearchResponse(value *SearchResponse) *SearchSimilarPostResponse {
-	return &SearchSimilarPostResponse{typ: "SearchResponse", SearchResponse: value}
+func NewSearchSimilarPostResponseFromSearchSimilarResponseDto(value *SearchSimilarResponseDto) *SearchSimilarPostResponse {
+	return &SearchSimilarPostResponse{typ: "SearchSimilarResponseDto", SearchSimilarResponseDto: value}
 }
 
-func NewSearchSimilarPostResponseFromFailedSearchResponse(value *FailedSearchResponse) *SearchSimilarPostResponse {
-	return &SearchSimilarPostResponse{typ: "FailedSearchResponse", FailedSearchResponse: value}
+func NewSearchSimilarPostResponseFromFailedSearchSimilarResponseDto(value *FailedSearchSimilarResponseDto) *SearchSimilarPostResponse {
+	return &SearchSimilarPostResponse{typ: "FailedSearchSimilarResponseDto", FailedSearchSimilarResponseDto: value}
 }
 
-func (s *SearchSimilarPostResponse) GetSearchResponse() *SearchResponse {
+func (s *SearchSimilarPostResponse) GetSearchSimilarResponseDto() *SearchSimilarResponseDto {
 	if s == nil {
 		return nil
 	}
-	return s.SearchResponse
+	return s.SearchSimilarResponseDto
 }
 
-func (s *SearchSimilarPostResponse) GetFailedSearchResponse() *FailedSearchResponse {
+func (s *SearchSimilarPostResponse) GetFailedSearchSimilarResponseDto() *FailedSearchSimilarResponseDto {
 	if s == nil {
 		return nil
 	}
-	return s.FailedSearchResponse
+	return s.FailedSearchSimilarResponseDto
 }
 
 func (s *SearchSimilarPostResponse) UnmarshalJSON(data []byte) error {
-	valueSearchResponse := new(SearchResponse)
-	if err := json.Unmarshal(data, &valueSearchResponse); err == nil {
-		s.typ = "SearchResponse"
-		s.SearchResponse = valueSearchResponse
+	valueSearchSimilarResponseDto := new(SearchSimilarResponseDto)
+	if err := json.Unmarshal(data, &valueSearchSimilarResponseDto); err == nil {
+		s.typ = "SearchSimilarResponseDto"
+		s.SearchSimilarResponseDto = valueSearchSimilarResponseDto
 		return nil
 	}
-	valueFailedSearchResponse := new(FailedSearchResponse)
-	if err := json.Unmarshal(data, &valueFailedSearchResponse); err == nil {
-		s.typ = "FailedSearchResponse"
-		s.FailedSearchResponse = valueFailedSearchResponse
+	valueFailedSearchSimilarResponseDto := new(FailedSearchSimilarResponseDto)
+	if err := json.Unmarshal(data, &valueFailedSearchSimilarResponseDto); err == nil {
+		s.typ = "FailedSearchSimilarResponseDto"
+		s.FailedSearchSimilarResponseDto = valueFailedSearchSimilarResponseDto
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
 func (s SearchSimilarPostResponse) MarshalJSON() ([]byte, error) {
-	if s.typ == "SearchResponse" || s.SearchResponse != nil {
-		return json.Marshal(s.SearchResponse)
+	if s.typ == "SearchSimilarResponseDto" || s.SearchSimilarResponseDto != nil {
+		return json.Marshal(s.SearchSimilarResponseDto)
 	}
-	if s.typ == "FailedSearchResponse" || s.FailedSearchResponse != nil {
-		return json.Marshal(s.FailedSearchResponse)
+	if s.typ == "FailedSearchSimilarResponseDto" || s.FailedSearchSimilarResponseDto != nil {
+		return json.Marshal(s.FailedSearchSimilarResponseDto)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type SearchSimilarPostResponseVisitor interface {
-	VisitSearchResponse(*SearchResponse) error
-	VisitFailedSearchResponse(*FailedSearchResponse) error
+	VisitSearchSimilarResponseDto(*SearchSimilarResponseDto) error
+	VisitFailedSearchSimilarResponseDto(*FailedSearchSimilarResponseDto) error
 }
 
 func (s *SearchSimilarPostResponse) Accept(visitor SearchSimilarPostResponseVisitor) error {
-	if s.typ == "SearchResponse" || s.SearchResponse != nil {
-		return visitor.VisitSearchResponse(s.SearchResponse)
+	if s.typ == "SearchSimilarResponseDto" || s.SearchSimilarResponseDto != nil {
+		return visitor.VisitSearchSimilarResponseDto(s.SearchSimilarResponseDto)
 	}
-	if s.typ == "FailedSearchResponse" || s.FailedSearchResponse != nil {
-		return visitor.VisitFailedSearchResponse(s.FailedSearchResponse)
+	if s.typ == "FailedSearchSimilarResponseDto" || s.FailedSearchSimilarResponseDto != nil {
+		return visitor.VisitFailedSearchSimilarResponseDto(s.FailedSearchSimilarResponseDto)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }

@@ -31,12 +31,12 @@ func NewClient(opts ...option.RequestOption) *Client {
 	}
 }
 
-// This endpoint allows you to search for articles. You can search for articles by id(s) or link(s).
+// Searches for articles based on specified links or IDs. You can filter results by date range.
 func (c *Client) SearchUrlGet(
 	ctx context.Context,
 	request *newscatchergo.SearchUrlGetRequest,
 	opts ...option.RequestOption,
-) (*newscatchergo.SearchResponse, error) {
+) (*newscatchergo.SearchResponseDto, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -56,14 +56,44 @@ func (c *Client) SearchUrlGet(
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
+				APIError: apiError,
+			}
+		},
 	}
 
-	var response *newscatchergo.SearchResponse
+	var response *newscatchergo.SearchResponseDto
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -83,12 +113,12 @@ func (c *Client) SearchUrlGet(
 	return response, nil
 }
 
-// This endpoint allows you to search for articles. You can search for articles by id(s) or link(s).
+// Searches for articles using their ID(s) or link(s).
 func (c *Client) SearchUrlPost(
 	ctx context.Context,
-	request *newscatchergo.SearchUrlRequest,
+	request *newscatchergo.SearchUrlPostRequest,
 	opts ...option.RequestOption,
-) (*newscatchergo.SearchResponse, error) {
+) (*newscatchergo.SearchResponseDto, error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -102,14 +132,44 @@ func (c *Client) SearchUrlPost(
 	)
 	headers.Set("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &newscatchergo.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &newscatchergo.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &newscatchergo.ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &newscatchergo.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
 		422: func(apiError *core.APIError) error {
 			return &newscatchergo.UnprocessableEntityError{
 				APIError: apiError,
 			}
 		},
+		429: func(apiError *core.APIError) error {
+			return &newscatchergo.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &newscatchergo.InternalServerError{
+				APIError: apiError,
+			}
+		},
 	}
 
-	var response *newscatchergo.SearchResponse
+	var response *newscatchergo.SearchResponseDto
 	if err := c.caller.Call(
 		ctx,
 		&internal.CallParams{

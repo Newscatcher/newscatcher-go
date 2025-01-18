@@ -24,7 +24,7 @@ type RequestOptions struct {
 	BodyProperties  map[string]interface{}
 	QueryParameters url.Values
 	MaxAttempts     uint
-	ApiToken        string
+	ApiKey          string
 }
 
 // NewRequestOptions returns a new *RequestOptions value.
@@ -47,7 +47,9 @@ func NewRequestOptions(opts ...RequestOption) *RequestOptions {
 // for the request(s).
 func (r *RequestOptions) ToHeader() http.Header {
 	header := r.cloneHeader()
-	header.Set("x-api-token", fmt.Sprintf("%v", r.ApiToken))
+	if r.ApiKey != "" {
+		header.Set("x-api-token", fmt.Sprintf("%v", r.ApiKey))
+	}
 	return header
 }
 
@@ -55,8 +57,8 @@ func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/Newscatcher/newscatcher-go")
-	headers.Set("X-Fern-SDK-Version", "v1.0.0")
-	headers.Set("User-Agent", "github.com/Newscatcher/newscatcher-go/1.0.0")
+	headers.Set("X-Fern-SDK-Version", "v1.1.0")
+	headers.Set("User-Agent", "github.com/Newscatcher/newscatcher-go/1.1.0")
 	return headers
 }
 
@@ -114,11 +116,11 @@ func (m *MaxAttemptsOption) applyRequestOptions(opts *RequestOptions) {
 	opts.MaxAttempts = m.MaxAttempts
 }
 
-// ApiTokenOption implements the RequestOption interface.
-type ApiTokenOption struct {
-	ApiToken string
+// ApiKeyOption implements the RequestOption interface.
+type ApiKeyOption struct {
+	ApiKey string
 }
 
-func (a *ApiTokenOption) applyRequestOptions(opts *RequestOptions) {
-	opts.ApiToken = a.ApiToken
+func (a *ApiKeyOption) applyRequestOptions(opts *RequestOptions) {
+	opts.ApiKey = a.ApiKey
 }

@@ -63,9 +63,9 @@ func WithMaxAttempts(attempts uint) *core.MaxAttemptsOption {
 	}
 }
 
-// WithApiToken sets the apiToken request header.
-func WithApiToken(apiToken string) *core.ApiTokenOption {
-	return &core.ApiTokenOption{
-		ApiToken: apiToken,
+// WithApiKey sets the apiKey auth request header.
+func WithApiKey(apiKey string) *core.ApiKeyOption {
+	return &core.ApiKeyOption{
+		ApiKey: apiKey,
 	}
 }
