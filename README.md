@@ -1,104 +1,130 @@
 # Newscatcher Go Library
 
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern)
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern) [![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/Newscatcher/newscatcher-go)
 
-The Newscatcher Go library provides convenient access to the Newscatcher API from Go.
+The Newscatcher Go library lets you access the Newscatcher API from Go.
+
+## Documentation
+
+Find the complete API reference [here](https://www.newscatcherapi.com/docs/v3/api-reference).
 
 ## Requirements
 
 This module requires Go version >= 1.13.
 
-# Installation
+## Installation
 
-Run the following command to use the Newscatcher Go library in your module:
+Run this command to use the Newscatcher Go library in your module:
 
 ```sh
-go get github.com/newscatcher/newscatcher-go
+go get github.com/Newscatcher/newscatcher-go
 ```
 
 ## Usage
 
+Build and use the client like this:
+
 ```go
 import (
-  "github.com/fern-demo/newscatcher-go"
-  newscatcherclient "github.com/fern-demo/newscatcher-go/client"
-  "github.com/fern-demo/newscatcher-go/option"
+    "context"
+    newscatcher "github.com/Newscatcher/newscatcher-go"
+    newscatcherclient "github.com/Newscatcher/newscatcher-go/client"
+    "github.com/Newscatcher/newscatcher-go/option"
 )
 
 client := newscatcherclient.NewClient(
-    option.WithToken("<YOUR_API_KEY>"),
+    option.WithApiKey("YOUR_API_KEY"),
 )
 
 response, err := client.Search.Post(
     context.TODO(),
-    &newscatcher.SearchRequest{
-        Q: "q"
-    },
+ &newscatcher.SearchPostRequest{
+        Q: "renewable energy",
+        PredefinedSources: []string{"top 50 US"},
+        Lang: []string{"en"},
+        From: "2024-01-01",
+        To: "2024-06-30",
+ },
 )
 ```
 
-## Timeouts
+## Error Handling
 
-Setting a timeout for each individual request is as simple as using the standard `context` library. Setting
-a one second timeout for an individual API call looks like the following:
+When the API responds with a non-success status code, the SDK returns an error.
 
 ```go
-ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
-defer cancel()
-
-response, err := client.Search.Post(
-    ctx,
-    ...
+import (
+    "github.com/Newscatcher/newscatcher-go/core"
+    "fmt"
 )
+
+response, err := client.Search.Post(...)
+if err != nil {
+    if apiErr, ok := err.(*core.APIError); ok {
+        fmt.Println(apiErr.Error())
+        fmt.Println(apiErr.StatusCode)
+ }
+    return err
+}
 ```
 
-## Request Options
-
-A variety of request options are included to adapt the behavior of the library, which includes
-configuring authorization tokens, or providing your own instrumented `*http.Client`. Both of
-these options are shown below:
+You can use Go's standard error handling features with these errors:
 
 ```go
-client := newscatcherclient.NewClient(
-    option.WithToken("<YOUR_API_KEY>"),
-    option.WithHTTPClient(
-        &http.Client{
-            Timeout: 5 * time.Second,
-        },
-    ),
+import (
+    import "errors"
+    newscatcher "github.com/Newscatcher/newscatcher-go"
 )
+
+response, err := client.Search.Post(...)
+if err != nil {
+    var badRequestErr *newscatcher.BadRequestError
+    if errors.As(err, &badRequestErr) {
+        // Handle bad request
+        fmt.Println(badRequestErr.Error())
+ }
+    // Wrap error with additional context
+    return fmt.Errorf("search failed: %w", err)
+}
 ```
 
-These request options can either be specified on the client so that they're applied on _every_
-request (shown above), or for an individual request like so:
+The SDK provides specific error types for different cases:
 
 ```go
-response, err := client.Search.Post(
-    context.TODO(),
-    ...,
-    option.WithToken("<YOUR_API_KEY>"),
-)
+response, err := client.Search.Post(...)
+if err != nil {
+    switch e := err.(type) {
+    case *newscatcher.BadRequestError:
+        // Handle 400 error - Invalid request parameters
+    case *newscatcher.UnauthorizedError:
+        // Handle 401 error - Authentication failed
+    case *newscatcher.ForbiddenError:
+        // Handle 403 error - Server refuses action
+    case *newscatcher.RequestTimeoutError:
+        // Handle 408 error - Request timeout
+    case *newscatcher.UnprocessableEntityError:
+        // Handle 422 error - Validation error
+    case *newscatcher.TooManyRequestsError:
+        // Handle 429 error - Rate limit exceeded
+    case *newscatcher.InternalServerError:
+        // Handle 500 error - Server error
+    default:
+        return err
+ }
+}
 ```
 
-> Providing your own `*http.Client` is recommended. Otherwise, the `http.DefaultClient` will be used,
-> and your client will wait indefinitely for a response (unless the per-request, context-based timeout
-> is used).
+## Advanced Features
 
-## Automatic Retries
+### Retries
 
-The newscatcher Go client is instrumented with automatic retries with exponential backoff. A request will be
-retried as long as the request is deemed retriable and the number of retry attempts has not grown larger
-than the configured retry limit (default: 2).
-
-A request is deemed retriable when any of the following HTTP status codes is returned:
+The SDK automatically retries failed requests with exponential backoff. When a request fails with any of these status codes, the SDK retries up to 2 times:
 
 - [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
 - [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
 - [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) (Internal Server Errors)
 
-You can use the `option.WithMaxAttempts` option to configure the maximum retry limit to
-your liking. For example, if you want to disable retries for the client entirely, you can
-set this value to 1 like so:
+You can use the `option.WithMaxAttempts` option to configure the maximum retry limit to your liking. For example, if you want to disable retries for the client entirely, you can set this value to 1 like so:
 
 ```go
 client := newscatcherclient.NewClient(
@@ -116,60 +142,58 @@ response, err := client.Search.Post(
 )
 ```
 
-## Errors
+### Timeouts
 
-Structured error types are returned from API calls that return non-success status codes. For example,
-you can check if the error was due to an unauthorized request (i.e. status code 401) with the following:
-
-```go
-response, err := client.Search.Post(
-    context.TODO(),
-    ...,
-)
-if err != nil {
-    if badRequestErr, ok := err.(*newscatcher.BadRequestError);
-        // Do something with the bad request ...
-    }
-    return err
-}
-```
-
-These errors are also compatible with the `errors.Is` and `errors.As` APIs, so you can access the error
-like so:
+Set timeouts using the standard `context` package:
 
 ```go
+ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+defer cancel()
+
 response, err := client.Search.Post(
-    context.TODO(),
-    ...,
+    ctx,
+    request,
 )
-if err != nil {
-    var badRequestErr *newscatcher.BadRequestError
-    if errors.As(err, badRequestErr) {
-        // Do something with the bad request ...
-    }
-    return err
-}
 ```
 
-If you'd like to wrap the errors with additional information and still retain the ability
-to access the type with `errors.Is` and `errors.As`, you can use the `%w` directive:
+### Request Options
+
+Configure the client using options at initialization or per request:
 
 ```go
+// Client-level configuration
+client := newscatcherclient.NewClient(
+    option.WithApiKey("YOUR_API_KEY"),
+    option.WithHTTPClient(&http.Client{
+        Timeout: 30 * time.Second,
+    }),
+    option.WithMaxAttempts(3),
+)
+
+// Request-level configuration
 response, err := client.Search.Post(
     context.TODO(),
-    ...,
+    request,
+    option.WithMaxAttempts(1),      // Override retries for this request
 )
-if err != nil {
-    return fmt.Errorf("failed to list disputes: %w", err)
-}
 ```
+
+Available options include:
+
+- `WithApiKey(string)`: Set authentication key.
+- `WithHTTPClient(*http.Client)`: Use custom HTTP client.
+- `WithMaxAttempts(uint)`: Configure retry attempts.
+- `WithBaseURL(string)`: Override API base URL.
+- `WithHTTPHeader(http.Header)`: Add custom headers.
+
+> **Caution:** We recommend using your own `*http.Client`. By default, the SDK uses `http.DefaultClient`, which waits indefinitely for responses unless you set a context-based timeout.
 
 ## Contributing
 
-While we value open-source contributions to this SDK, this library is generated programmatically.
-Additions made directly to this library would have to be moved over to our generation code,
-otherwise they would be overwritten upon the next generated release. Feel free to open a PR as
-a proof of concept, but know that we will not be able to merge it as-is. We suggest opening
-an issue first to discuss with us!
+We generate this SDK programmatically, so we can't accept direct code contributions. Instead:
 
-On the other hand, contributions to the `README.md` are always very welcome!
+1. [Open an issue](https://github.com/Newscatcher/newscatcher-go/issues) to discuss your ideas with us first.
+2. If you want to show an implementation, create a PR as a proof of concept.
+3. We'll work with you to implement the changes in our generator.
+
+On the other hand, contributions to the README are always very welcome!
