@@ -121,27 +121,10 @@ type LatestHeadlinesGetRequest struct {
 	// - `0.9`: Creates smaller, tightly related clusters.
 	//
 	// To learn more, see [Clustering news articles](/docs/v3/documentation/guides-and-concepts/clustering-news-articles).
-	ClusteringThreshold *float64 `json:"-" url:"clustering_threshold,omitempty"`
-	// If true, includes an NLP layer with each article in the response. This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
-	//
-	// The NLP layer includes:
-	// - Theme: General topic of the article.
-	// - Summary: A concise overview of the article content.
-	// - Sentiment: Separate scores for title and content (range: -1 to 1).
-	// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
-	// - IPTC tags: Standardized news category tags.
-	// - IAB tags: Content categories for digital advertising.
-	//
-	// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
-	//
-	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
-	IncludeNlpData *bool `json:"-" url:"include_nlp_data,omitempty"`
-	// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
-	//
-	// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
-	//
-	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
-	HasNlp *bool `json:"-" url:"has_nlp,omitempty"`
+	ClusteringThreshold      *float64                  `json:"-" url:"clustering_threshold,omitempty"`
+	IncludeTranslationFields *IncludeTranslationFields `json:"-" url:"include_translation_fields,omitempty"`
+	IncludeNlpData           *IncludeNlpData           `json:"-" url:"include_nlp_data,omitempty"`
+	HasNlp                   *HasNlp                   `json:"-" url:"has_nlp,omitempty"`
 	// Filters articles based on their general topic, as determined by NLP analysis. To select multiple themes, use a comma-separated string.
 	//
 	// Example: `"Finance, Tech"`
@@ -160,7 +143,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
 	NotTheme *string `json:"-" url:"not_theme,omitempty"`
-	// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string.
+	// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"Apple, Microsoft"`
 	//
@@ -168,7 +151,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
 	OrgEntityName *string `json:"-" url:"ORG_entity_name,omitempty"`
-	// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string.
+	// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"Elon Musk, Jeff Bezos"`
 	//
@@ -176,7 +159,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
 	PerEntityName *string `json:"-" url:"PER_entity_name,omitempty"`
-	// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string.
+	// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"California, New York"`
 	//
@@ -184,7 +167,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
 	LocEntityName *string `json:"-" url:"LOC_entity_name,omitempty"`
-	// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string.
+	// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"Bitcoin, Blockchain"`
 	//
@@ -240,7 +223,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// Example: `"20000199, 20000209"`
 	//
-	// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 	IptcTags *string `json:"-" url:"iptc_tags,omitempty"`
@@ -248,7 +231,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// Example: `"20000205, 20000209"`
 	//
-	// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `not_iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 	NotIptcTags *string `json:"-" url:"not_iptc_tags,omitempty"`
@@ -256,7 +239,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// Example: `"Business, Events"`
 	//
-	// **Note**: The `iab_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `iab_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
 	IabTags *string `json:"-" url:"iab_tags,omitempty"`
@@ -264,7 +247,7 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// Example: `"Agriculture, Metals"`
 	//
-	// **Note**: The `not_iab_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `not_iab_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
 	NotIabTags *string `json:"-" url:"not_iab_tags,omitempty"`
@@ -276,50 +259,54 @@ type LatestHeadlinesGetRequest struct {
 	//
 	// To learn more, see the [Custom tags](/docs/v3/documentation/guides-and-concepts/custom-tags).
 	CustomTags *string `json:"-" url:"custom_tags,omitempty"`
+	// If true, returns only articles/sources that comply with the publisher's robots.txt rules. If false, returns only articles/sources that do not comply with robots.txt rules. If omitted, returns all articles/sources regardless of compliance status.
+	RobotsCompliant *bool `json:"-" url:"robots_compliant,omitempty"`
 }
 
 type LatestHeadlinesPostRequest struct {
-	When                *When                `json:"when,omitempty" url:"-"`
-	ByParseDate         *ByParseDate         `json:"by_parse_date,omitempty" url:"-"`
-	Lang                *Lang                `json:"lang,omitempty" url:"-"`
-	NotLang             *NotLang             `json:"not_lang,omitempty" url:"-"`
-	Countries           *Countries           `json:"countries,omitempty" url:"-"`
-	NotCountries        *NotCountries        `json:"not_countries,omitempty" url:"-"`
-	PredefinedSources   *PredefinedSources   `json:"predefined_sources,omitempty" url:"-"`
-	Sources             *Sources             `json:"sources,omitempty" url:"-"`
-	NotSources          *NotSources          `json:"not_sources,omitempty" url:"-"`
-	NotAuthorName       *NotAuthorName       `json:"not_author_name,omitempty" url:"-"`
-	RankedOnly          *RankedOnly          `json:"ranked_only,omitempty" url:"-"`
-	IsHeadline          *IsHeadline          `json:"is_headline,omitempty" url:"-"`
-	IsOpinion           *IsOpinion           `json:"is_opinion,omitempty" url:"-"`
-	IsPaidContent       *IsPaidContent       `json:"is_paid_content,omitempty" url:"-"`
-	ParentUrl           *ParentUrl           `json:"parent_url,omitempty" url:"-"`
-	AllLinks            *AllLinks            `json:"all_links,omitempty" url:"-"`
-	AllDomainLinks      *AllDomainLinks      `json:"all_domain_links,omitempty" url:"-"`
-	WordCountMin        *WordCountMin        `json:"word_count_min,omitempty" url:"-"`
-	WordCountMax        *WordCountMax        `json:"word_count_max,omitempty" url:"-"`
-	Page                *Page                `json:"page,omitempty" url:"-"`
-	PageSize            *PageSize            `json:"page_size,omitempty" url:"-"`
-	ClusteringEnabled   *ClusteringEnabled   `json:"clustering_enabled,omitempty" url:"-"`
-	ClusteringVariable  *ClusteringVariable  `json:"clustering_variable,omitempty" url:"-"`
-	ClusteringThreshold *ClusteringThreshold `json:"clustering_threshold,omitempty" url:"-"`
-	IncludeNlpData      *IncludeNlpData      `json:"include_nlp_data,omitempty" url:"-"`
-	HasNlp              *HasNlp              `json:"has_nlp,omitempty" url:"-"`
-	Theme               *Theme               `json:"theme,omitempty" url:"-"`
-	NotTheme            *NotTheme            `json:"not_theme,omitempty" url:"-"`
-	OrgEntityName       *OrgEntityName       `json:"ORG_entity_name,omitempty" url:"-"`
-	PerEntityName       *PerEntityName       `json:"PER_entity_name,omitempty" url:"-"`
-	LocEntityName       *LocEntityName       `json:"LOC_entity_name,omitempty" url:"-"`
-	MiscEntityName      *MiscEntityName      `json:"MISC_entity_name,omitempty" url:"-"`
-	TitleSentimentMin   *TitleSentimentMin   `json:"title_sentiment_min,omitempty" url:"-"`
-	TitleSentimentMax   *TitleSentimentMax   `json:"title_sentiment_max,omitempty" url:"-"`
-	ContentSentimentMin *ContentSentimentMin `json:"content_sentiment_min,omitempty" url:"-"`
-	ContentSentimentMax *ContentSentimentMax `json:"content_sentiment_max,omitempty" url:"-"`
-	IptcTags            *IptcTags            `json:"iptc_tags,omitempty" url:"-"`
-	NotIptcTags         *NotIptcTags         `json:"not_iptc_tags,omitempty" url:"-"`
-	IabTags             *IabTags             `json:"iab_tags,omitempty" url:"-"`
-	NotIabTags          *NotIabTags          `json:"not_iab_tags,omitempty" url:"-"`
-	CustomTags          *CustomTags          `json:"custom_tags,omitempty" url:"-"`
+	When                     *When                     `json:"when,omitempty" url:"-"`
+	ByParseDate              *ByParseDate              `json:"by_parse_date,omitempty" url:"-"`
+	Lang                     *Lang                     `json:"lang,omitempty" url:"-"`
+	NotLang                  *NotLang                  `json:"not_lang,omitempty" url:"-"`
+	Countries                *Countries                `json:"countries,omitempty" url:"-"`
+	NotCountries             *NotCountries             `json:"not_countries,omitempty" url:"-"`
+	PredefinedSources        *PredefinedSources        `json:"predefined_sources,omitempty" url:"-"`
+	Sources                  *Sources                  `json:"sources,omitempty" url:"-"`
+	NotSources               *NotSources               `json:"not_sources,omitempty" url:"-"`
+	NotAuthorName            *NotAuthorName            `json:"not_author_name,omitempty" url:"-"`
+	RankedOnly               *RankedOnly               `json:"ranked_only,omitempty" url:"-"`
+	IsHeadline               *IsHeadline               `json:"is_headline,omitempty" url:"-"`
+	IsOpinion                *IsOpinion                `json:"is_opinion,omitempty" url:"-"`
+	IsPaidContent            *IsPaidContent            `json:"is_paid_content,omitempty" url:"-"`
+	ParentUrl                *ParentUrl                `json:"parent_url,omitempty" url:"-"`
+	AllLinks                 *AllLinks                 `json:"all_links,omitempty" url:"-"`
+	AllDomainLinks           *AllDomainLinks           `json:"all_domain_links,omitempty" url:"-"`
+	WordCountMin             *WordCountMin             `json:"word_count_min,omitempty" url:"-"`
+	WordCountMax             *WordCountMax             `json:"word_count_max,omitempty" url:"-"`
+	Page                     *Page                     `json:"page,omitempty" url:"-"`
+	PageSize                 *PageSize                 `json:"page_size,omitempty" url:"-"`
+	ClusteringEnabled        *ClusteringEnabled        `json:"clustering_enabled,omitempty" url:"-"`
+	ClusteringVariable       *ClusteringVariable       `json:"clustering_variable,omitempty" url:"-"`
+	ClusteringThreshold      *ClusteringThreshold      `json:"clustering_threshold,omitempty" url:"-"`
+	IncludeTranslationFields *IncludeTranslationFields `json:"include_translation_fields,omitempty" url:"-"`
+	IncludeNlpData           *IncludeNlpData           `json:"include_nlp_data,omitempty" url:"-"`
+	HasNlp                   *HasNlp                   `json:"has_nlp,omitempty" url:"-"`
+	Theme                    *Theme                    `json:"theme,omitempty" url:"-"`
+	NotTheme                 *NotTheme                 `json:"not_theme,omitempty" url:"-"`
+	OrgEntityName            *OrgEntityName            `json:"ORG_entity_name,omitempty" url:"-"`
+	PerEntityName            *PerEntityName            `json:"PER_entity_name,omitempty" url:"-"`
+	LocEntityName            *LocEntityName            `json:"LOC_entity_name,omitempty" url:"-"`
+	MiscEntityName           *MiscEntityName           `json:"MISC_entity_name,omitempty" url:"-"`
+	TitleSentimentMin        *TitleSentimentMin        `json:"title_sentiment_min,omitempty" url:"-"`
+	TitleSentimentMax        *TitleSentimentMax        `json:"title_sentiment_max,omitempty" url:"-"`
+	ContentSentimentMin      *ContentSentimentMin      `json:"content_sentiment_min,omitempty" url:"-"`
+	ContentSentimentMax      *ContentSentimentMax      `json:"content_sentiment_max,omitempty" url:"-"`
+	IptcTags                 *IptcTags                 `json:"iptc_tags,omitempty" url:"-"`
+	NotIptcTags              *NotIptcTags              `json:"not_iptc_tags,omitempty" url:"-"`
+	IabTags                  *IabTags                  `json:"iab_tags,omitempty" url:"-"`
+	NotIabTags               *NotIabTags               `json:"not_iab_tags,omitempty" url:"-"`
+	CustomTags               *CustomTags               `json:"custom_tags,omitempty" url:"-"`
+	RobotsCompliant          *RobotsCompliant          `json:"robots_compliant,omitempty" url:"-"`
 }
 
 // The time period for which you want to get the latest headlines.

@@ -341,7 +341,7 @@ func (s *SourceUrl) Accept(visitor SourceUrlVisitor) error {
 
 // The response model for a successful `Sources` request retrieving news sources matching the specified criteria. Response field behavior:
 // - Required fields are guaranteed to be present and non-null.
-// - Optional fields may be `null`/`undefined` if the data couldn't be extracted during processing.
+// - Optional fields may be `null` or `undefined` if the data point is not presented or couldn't be extracted during processing.
 type SourcesResponseDto struct {
 	// A message indicating the result of the request.
 	Message string `json:"message" url:"message"`
