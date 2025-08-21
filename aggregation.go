@@ -20,15 +20,9 @@ type AggregationGetRequest struct {
 	//     For example, `technology AND (Apple OR Microsoft) NOT Google`.
 	//
 	// For more details, see [Advanced querying](/docs/v3/documentation/guides-and-concepts/advanced-querying).
-	Q string `json:"-" url:"q"`
-	// The article fields to search in. To search in multiple fields, use a comma-separated string.
-	//
-	// Example: `"title, summary"`
-	//
-	// **Note**: The `summary` option is available if NLP is enabled in your plan.
-	//
-	// Available options: `title`, `summary`, `content`.
-	SearchIn *string `json:"-" url:"search_in,omitempty"`
+	Q             string         `json:"-" url:"q"`
+	AggregationBy *AggregationBy `json:"-" url:"aggregation_by,omitempty"`
+	SearchIn      *SearchIn      `json:"-" url:"search_in,omitempty"`
 	// Predefined top news sources per country.
 	//
 	// Format: start with the word `top`, followed by the number of desired sources, and then the two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Multiple countries with the number of top sources can be specified as a comma-separated string.
@@ -84,7 +78,7 @@ type AggregationGetRequest struct {
 	// - YYYY-MM-dd: `2024-07-01`
 	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
 	// - YYYY/mm/dd: `2024/07/01`
-	// - English phrases: `1 day ago`, `today`
+	// - English phrases: `7 day ago`, `today`
 	//
 	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
 	From *time.Time `json:"-" url:"from_,omitempty"`
@@ -95,7 +89,7 @@ type AggregationGetRequest struct {
 	// - YYYY-MM-dd: `2024-07-01`
 	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
 	// - YYYY/mm/dd: `2024/07/01`
-	// - English phrases: `1 day ago`, `today`
+	// - English phrases: `1 day ago`, `now`
 	//
 	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
 	To *time.Time `json:"-" url:"to_,omitempty"`
@@ -148,27 +142,9 @@ type AggregationGetRequest struct {
 	// For details, see [How to paginate large datasets](https://www.newscatcherapi.com/docs/v3/documentation/how-to/paginate-large-datasets).
 	Page *int `json:"-" url:"page,omitempty"`
 	// The number of articles to return per page.
-	PageSize *int `json:"-" url:"page_size,omitempty"`
-	// If true, includes an NLP layer with each article in the response. This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
-	//
-	// The NLP layer includes:
-	// - Theme: General topic of the article.
-	// - Summary: A concise overview of the article content.
-	// - Sentiment: Separate scores for title and content (range: -1 to 1).
-	// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
-	// - IPTC tags: Standardized news category tags.
-	// - IAB tags: Content categories for digital advertising.
-	//
-	// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
-	//
-	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
-	IncludeNlpData *bool `json:"-" url:"include_nlp_data,omitempty"`
-	// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
-	//
-	// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
-	//
-	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
-	HasNlp *bool `json:"-" url:"has_nlp,omitempty"`
+	PageSize       *int            `json:"-" url:"page_size,omitempty"`
+	IncludeNlpData *IncludeNlpData `json:"-" url:"include_nlp_data,omitempty"`
+	HasNlp         *HasNlp         `json:"-" url:"has_nlp,omitempty"`
 	// Filters articles based on their general topic, as determined by NLP analysis. To select multiple themes, use a comma-separated string.
 	//
 	// Example: `"Finance, Tech"`
@@ -187,7 +163,7 @@ type AggregationGetRequest struct {
 	//
 	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
 	NotTheme *string `json:"-" url:"not_theme,omitempty"`
-	// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string.
+	// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"Apple, Microsoft"`
 	//
@@ -195,7 +171,7 @@ type AggregationGetRequest struct {
 	//
 	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
 	OrgEntityName *string `json:"-" url:"ORG_entity_name,omitempty"`
-	// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string.
+	// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"Elon Musk, Jeff Bezos"`
 	//
@@ -203,7 +179,7 @@ type AggregationGetRequest struct {
 	//
 	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
 	PerEntityName *string `json:"-" url:"PER_entity_name,omitempty"`
-	// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string.
+	// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"California, New York"`
 	//
@@ -211,7 +187,7 @@ type AggregationGetRequest struct {
 	//
 	// To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
 	LocEntityName *string `json:"-" url:"LOC_entity_name,omitempty"`
-	// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string.
+	// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 	//
 	// Example: `"Bitcoin, Blockchain"`
 	//
@@ -267,7 +243,7 @@ type AggregationGetRequest struct {
 	//
 	// Example: `"20000199, 20000209"`
 	//
-	// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 	IptcTags *string `json:"-" url:"iptc_tags,omitempty"`
@@ -275,18 +251,17 @@ type AggregationGetRequest struct {
 	//
 	// Example: `"20000205, 20000209"`
 	//
-	// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `not_iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 	NotIptcTags *string `json:"-" url:"not_iptc_tags,omitempty"`
-	// The aggregation interval for the results. Possible values are:
-	// - `day`: Aggregates results by day.
-	// - `hour`: Aggregates results by hour.
-	AggregationBy *AggregationGetRequestAggregationBy `json:"-" url:"aggregation_by,omitempty"`
+	// If true, returns only articles/sources that comply with the publisher's robots.txt rules. If false, returns only articles/sources that do not comply with robots.txt rules. If omitted, returns all articles/sources regardless of compliance status.
+	RobotsCompliant *bool `json:"-" url:"robots_compliant,omitempty"`
 }
 
 type AggregationPostRequest struct {
 	Q                      Q                       `json:"q" url:"-"`
+	AggregationBy          *AggregationBy          `json:"aggregation_by,omitempty" url:"-"`
 	SearchIn               *SearchIn               `json:"search_in,omitempty" url:"-"`
 	PredefinedSources      *PredefinedSources      `json:"predefined_sources,omitempty" url:"-"`
 	Sources                *Sources                `json:"sources,omitempty" url:"-"`
@@ -325,20 +300,19 @@ type AggregationPostRequest struct {
 	TitleSentimentMin      *TitleSentimentMin      `json:"title_sentiment_min,omitempty" url:"-"`
 	TitleSentimentMax      *TitleSentimentMax      `json:"title_sentiment_max,omitempty" url:"-"`
 	ContentSentimentMin    *ContentSentimentMin    `json:"content_sentiment_min,omitempty" url:"-"`
-	ContentSentientMax     *ContentSentimentMax    `json:"content_sentient_max,omitempty" url:"-"`
+	ContentSentimentMax    *ContentSentimentMax    `json:"content_sentiment_max,omitempty" url:"-"`
 	IptcTags               *IptcTags               `json:"iptc_tags,omitempty" url:"-"`
 	NotIptcTags            *NotIptcTags            `json:"not_iptc_tags,omitempty" url:"-"`
-	AggregationBy          *AggregationBy          `json:"aggregation_by,omitempty" url:"-"`
+	RobotsCompliant        *RobotsCompliant        `json:"robots_compliant,omitempty" url:"-"`
 }
 
-// The aggregation interval for the results. Possible values are:
-// - `day`: Aggregates results by day.
-// - `hour`: Aggregates results by hour.
+// The aggregation interval for the results.
 type AggregationBy string
 
 const (
-	AggregationByDay  AggregationBy = "day"
-	AggregationByHour AggregationBy = "hour"
+	AggregationByDay   AggregationBy = "day"
+	AggregationByHour  AggregationBy = "hour"
+	AggregationByMonth AggregationBy = "month"
 )
 
 func NewAggregationByFromString(s string) (AggregationBy, error) {
@@ -347,6 +321,8 @@ func NewAggregationByFromString(s string) (AggregationBy, error) {
 		return AggregationByDay, nil
 	case "hour":
 		return AggregationByHour, nil
+	case "month":
+		return AggregationByMonth, nil
 	}
 	var t AggregationBy
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -358,8 +334,7 @@ func (a AggregationBy) Ptr() *AggregationBy {
 
 // The response model for a successful `Aggregation count` request. Response field behavior:
 // - Required fields are guaranteed to be present and non-null.
-// - Optional fields may be `null`/`undefined` if the data couldn't be extracted
-// during processing.
+// - Optional fields may be `null` or `undefined` if the data point is not presented or couldn't be extracted during processing.
 type AggregationCountResponseDto struct {
 	// The status of the response.
 	Status string `json:"status" url:"status"`
@@ -744,28 +719,6 @@ func (t *TimeFrameCount) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
-}
-
-type AggregationGetRequestAggregationBy string
-
-const (
-	AggregationGetRequestAggregationByDay  AggregationGetRequestAggregationBy = "day"
-	AggregationGetRequestAggregationByHour AggregationGetRequestAggregationBy = "hour"
-)
-
-func NewAggregationGetRequestAggregationByFromString(s string) (AggregationGetRequestAggregationBy, error) {
-	switch s {
-	case "day":
-		return AggregationGetRequestAggregationByDay, nil
-	case "hour":
-		return AggregationGetRequestAggregationByHour, nil
-	}
-	var t AggregationGetRequestAggregationBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (a AggregationGetRequestAggregationBy) Ptr() *AggregationGetRequestAggregationBy {
-	return &a
 }
 
 type AggregationGetRequestPublishedDatePrecision string

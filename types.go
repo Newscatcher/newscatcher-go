@@ -277,6 +277,10 @@ type ArticleEntity struct {
 	Description *string `json:"description,omitempty" url:"description,omitempty"`
 	// The content of the article.
 	Content string `json:"content" url:"content"`
+	// English translation of the article title. Available when using the `search_in` parameter with the `title_translated` option or by setting the `include_translation_fields` parameter to `true`.
+	TitleTranslatedEn *string `json:"title_translated_en,omitempty" url:"title_translated_en,omitempty"`
+	// English translation of the article content. Available when using the `search_in` parameter with the `content_translated` option or by setting the `include_translation_fields` parameter to `true`.
+	ContentTranslatedEn *string `json:"content_translated_en,omitempty" url:"content_translated_en,omitempty"`
 	// The word count of the article.
 	WordCount *int `json:"word_count,omitempty" url:"word_count,omitempty"`
 	// Indicates if the article is an opinion piece.
@@ -292,6 +296,8 @@ type ArticleEntity struct {
 	Id string `json:"id" url:"id"`
 	// The relevance score of the article.
 	Score float64 `json:"score" url:"score"`
+	// True if the article content can be safely accessed according to the publisher's robots.txt rules; false otherwise.
+	RobotsCompliant *bool `json:"robots_compliant,omitempty" url:"robots_compliant,omitempty"`
 	// An object that contains custom tags associated with an article, where each key is a taxonomy name, and the value is an array of tags.
 	CustomTags           map[string][]string         `json:"custom_tags,omitempty" url:"custom_tags,omitempty"`
 	AdditionalDomainInfo *AdditionalDomainInfoEntity `json:"additional_domain_info,omitempty" url:"additional_domain_info,omitempty"`
@@ -461,6 +467,20 @@ func (a *ArticleEntity) GetContent() string {
 	return a.Content
 }
 
+func (a *ArticleEntity) GetTitleTranslatedEn() *string {
+	if a == nil {
+		return nil
+	}
+	return a.TitleTranslatedEn
+}
+
+func (a *ArticleEntity) GetContentTranslatedEn() *string {
+	if a == nil {
+		return nil
+	}
+	return a.ContentTranslatedEn
+}
+
 func (a *ArticleEntity) GetWordCount() *int {
 	if a == nil {
 		return nil
@@ -515,6 +535,13 @@ func (a *ArticleEntity) GetScore() float64 {
 		return 0
 	}
 	return a.Score
+}
+
+func (a *ArticleEntity) GetRobotsCompliant() *bool {
+	if a == nil {
+		return nil
+	}
+	return a.RobotsCompliant
 }
 
 func (a *ArticleEntity) GetCustomTags() map[string][]string {
@@ -990,8 +1017,7 @@ func (c *ClusteredArticlesDto) String() string {
 
 // The response model when clustering is enabled, grouping similar articles into clusters. Applies to the `Search` and `Latest headlines` requests. Response field behavior:
 // - Required fields are guaranteed to be present and non-null.
-// - Optional fields may be `null`/`undefined` if the data couldn't be extracted
-// during processing.
+// - Optional fields may be `null` or `undefined` if the data point is not presented or couldn't be extracted during processing.
 // - To access article properties in the `articles` response array,
 // use array index notation. For example, `articles[n].title`, where `n`
 // is the zero-based index of the article object (0, 1, 2, etc.).
@@ -1404,7 +1430,7 @@ func (e *Error) String() string {
 // - YYYY-MM-dd: `2024-07-01`
 // - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
 // - YYYY/mm/dd: `2024/07/01`
-// - English phrases: `1 day ago`, `today`
+// - English phrases: `7 day ago`, `today`
 //
 // **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
 type From struct {
@@ -1480,9 +1506,9 @@ func (f *From) Accept(visitor FromVisitor) error {
 // The lowest boundary of the rank of a news website to filter by. A lower rank indicates a more popular source.
 type FromRank = int
 
-// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
+// If true, filters results to include only articles that have NLP data.
 //
-// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
+// **Note**: NLP coverage and analysis completeness may vary by language, with full data available for articles in English and Arabic. The `has_nlp` parameter is available only in NLP subscription plans.
 //
 // To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
 type HasNlp = bool
@@ -1493,7 +1519,7 @@ type HasNlp = bool
 // - `"Business, Events"`
 // - `["Business", "Events"]`
 //
-// **Note**: The `iab_tags` parameter is only available if tags are included in your subscription plan.
+// **Note**: The `iab_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 //
 // To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
 type IabTags struct {
@@ -1566,20 +1592,17 @@ func (i *IabTags) Accept(visitor IabTagsVisitor) error {
 	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
-// If true, includes an NLP layer with each article in the response.  This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
+// If true, includes an NLP object for each article in the response. This object provides results of NLP analysis, including article theme, summary, sentiment, tags, and named entity recognition if available.
 //
-// The NLP layer includes:
-// - Theme: General topic of the article.
-// - Summary: A concise overview of the article content.
-// - Sentiment: Separate scores for title and content (range: -1 to 1).
-// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
-// - IPTC tags: Standardized news category tags.
-// - IAB tags: Content categories for digital advertising.
-//
-// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
+// **Note**: NLP coverage and analysis completeness may vary by language, with full data available for articles in English and Arabic. The `include_nlp_data` parameter is available only in NLP subscription plans.
 //
 // To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
 type IncludeNlpData = bool
+
+// If true, the response includes translation fields `title_translated_en` and `content_translated_en`.
+//
+// **Note**: Article translations are available only in the NLP plan.
+type IncludeTranslationFields = bool
 
 // Filters articles based on International Press Telecommunications Council (IPTC) media topic tags. To specify multiple IPTC tags, use a comma-separated string or an array of strings.
 //
@@ -1587,7 +1610,7 @@ type IncludeNlpData = bool
 // - `"20000199, 20000209"`
 // - `["20000199", "20000209"]`
 //
-// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+// **Note**: The `iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 //
 // To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 type IptcTags struct {
@@ -1820,163 +1843,19 @@ func (l *Lang) Accept(visitor LangVisitor) error {
 	return fmt.Errorf("type %T does not include a non-empty union type", l)
 }
 
-// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string or an array of strings.
-//
-// Examples:
-// - `"California, New York"`
-// - `["California", "New York"]`
+// Filters articles that mention specific location names, as identified by NLP analysis. To specify multiple locations, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 //
 // **Note**: The `LOC_entity_name` parameter is only available if NLP is included in your subscription plan.
 //
 // To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
-type LocEntityName struct {
-	String     string
-	StringList []string
+type LocEntityName = string
 
-	typ string
-}
-
-func NewLocEntityNameFromString(value string) *LocEntityName {
-	return &LocEntityName{typ: "String", String: value}
-}
-
-func NewLocEntityNameFromStringList(value []string) *LocEntityName {
-	return &LocEntityName{typ: "StringList", StringList: value}
-}
-
-func (l *LocEntityName) GetString() string {
-	if l == nil {
-		return ""
-	}
-	return l.String
-}
-
-func (l *LocEntityName) GetStringList() []string {
-	if l == nil {
-		return nil
-	}
-	return l.StringList
-}
-
-func (l *LocEntityName) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		l.typ = "String"
-		l.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		l.typ = "StringList"
-		l.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LocEntityName) MarshalJSON() ([]byte, error) {
-	if l.typ == "String" || l.String != "" {
-		return json.Marshal(l.String)
-	}
-	if l.typ == "StringList" || l.StringList != nil {
-		return json.Marshal(l.StringList)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-type LocEntityNameVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (l *LocEntityName) Accept(visitor LocEntityNameVisitor) error {
-	if l.typ == "String" || l.String != "" {
-		return visitor.VisitString(l.String)
-	}
-	if l.typ == "StringList" || l.StringList != nil {
-		return visitor.VisitStringList(l.StringList)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", l)
-}
-
-// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string or an array of strings.
-//
-// Examples:
-// - `"Bitcoin, Blockchain"`
-// - `["Bitcoin", "Blockchain"]`
+// Filters articles that mention other named entities not falling under person, organization, or location categories. Includes events, nationalities, products, works of art, and more. To specify multiple entities, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 //
 // **Note**: The `MISC_entity_name` parameter is only available if NLP is included in your subscription plan.
 //
 // To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
-type MiscEntityName struct {
-	String     string
-	StringList []string
-
-	typ string
-}
-
-func NewMiscEntityNameFromString(value string) *MiscEntityName {
-	return &MiscEntityName{typ: "String", String: value}
-}
-
-func NewMiscEntityNameFromStringList(value []string) *MiscEntityName {
-	return &MiscEntityName{typ: "StringList", StringList: value}
-}
-
-func (m *MiscEntityName) GetString() string {
-	if m == nil {
-		return ""
-	}
-	return m.String
-}
-
-func (m *MiscEntityName) GetStringList() []string {
-	if m == nil {
-		return nil
-	}
-	return m.StringList
-}
-
-func (m *MiscEntityName) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		m.typ = "String"
-		m.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		m.typ = "StringList"
-		m.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, m)
-}
-
-func (m MiscEntityName) MarshalJSON() ([]byte, error) {
-	if m.typ == "String" || m.String != "" {
-		return json.Marshal(m.String)
-	}
-	if m.typ == "StringList" || m.StringList != nil {
-		return json.Marshal(m.StringList)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", m)
-}
-
-type MiscEntityNameVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (m *MiscEntityName) Accept(visitor MiscEntityNameVisitor) error {
-	if m.typ == "String" || m.String != "" {
-		return visitor.VisitString(m.String)
-	}
-	if m.typ == "StringList" || m.StringList != nil {
-		return visitor.VisitStringList(m.StringList)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", m)
-}
+type MiscEntityName = string
 
 // A list of named entities identified in the article.
 type NamedEntityList = []*NamedEntityListItem
@@ -2158,6 +2037,8 @@ func (n *NewsType) Accept(visitor NewsTypeVisitor) error {
 
 // Natural Language Processing data for the article.
 type NlpDataEntity struct {
+	// A brief AI-generated summary of the article's English translation.
+	SummaryTranslated *string `json:"summary_translated,omitempty" url:"summary_translated,omitempty"`
 	// The themes or categories identified in the article.
 	Theme *string `json:"theme,omitempty" url:"theme,omitempty"`
 	// A brief AI-generated summary of the article content.
@@ -2175,15 +2056,36 @@ type NlpDataEntity struct {
 	NerMisc *NamedEntityList `json:"ner_MISC,omitempty" url:"ner_MISC,omitempty"`
 	// Named Entity Recognition for location entities (cities, countries, geographic features).
 	NerLoc *NamedEntityList `json:"ner_LOC,omitempty" url:"ner_LOC,omitempty"`
+	// Named Entity Recognition for person entities (individuals' names) extracted from the English translation of the article.
+	TranslationNerPer *NamedEntityList `json:"translation_ner_PER,omitempty" url:"translation_ner_PER,omitempty"`
+	// Named Entity Recognition for organization entities (company names, institutions) extracted from the English translation of the article.
+	TranslationNerOrg *NamedEntityList `json:"translation_ner_ORG,omitempty" url:"translation_ner_ORG,omitempty"`
+	// Named Entity Recognition for miscellaneous entities (events, nationalities, products) extracted from the English translation of the article.
+	TranslationNerMisc *NamedEntityList `json:"translation_ner_MISC,omitempty" url:"translation_ner_MISC,omitempty"`
+	// Named Entity Recognition for location entities (cities, countries, geographic features) extracted from the English translation of the article.
+	TranslationNerLoc *NamedEntityList `json:"translation_ner_LOC,omitempty" url:"translation_ner_LOC,omitempty"`
 	// IPTC media topic taxonomy paths identified in the article content. Each path represents a hierarchical category following the IPTC standard.
+	//
+	// **Note**: The `iptc_tags_name` field is only available in the `v3_nlp_iptc_tags` subscription plan.
 	IptcTagsName []string `json:"iptc_tags_name,omitempty" url:"iptc_tags_name,omitempty"`
 	// IPTC media topic numeric codes identified in the article content. These codes correspond to the standardized IPTC media topic taxonomy.
+	//
+	// **Note**: The `iptc_tags_id` field is only available in the `v3_nlp_iptc_tags` subscription plan.
 	IptcTagsId []string `json:"iptc_tags_id,omitempty" url:"iptc_tags_id,omitempty"`
 	// IAB content taxonomy paths identified in the article content. Each path represents a hierarchical category following the IAB content standard.
+	//
+	// **Note**: The `iab_tags_name` field is only available in the `v3_nlp_iptc_tags` subscription plan.
 	IabTagsName []string `json:"iab_tags_name,omitempty" url:"iab_tags_name,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
+}
+
+func (n *NlpDataEntity) GetSummaryTranslated() *string {
+	if n == nil {
+		return nil
+	}
+	return n.SummaryTranslated
 }
 
 func (n *NlpDataEntity) GetTheme() *string {
@@ -2240,6 +2142,34 @@ func (n *NlpDataEntity) GetNerLoc() *NamedEntityList {
 		return nil
 	}
 	return n.NerLoc
+}
+
+func (n *NlpDataEntity) GetTranslationNerPer() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.TranslationNerPer
+}
+
+func (n *NlpDataEntity) GetTranslationNerOrg() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.TranslationNerOrg
+}
+
+func (n *NlpDataEntity) GetTranslationNerMisc() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.TranslationNerMisc
+}
+
+func (n *NlpDataEntity) GetTranslationNerLoc() *NamedEntityList {
+	if n == nil {
+		return nil
+	}
+	return n.TranslationNerLoc
 }
 
 func (n *NlpDataEntity) GetIptcTagsName() []string {
@@ -2453,7 +2383,7 @@ func (n *NotCountries) Accept(visitor NotCountriesVisitor) error {
 // - `"Agriculture, Metals"`
 // - `["Agriculture", "Metals"]`
 //
-// **Note**: The `not_iab_tags` parameter is only available if tags are included in your subscription plan.
+// **Note**: The `not_iab_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 //
 // To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
 type NotIabTags struct {
@@ -2532,7 +2462,7 @@ func (n *NotIabTags) Accept(visitor NotIabTagsVisitor) error {
 // - `"20000205, 20000209"`
 // - `["20000205", "20000209"]`
 //
-// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+// **Note**: The `not_iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 //
 // To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 type NotIptcTags struct {
@@ -2836,84 +2766,12 @@ func (n *NotTheme) Accept(visitor NotThemeVisitor) error {
 	return fmt.Errorf("type %T does not include a non-empty union type", n)
 }
 
-// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string or an array of strings.
-//
-// Examples:
-// - `"Apple, Microsoft"`
-// - `["Apple", "Microsoft"]`
+// Filters articles that mention specific organization names, as identified by NLP analysis. To specify multiple organizations, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 //
 // **Note**: The `ORG_entity_name` parameter is only available if NLP is included in your subscription plan.
 //
 // To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
-type OrgEntityName struct {
-	String     string
-	StringList []string
-
-	typ string
-}
-
-func NewOrgEntityNameFromString(value string) *OrgEntityName {
-	return &OrgEntityName{typ: "String", String: value}
-}
-
-func NewOrgEntityNameFromStringList(value []string) *OrgEntityName {
-	return &OrgEntityName{typ: "StringList", StringList: value}
-}
-
-func (o *OrgEntityName) GetString() string {
-	if o == nil {
-		return ""
-	}
-	return o.String
-}
-
-func (o *OrgEntityName) GetStringList() []string {
-	if o == nil {
-		return nil
-	}
-	return o.StringList
-}
-
-func (o *OrgEntityName) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		o.typ = "String"
-		o.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		o.typ = "StringList"
-		o.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, o)
-}
-
-func (o OrgEntityName) MarshalJSON() ([]byte, error) {
-	if o.typ == "String" || o.String != "" {
-		return json.Marshal(o.String)
-	}
-	if o.typ == "StringList" || o.StringList != nil {
-		return json.Marshal(o.StringList)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", o)
-}
-
-type OrgEntityNameVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (o *OrgEntityName) Accept(visitor OrgEntityNameVisitor) error {
-	if o.typ == "String" || o.String != "" {
-		return visitor.VisitString(o.String)
-	}
-	if o.typ == "StringList" || o.StringList != nil {
-		return visitor.VisitStringList(o.StringList)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", o)
-}
+type OrgEntityName = string
 
 // The page number to scroll through the results. Use for pagination, as a single API response can return up to 1,000 articles.
 //
@@ -2998,84 +2856,12 @@ func (p *ParentUrl) Accept(visitor ParentUrlVisitor) error {
 	return fmt.Errorf("type %T does not include a non-empty union type", p)
 }
 
-// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string or an array of strings.
-//
-// Examples:
-// - `"Elon Musk, Jeff Bezos"`
-// - `["Elon Musk", "Jeff Bezos"]`
+// Filters articles that mention specific person names, as identified by NLP analysis. To specify multiple names, use a comma-separated string. To search named entities in translations, combine with the translation options of the `search_in` parameter (e.g., `title_content_translated`).
 //
 // **Note**: The `PER_entity_name` parameter is only available if NLP is included in your subscription plan.
 //
 // To learn more, see [Search by entity](/docs/v3/documentation/how-to/search-by-entity).
-type PerEntityName struct {
-	String     string
-	StringList []string
-
-	typ string
-}
-
-func NewPerEntityNameFromString(value string) *PerEntityName {
-	return &PerEntityName{typ: "String", String: value}
-}
-
-func NewPerEntityNameFromStringList(value []string) *PerEntityName {
-	return &PerEntityName{typ: "StringList", StringList: value}
-}
-
-func (p *PerEntityName) GetString() string {
-	if p == nil {
-		return ""
-	}
-	return p.String
-}
-
-func (p *PerEntityName) GetStringList() []string {
-	if p == nil {
-		return nil
-	}
-	return p.StringList
-}
-
-func (p *PerEntityName) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		p.typ = "String"
-		p.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		p.typ = "StringList"
-		p.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PerEntityName) MarshalJSON() ([]byte, error) {
-	if p.typ == "String" || p.String != "" {
-		return json.Marshal(p.String)
-	}
-	if p.typ == "StringList" || p.StringList != nil {
-		return json.Marshal(p.StringList)
-	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", p)
-}
-
-type PerEntityNameVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (p *PerEntityName) Accept(visitor PerEntityNameVisitor) error {
-	if p.typ == "String" || p.String != "" {
-		return visitor.VisitString(p.String)
-	}
-	if p.typ == "StringList" || p.StringList != nil {
-		return visitor.VisitStringList(p.StringList)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", p)
-}
+type PerEntityName = string
 
 // Predefined top news sources per country.
 //
@@ -3198,18 +2984,21 @@ type Q = string
 // If true, limits the search to sources ranked in the top 1 million online websites. If false, includes unranked sources which are assigned a rank of 999999.
 type RankedOnly = bool
 
-// The article fields to search in. To search in multiple fields, use a comma-separated string.
+// If true, returns only articles/sources that comply with the publisher's robots.txt rules. If false, returns only articles/sources that do not comply with robots.txt rules. If omitted, returns all articles/sources regardless of compliance status.
+type RobotsCompliant = bool
+
+// The article fields to search in. Use a comma-separated string for multiple options, with a maximum of 2 in a single request.
 //
-// Example: `"title, summary"`
+// Available options:
+// - Standard fields: `title`, `content`, `summary`, `title_content`
+// - Translation fields: `title_translated`, `content_translated`, `summary_translated`, `title_content_translated`
 //
-// **Note**: The `summary` option is available if NLP is enabled in your plan.
-//
-// Available options: `title`, `summary`, `content`.
+// **Note**: Search in summaries and translations is only available for NLP subscription plans.
 type SearchIn = string
 
 // The response model for the search requests applies to the `Search`, `Latest Headlines`, `Search by link`, and `Authors` endpoints. Response field behavior:
 // - Required fields are guaranteed to be present and non-null.
-// - Optional fields may be `null`/`undefined` if the data couldn't be extracted during processing.
+// - Optional fields may be `null` or `undefined` if the data point is not presented or couldn't be extracted during processing.
 // - To access article properties in the `articles` response array, use array index notation. For example, `articles[n].title`, where `n` is the zero-based index of the article object (0, 1, 2, etc.).
 // - The `nlp` property within the article object `articles[n].nlp` is only available with NLP-enabled subscription plans.
 type SearchResponseDto struct {
@@ -3661,7 +3450,7 @@ type TitleSentimentMin = float64
 // - YYYY-MM-dd: `2024-07-01`
 // - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
 // - YYYY/mm/dd: `2024/07/01`
-// - English phrases: `1 day ago`, `today`
+// - English phrases: `1 day ago`, `now`
 //
 // **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
 type To struct {

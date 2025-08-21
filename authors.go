@@ -67,7 +67,7 @@ type AuthorsGetRequest struct {
 	// - YYYY-MM-dd: `2024-07-01`
 	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
 	// - YYYY/mm/dd: `2024/07/01`
-	// - English phrases: `1 day ago`, `today`
+	// - English phrases: `7 day ago`, `today`
 	//
 	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
 	From *time.Time `json:"-" url:"from_,omitempty"`
@@ -78,7 +78,7 @@ type AuthorsGetRequest struct {
 	// - YYYY-MM-dd: `2024-07-01`
 	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
 	// - YYYY/mm/dd: `2024/07/01`
-	// - English phrases: `1 day ago`, `today`
+	// - English phrases: `1 day ago`, `now`
 	//
 	// **Note**: By default, applied to the publication date of the article. To use the article's parse date instead, set the `by_parse_date` parameter to `true`.
 	To *time.Time `json:"-" url:"to_,omitempty"`
@@ -131,27 +131,10 @@ type AuthorsGetRequest struct {
 	// For details, see [How to paginate large datasets](https://www.newscatcherapi.com/docs/v3/documentation/how-to/paginate-large-datasets).
 	Page *int `json:"-" url:"page,omitempty"`
 	// The number of articles to return per page.
-	PageSize *int `json:"-" url:"page_size,omitempty"`
-	// If true, includes an NLP layer with each article in the response. This layer provides enhanced information such as theme classification, article summary, sentiment analysis, tags, and named entity recognition.
-	//
-	// The NLP layer includes:
-	// - Theme: General topic of the article.
-	// - Summary: A concise overview of the article content.
-	// - Sentiment: Separate scores for title and content (range: -1 to 1).
-	// - Named entities: Identified persons (PER), organizations (ORG), locations (LOC), and miscellaneous entities (MISC).
-	// - IPTC tags: Standardized news category tags.
-	// - IAB tags: Content categories for digital advertising.
-	//
-	// **Note**: The `include_nlp_data` parameter is only available if NLP is included in your subscription plan.
-	//
-	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
-	IncludeNlpData *bool `json:"-" url:"include_nlp_data,omitempty"`
-	// If true, filters the results to include only articles with an NLP layer. This allows you to focus on articles that have been processed with advanced NLP techniques.
-	//
-	// **Note**: The `has_nlp` parameter is only available if NLP is included in your subscription plan.
-	//
-	// To learn more, see [NLP features](/docs/v3/documentation/guides-and-concepts/nlp-features).
-	HasNlp *bool `json:"-" url:"has_nlp,omitempty"`
+	PageSize                 *int                      `json:"-" url:"page_size,omitempty"`
+	IncludeTranslationFields *IncludeTranslationFields `json:"-" url:"include_translation_fields,omitempty"`
+	IncludeNlpData           *IncludeNlpData           `json:"-" url:"include_nlp_data,omitempty"`
+	HasNlp                   *HasNlp                   `json:"-" url:"has_nlp,omitempty"`
 	// Filters articles based on their general topic, as determined by NLP analysis. To select multiple themes, use a comma-separated string.
 	//
 	// Example: `"Finance, Tech"`
@@ -222,7 +205,7 @@ type AuthorsGetRequest struct {
 	//
 	// Example: `"20000199, 20000209"`
 	//
-	// **Note**: The `iptc_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 	IptcTags *string `json:"-" url:"iptc_tags,omitempty"`
@@ -230,7 +213,7 @@ type AuthorsGetRequest struct {
 	//
 	// Example: `"20000205, 20000209"`
 	//
-	// **Note**: The `not_iptc_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `not_iptc_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see [IPTC Media Topic NewsCodes](https://www.iptc.org/std/NewsCodes/treeview/mediatopic/mediatopic-en-GB.html).
 	NotIptcTags *string `json:"-" url:"not_iptc_tags,omitempty"`
@@ -238,7 +221,7 @@ type AuthorsGetRequest struct {
 	//
 	// Example: `"Business, Events"`
 	//
-	// **Note**: The `iab_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `iab_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
 	IabTags *string `json:"-" url:"iab_tags,omitempty"`
@@ -246,7 +229,7 @@ type AuthorsGetRequest struct {
 	//
 	// Example: `"Agriculture, Metals"`
 	//
-	// **Note**: The `not_iab_tags` parameter is only available if tags are included in your subscription plan.
+	// **Note**: The `not_iab_tags` parameter is only available in the `v3_nlp_iptc_tags` subscription plan.
 	//
 	// To learn more, see the [IAB Content taxonomy](https://iabtechlab.com/standards/content-taxonomy/).
 	NotIabTags *string `json:"-" url:"not_iab_tags,omitempty"`
@@ -258,50 +241,54 @@ type AuthorsGetRequest struct {
 	//
 	// To learn more, see the [Custom tags](/docs/v3/documentation/guides-and-concepts/custom-tags).
 	CustomTags *string `json:"-" url:"custom_tags,omitempty"`
+	// If true, returns only articles/sources that comply with the publisher's robots.txt rules. If false, returns only articles/sources that do not comply with robots.txt rules. If omitted, returns all articles/sources regardless of compliance status.
+	RobotsCompliant *bool `json:"-" url:"robots_compliant,omitempty"`
 }
 
 type AuthorsPostRequest struct {
-	AuthorName             AuthorName              `json:"author_name" url:"-"`
-	NotAuthorName          *NotAuthorName          `json:"not_author_name,omitempty" url:"-"`
-	PredefinedSources      *PredefinedSources      `json:"predefined_sources,omitempty" url:"-"`
-	Sources                *Sources                `json:"sources,omitempty" url:"-"`
-	NotSources             *NotSources             `json:"not_sources,omitempty" url:"-"`
-	Lang                   *Lang                   `json:"lang,omitempty" url:"-"`
-	NotLang                *NotLang                `json:"not_lang,omitempty" url:"-"`
-	Countries              *Countries              `json:"countries,omitempty" url:"-"`
-	NotCountries           *NotCountries           `json:"not_countries,omitempty" url:"-"`
-	From                   *From                   `json:"from_,omitempty" url:"-"`
-	To                     *To                     `json:"to_,omitempty" url:"-"`
-	PublishedDatePrecision *PublishedDatePrecision `json:"published_date_precision,omitempty" url:"-"`
-	ByParseDate            *ByParseDate            `json:"by_parse_date,omitempty" url:"-"`
-	SortBy                 *SortBy                 `json:"sort_by,omitempty" url:"-"`
-	RankedOnly             *RankedOnly             `json:"ranked_only,omitempty" url:"-"`
-	FromRank               *FromRank               `json:"from_rank,omitempty" url:"-"`
-	ToRank                 *ToRank                 `json:"to_rank,omitempty" url:"-"`
-	IsHeadline             *IsHeadline             `json:"is_headline,omitempty" url:"-"`
-	IsOpinion              *IsOpinion              `json:"is_opinion,omitempty" url:"-"`
-	IsPaidContent          *IsPaidContent          `json:"is_paid_content,omitempty" url:"-"`
-	ParentUrl              *ParentUrl              `json:"parent_url,omitempty" url:"-"`
-	AllLinks               *AllLinks               `json:"all_links,omitempty" url:"-"`
-	AllDomainLinks         *AllDomainLinks         `json:"all_domain_links,omitempty" url:"-"`
-	WordCountMin           *WordCountMin           `json:"word_count_min,omitempty" url:"-"`
-	WordCountMax           *WordCountMax           `json:"word_count_max,omitempty" url:"-"`
-	Page                   *Page                   `json:"page,omitempty" url:"-"`
-	PageSize               *PageSize               `json:"page_size,omitempty" url:"-"`
-	IncludeNlpData         *IncludeNlpData         `json:"include_nlp_data,omitempty" url:"-"`
-	HasNlp                 *HasNlp                 `json:"has_nlp,omitempty" url:"-"`
-	Theme                  *Theme                  `json:"theme,omitempty" url:"-"`
-	NotTheme               *NotTheme               `json:"not_theme,omitempty" url:"-"`
-	NerName                *NerName                `json:"ner_name,omitempty" url:"-"`
-	TitleSentimentMin      *TitleSentimentMin      `json:"title_sentiment_min,omitempty" url:"-"`
-	TitleSentimentMax      *TitleSentimentMax      `json:"title_sentiment_max,omitempty" url:"-"`
-	ContentSentimentMin    *ContentSentimentMin    `json:"content_sentiment_min,omitempty" url:"-"`
-	ContentSentimentMax    *ContentSentimentMax    `json:"content_sentiment_max,omitempty" url:"-"`
-	IptcTags               *IptcTags               `json:"iptc_tags,omitempty" url:"-"`
-	NotIptcTags            *NotIptcTags            `json:"not_iptc_tags,omitempty" url:"-"`
-	IabTags                *IabTags                `json:"iab_tags,omitempty" url:"-"`
-	NotIabTags             *NotIabTags             `json:"not_iab_tags,omitempty" url:"-"`
-	CustomTags             *CustomTags             `json:"custom_tags,omitempty" url:"-"`
+	AuthorName               AuthorName                `json:"author_name" url:"-"`
+	NotAuthorName            *NotAuthorName            `json:"not_author_name,omitempty" url:"-"`
+	PredefinedSources        *PredefinedSources        `json:"predefined_sources,omitempty" url:"-"`
+	Sources                  *Sources                  `json:"sources,omitempty" url:"-"`
+	NotSources               *NotSources               `json:"not_sources,omitempty" url:"-"`
+	Lang                     *Lang                     `json:"lang,omitempty" url:"-"`
+	NotLang                  *NotLang                  `json:"not_lang,omitempty" url:"-"`
+	Countries                *Countries                `json:"countries,omitempty" url:"-"`
+	NotCountries             *NotCountries             `json:"not_countries,omitempty" url:"-"`
+	From                     *From                     `json:"from_,omitempty" url:"-"`
+	To                       *To                       `json:"to_,omitempty" url:"-"`
+	PublishedDatePrecision   *PublishedDatePrecision   `json:"published_date_precision,omitempty" url:"-"`
+	ByParseDate              *ByParseDate              `json:"by_parse_date,omitempty" url:"-"`
+	SortBy                   *SortBy                   `json:"sort_by,omitempty" url:"-"`
+	RankedOnly               *RankedOnly               `json:"ranked_only,omitempty" url:"-"`
+	FromRank                 *FromRank                 `json:"from_rank,omitempty" url:"-"`
+	ToRank                   *ToRank                   `json:"to_rank,omitempty" url:"-"`
+	IsHeadline               *IsHeadline               `json:"is_headline,omitempty" url:"-"`
+	IsOpinion                *IsOpinion                `json:"is_opinion,omitempty" url:"-"`
+	IsPaidContent            *IsPaidContent            `json:"is_paid_content,omitempty" url:"-"`
+	ParentUrl                *ParentUrl                `json:"parent_url,omitempty" url:"-"`
+	AllLinks                 *AllLinks                 `json:"all_links,omitempty" url:"-"`
+	AllDomainLinks           *AllDomainLinks           `json:"all_domain_links,omitempty" url:"-"`
+	WordCountMin             *WordCountMin             `json:"word_count_min,omitempty" url:"-"`
+	WordCountMax             *WordCountMax             `json:"word_count_max,omitempty" url:"-"`
+	Page                     *Page                     `json:"page,omitempty" url:"-"`
+	PageSize                 *PageSize                 `json:"page_size,omitempty" url:"-"`
+	IncludeTranslationFields *IncludeTranslationFields `json:"include_translation_fields,omitempty" url:"-"`
+	IncludeNlpData           *IncludeNlpData           `json:"include_nlp_data,omitempty" url:"-"`
+	HasNlp                   *HasNlp                   `json:"has_nlp,omitempty" url:"-"`
+	Theme                    *Theme                    `json:"theme,omitempty" url:"-"`
+	NotTheme                 *NotTheme                 `json:"not_theme,omitempty" url:"-"`
+	NerName                  *NerName                  `json:"ner_name,omitempty" url:"-"`
+	TitleSentimentMin        *TitleSentimentMin        `json:"title_sentiment_min,omitempty" url:"-"`
+	TitleSentimentMax        *TitleSentimentMax        `json:"title_sentiment_max,omitempty" url:"-"`
+	ContentSentimentMin      *ContentSentimentMin      `json:"content_sentiment_min,omitempty" url:"-"`
+	ContentSentimentMax      *ContentSentimentMax      `json:"content_sentiment_max,omitempty" url:"-"`
+	IptcTags                 *IptcTags                 `json:"iptc_tags,omitempty" url:"-"`
+	NotIptcTags              *NotIptcTags              `json:"not_iptc_tags,omitempty" url:"-"`
+	IabTags                  *IabTags                  `json:"iab_tags,omitempty" url:"-"`
+	NotIabTags               *NotIabTags               `json:"not_iab_tags,omitempty" url:"-"`
+	CustomTags               *CustomTags               `json:"custom_tags,omitempty" url:"-"`
+	RobotsCompliant          *RobotsCompliant          `json:"robots_compliant,omitempty" url:"-"`
 }
 
 // The name of the author to search for. This parameter returns exact matches only.

@@ -26,10 +26,11 @@ type SearchUrlPostRequest struct {
 	// - YYYY-MM-dd: `2024-07-01`
 	// - YYYY/mm/dd HH:MM:SS: `2024/07/01 00:00:00`
 	// - YYYY/mm/dd: `2024/07/01`
-	// - English phrases: `1 day ago`, `today`
-	To       *To       `json:"to_,omitempty" url:"-"`
-	Page     *Page     `json:"page,omitempty" url:"-"`
-	PageSize *PageSize `json:"page_size,omitempty" url:"-"`
+	// - English phrases: `1 day ago`, `now`
+	To              *To              `json:"to_,omitempty" url:"-"`
+	Page            *Page            `json:"page,omitempty" url:"-"`
+	PageSize        *PageSize        `json:"page_size,omitempty" url:"-"`
+	RobotsCompliant *RobotsCompliant `json:"robots_compliant,omitempty" url:"-"`
 }
 
 type SearchUrlGetRequest struct {
@@ -53,6 +54,8 @@ type SearchUrlGetRequest struct {
 	Page *int `json:"-" url:"page,omitempty"`
 	// The number of articles to return per page.
 	PageSize *int `json:"-" url:"page_size,omitempty"`
+	// If true, returns only articles/sources that comply with the publisher's robots.txt rules. If false, returns only articles/sources that do not comply with robots.txt rules. If omitted, returns all articles/sources regardless of compliance status.
+	RobotsCompliant *bool `json:"-" url:"robots_compliant,omitempty"`
 }
 
 // The Newscatcher article ID (corresponds to the `_id` field in API response) or a list of article IDs to search for. To specify multiple IDs, use a comma-separated string or an array of strings.

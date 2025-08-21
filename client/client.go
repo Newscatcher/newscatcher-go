@@ -5,6 +5,7 @@ package client
 import (
 	aggregation "github.com/Newscatcher/newscatcher-go/aggregation"
 	authors "github.com/Newscatcher/newscatcher-go/authors"
+	breakingnews "github.com/Newscatcher/newscatcher-go/breakingnews"
 	core "github.com/Newscatcher/newscatcher-go/core"
 	internal "github.com/Newscatcher/newscatcher-go/internal"
 	latestheadlines "github.com/Newscatcher/newscatcher-go/latestheadlines"
@@ -24,6 +25,7 @@ type Client struct {
 
 	Search          *search.Client
 	Latestheadlines *latestheadlines.Client
+	BreakingNews    *breakingnews.Client
 	Authors         *authors.Client
 	SearchLink      *searchlink.Client
 	Searchsimilar   *searchsimilar.Client
@@ -45,6 +47,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		header:          options.ToHeader(),
 		Search:          search.NewClient(opts...),
 		Latestheadlines: latestheadlines.NewClient(opts...),
+		BreakingNews:    breakingnews.NewClient(opts...),
 		Authors:         authors.NewClient(opts...),
 		SearchLink:      searchlink.NewClient(opts...),
 		Searchsimilar:   searchsimilar.NewClient(opts...),
