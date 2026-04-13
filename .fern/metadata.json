@@ -1,0 +1,10 @@
+{
+  "cliVersion": "4.68.0",
+  "generatorName": "fernapi/fern-go-sdk",
+  "generatorVersion": "1.34.3",
+  "generatorConfig": {
+    "importPath": "github.com/Newscatcher/newscatcher-go"
+  },
+  "originGitCommit": "e6e039aeca5c5b1f34982fd1ca7d3ec3ae6e1a02",
+  "sdkVersion": "v2.0.0"
+}
