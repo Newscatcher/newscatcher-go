@@ -1,0 +1,1182 @@
+{
+  "mappings": [
+    {
+      "id": "8e45fba8-debc-4cc6-8551-c9b7513bbdc9",
+      "name": "Search articles - default",
+      "request": {
+        "urlPathTemplate": "/api/search",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "q": {
+            "equalTo": "\"supply chain\" AND Amazon NOT China"
+          },
+          "search_in": {
+            "equalTo": "title_content, title_content_translated"
+          },
+          "include_translation_fields": {
+            "equalTo": "true"
+          },
+          "predefined_sources": {
+            "equalTo": "top 50 US, top 20 GB"
+          },
+          "source_name": {
+            "equalTo": "sport,tech"
+          },
+          "sources": {
+            "equalTo": "nytimes.com,finance.yahoo.com"
+          },
+          "not_sources": {
+            "equalTo": "cnn.com,wsj.com"
+          },
+          "lang": {
+            "equalTo": "en,es"
+          },
+          "not_lang": {
+            "equalTo": "fr,de"
+          },
+          "countries": {
+            "equalTo": "US,CA"
+          },
+          "not_countries": {
+            "equalTo": "UK,FR"
+          },
+          "not_author_name": {
+            "equalTo": "John Doe, Jane Doe"
+          },
+          "from_": {
+            "equalTo": "1 day ago"
+          },
+          "to_": {
+            "equalTo": "now"
+          },
+          "published_date_precision": {
+            "equalTo": "full"
+          },
+          "by_parse_date": {
+            "equalTo": "true"
+          },
+          "ranked_only": {
+            "equalTo": "true"
+          },
+          "from_rank": {
+            "equalTo": "100"
+          },
+          "to_rank": {
+            "equalTo": "100"
+          },
+          "is_headline": {
+            "equalTo": "true"
+          },
+          "is_opinion": {
+            "equalTo": "true"
+          },
+          "is_paid_content": {
+            "equalTo": "false"
+          },
+          "parent_url": {
+            "equalTo": "wsj.com/politics,wsj.com/tech"
+          },
+          "all_links": {
+            "equalTo": "https://aiindex.stanford.edu/report,https://www.stateof.ai"
+          },
+          "all_domain_links": {
+            "equalTo": "who.int,nih.gov"
+          },
+          "all_links_text": {
+            "equalTo": "Nvidia,Tesla"
+          },
+          "additional_domain_info": {
+            "equalTo": "true"
+          },
+          "is_news_domain": {
+            "equalTo": "true"
+          },
+          "news_type": {
+            "equalTo": "General News Outlets,Tech News and Updates"
+          },
+          "word_count_min": {
+            "equalTo": "300"
+          },
+          "word_count_max": {
+            "equalTo": "1000"
+          },
+          "page": {
+            "equalTo": "2"
+          },
+          "page_size": {
+            "equalTo": "50"
+          },
+          "clustering_enabled": {
+            "equalTo": "true"
+          },
+          "clustering_threshold": {
+            "equalTo": "0.7"
+          },
+          "include_nlp_data": {
+            "equalTo": "true"
+          },
+          "has_nlp": {
+            "equalTo": "true"
+          },
+          "theme": {
+            "equalTo": "Finance,Tech"
+          },
+          "not_theme": {
+            "equalTo": "Crime,Sports"
+          },
+          "ORG_entity_name": {
+            "equalTo": "\"Apple Inc\" OR Microsoft"
+          },
+          "PER_entity_name": {
+            "equalTo": "\"Elon Musk\" OR \"Jeff Bezos\""
+          },
+          "LOC_entity_name": {
+            "equalTo": "\"San Francisco\" OR \"New York City\""
+          },
+          "MISC_entity_name": {
+            "equalTo": "AWS OR \"Microsoft Azure\""
+          },
+          "title_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "title_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "content_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "content_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "iptc_tags": {
+            "equalTo": "20000199,20000209"
+          },
+          "not_iptc_tags": {
+            "equalTo": "20000205,20000209"
+          },
+          "iab_tags": {
+            "equalTo": "Business,Events"
+          },
+          "not_iab_tags": {
+            "equalTo": "Agriculture,Metals"
+          },
+          "custom_tags": {
+            "equalTo": "Tag1,Tag2"
+          },
+          "exclude_duplicates": {
+            "equalTo": "true"
+          },
+          "robots_compliant": {
+            "equalTo": "true"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "8e45fba8-debc-4cc6-8551-c9b7513bbdc9",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "4c839a2d-cbe8-460e-ab2e-1e698941825c",
+      "name": "Search articles - default",
+      "request": {
+        "urlPathTemplate": "/api/search",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "4c839a2d-cbe8-460e-ab2e-1e698941825c",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "fea0d205-858d-4852-863f-188c3158873a",
+      "name": "Retrieve latest headlines - default",
+      "request": {
+        "urlPathTemplate": "/api/latest_headlines",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "when": {
+            "equalTo": "7d"
+          },
+          "by_parse_date": {
+            "equalTo": "true"
+          },
+          "lang": {
+            "equalTo": "en,es"
+          },
+          "not_lang": {
+            "equalTo": "fr,de"
+          },
+          "countries": {
+            "equalTo": "US,CA"
+          },
+          "not_countries": {
+            "equalTo": "UK,FR"
+          },
+          "predefined_sources": {
+            "equalTo": "top 50 US, top 20 GB"
+          },
+          "sources": {
+            "equalTo": "nytimes.com,finance.yahoo.com"
+          },
+          "not_sources": {
+            "equalTo": "cnn.com,wsj.com"
+          },
+          "not_author_name": {
+            "equalTo": "John Doe, Jane Doe"
+          },
+          "ranked_only": {
+            "equalTo": "true"
+          },
+          "is_headline": {
+            "equalTo": "true"
+          },
+          "is_opinion": {
+            "equalTo": "true"
+          },
+          "is_paid_content": {
+            "equalTo": "false"
+          },
+          "parent_url": {
+            "equalTo": "wsj.com/politics,wsj.com/tech"
+          },
+          "all_links": {
+            "equalTo": "https://aiindex.stanford.edu/report,https://www.stateof.ai"
+          },
+          "all_domain_links": {
+            "equalTo": "who.int,nih.gov"
+          },
+          "all_links_text": {
+            "equalTo": "Nvidia,Tesla"
+          },
+          "word_count_min": {
+            "equalTo": "300"
+          },
+          "word_count_max": {
+            "equalTo": "1000"
+          },
+          "page": {
+            "equalTo": "2"
+          },
+          "page_size": {
+            "equalTo": "50"
+          },
+          "clustering_enabled": {
+            "equalTo": "true"
+          },
+          "clustering_threshold": {
+            "equalTo": "0.7"
+          },
+          "include_translation_fields": {
+            "equalTo": "true"
+          },
+          "include_nlp_data": {
+            "equalTo": "true"
+          },
+          "has_nlp": {
+            "equalTo": "true"
+          },
+          "theme": {
+            "equalTo": "Finance,Tech"
+          },
+          "not_theme": {
+            "equalTo": "Crime,Sports"
+          },
+          "ORG_entity_name": {
+            "equalTo": "\"Apple Inc\" OR Microsoft"
+          },
+          "PER_entity_name": {
+            "equalTo": "\"Elon Musk\" OR \"Jeff Bezos\""
+          },
+          "LOC_entity_name": {
+            "equalTo": "\"San Francisco\" OR \"New York City\""
+          },
+          "MISC_entity_name": {
+            "equalTo": "AWS OR \"Microsoft Azure\""
+          },
+          "title_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "title_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "content_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "content_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "iptc_tags": {
+            "equalTo": "20000199,20000209"
+          },
+          "not_iptc_tags": {
+            "equalTo": "20000205,20000209"
+          },
+          "iab_tags": {
+            "equalTo": "Business,Events"
+          },
+          "not_iab_tags": {
+            "equalTo": "Agriculture,Metals"
+          },
+          "custom_tags": {
+            "equalTo": "Tag1,Tag2"
+          },
+          "robots_compliant": {
+            "equalTo": "true"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "fea0d205-858d-4852-863f-188c3158873a",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "cb43840d-0c23-4b97-9b1c-dc3a8e1647dd",
+      "name": "Retrieve latest headlines - default",
+      "request": {
+        "urlPathTemplate": "/api/latest_headlines",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "cb43840d-0c23-4b97-9b1c-dc3a8e1647dd",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "ed383d41-e49f-4d6b-b231-716d41194cca",
+      "name": "Get breaking news - default",
+      "request": {
+        "urlPathTemplate": "/api/breaking_news",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "ranked_only": {
+            "equalTo": "true"
+          },
+          "from_rank": {
+            "equalTo": "100"
+          },
+          "to_rank": {
+            "equalTo": "100"
+          },
+          "page": {
+            "equalTo": "2"
+          },
+          "page_size": {
+            "equalTo": "50"
+          },
+          "top_n_articles": {
+            "equalTo": "5"
+          },
+          "include_translation_fields": {
+            "equalTo": "true"
+          },
+          "include_nlp_data": {
+            "equalTo": "true"
+          },
+          "has_nlp": {
+            "equalTo": "true"
+          },
+          "theme": {
+            "equalTo": "Finance,Tech"
+          },
+          "not_theme": {
+            "equalTo": "Crime,Sports"
+          },
+          "ORG_entity_name": {
+            "equalTo": "\"Apple Inc\" OR Microsoft"
+          },
+          "PER_entity_name": {
+            "equalTo": "\"Elon Musk\" OR \"Jeff Bezos\""
+          },
+          "LOC_entity_name": {
+            "equalTo": "\"San Francisco\" OR \"New York City\""
+          },
+          "MISC_entity_name": {
+            "equalTo": "AWS OR \"Microsoft Azure\""
+          },
+          "title_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "title_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "content_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "content_sentiment_max": {
+            "equalTo": "0.5"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"breaking_news_events\": [\n    {\n      \"event_id\": \"event_id\",\n      \"articles_count\": 1,\n      \"articles\": [\n        {\n          \"title\": \"title\",\n          \"link\": \"link\",\n          \"domain_url\": \"domain_url\",\n          \"full_domain_url\": \"full_domain_url\",\n          \"parent_url\": \"parent_url\",\n          \"rank\": 1,\n          \"id\": \"id\",\n          \"score\": 1.1\n        }\n      ]\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "ed383d41-e49f-4d6b-b231-716d41194cca",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "a743b291-b913-44bf-afac-7d46379ddf3f",
+      "name": "Get breaking news - default",
+      "request": {
+        "urlPathTemplate": "/api/breaking_news",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"breaking_news_events\": [\n    {\n      \"event_id\": \"event_id\",\n      \"articles_count\": 1,\n      \"articles\": [\n        {\n          \"title\": \"title\",\n          \"link\": \"link\",\n          \"domain_url\": \"domain_url\",\n          \"full_domain_url\": \"full_domain_url\",\n          \"parent_url\": \"parent_url\",\n          \"rank\": 1,\n          \"id\": \"id\",\n          \"score\": 1.1\n        }\n      ]\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "a743b291-b913-44bf-afac-7d46379ddf3f",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "5b1389a2-d75a-43a0-9206-0cef1423ee0b",
+      "name": "Search articles by author - default",
+      "request": {
+        "urlPathTemplate": "/api/authors",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "author_name": {
+            "equalTo": "Jane Smith"
+          },
+          "not_author_name": {
+            "equalTo": "John Doe, Jane Doe"
+          },
+          "predefined_sources": {
+            "equalTo": "top 50 US, top 20 GB"
+          },
+          "sources": {
+            "equalTo": "nytimes.com,finance.yahoo.com"
+          },
+          "not_sources": {
+            "equalTo": "cnn.com,wsj.com"
+          },
+          "lang": {
+            "equalTo": "en,es"
+          },
+          "not_lang": {
+            "equalTo": "fr,de"
+          },
+          "countries": {
+            "equalTo": "US,CA"
+          },
+          "not_countries": {
+            "equalTo": "UK,FR"
+          },
+          "from_": {
+            "equalTo": "1 day ago"
+          },
+          "to_": {
+            "equalTo": "now"
+          },
+          "published_date_precision": {
+            "equalTo": "full"
+          },
+          "by_parse_date": {
+            "equalTo": "true"
+          },
+          "ranked_only": {
+            "equalTo": "true"
+          },
+          "from_rank": {
+            "equalTo": "100"
+          },
+          "to_rank": {
+            "equalTo": "100"
+          },
+          "is_headline": {
+            "equalTo": "true"
+          },
+          "is_opinion": {
+            "equalTo": "true"
+          },
+          "is_paid_content": {
+            "equalTo": "false"
+          },
+          "parent_url": {
+            "equalTo": "wsj.com/politics,wsj.com/tech"
+          },
+          "all_links": {
+            "equalTo": "https://aiindex.stanford.edu/report,https://www.stateof.ai"
+          },
+          "all_domain_links": {
+            "equalTo": "who.int,nih.gov"
+          },
+          "all_links_text": {
+            "equalTo": "Nvidia,Tesla"
+          },
+          "word_count_min": {
+            "equalTo": "300"
+          },
+          "word_count_max": {
+            "equalTo": "1000"
+          },
+          "page": {
+            "equalTo": "2"
+          },
+          "page_size": {
+            "equalTo": "50"
+          },
+          "include_translation_fields": {
+            "equalTo": "true"
+          },
+          "include_nlp_data": {
+            "equalTo": "true"
+          },
+          "has_nlp": {
+            "equalTo": "true"
+          },
+          "theme": {
+            "equalTo": "Finance,Tech"
+          },
+          "not_theme": {
+            "equalTo": "Crime,Sports"
+          },
+          "ner_name": {
+            "equalTo": "Tesla,Amazon"
+          },
+          "title_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "title_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "content_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "content_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "iptc_tags": {
+            "equalTo": "20000199,20000209"
+          },
+          "not_iptc_tags": {
+            "equalTo": "20000205,20000209"
+          },
+          "iab_tags": {
+            "equalTo": "Business,Events"
+          },
+          "not_iab_tags": {
+            "equalTo": "Agriculture,Metals"
+          },
+          "custom_tags": {
+            "equalTo": "Tag1,Tag2"
+          },
+          "robots_compliant": {
+            "equalTo": "true"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "5b1389a2-d75a-43a0-9206-0cef1423ee0b",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "4afd21a4-71d9-4385-a67f-0e75f7398022",
+      "name": "Search articles by author - default",
+      "request": {
+        "urlPathTemplate": "/api/authors",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "4afd21a4-71d9-4385-a67f-0e75f7398022",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "b1cd215a-41ed-49ee-b0da-2801b80f701a",
+      "name": "Search articles by links or IDs - default",
+      "request": {
+        "urlPathTemplate": "/api/search_by_link",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "ids": {
+            "equalTo": "5f8d0d55b6e45e00179c6e7e"
+          },
+          "links": {
+            "equalTo": "https://nytimes.com/article1,https://bbc.com/article2"
+          },
+          "from_": {
+            "equalTo": "1 day ago"
+          },
+          "to_": {
+            "equalTo": "now"
+          },
+          "page": {
+            "equalTo": "2"
+          },
+          "page_size": {
+            "equalTo": "50"
+          },
+          "robots_compliant": {
+            "equalTo": "true"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "b1cd215a-41ed-49ee-b0da-2801b80f701a",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "955e9765-a611-4056-96ce-23ff88d053dc",
+      "name": "Search articles by links or IDs - default",
+      "request": {
+        "urlPathTemplate": "/api/search_by_link",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"author\": \"author\",\n      \"authors\": [\n        \"authors\"\n      ],\n      \"journalists\": [\n        \"journalists\"\n      ],\n      \"published_date\": \"published_date\",\n      \"published_date_precision\": \"published_date_precision\",\n      \"updated_date\": \"updated_date\",\n      \"updated_date_precision\": \"updated_date_precision\",\n      \"parse_date\": \"parse_date\",\n      \"link\": \"link\",\n      \"domain_url\": \"domain_url\",\n      \"full_domain_url\": \"full_domain_url\",\n      \"name_source\": \"name_source\",\n      \"is_headline\": true,\n      \"paid_content\": true,\n      \"parent_url\": \"parent_url\",\n      \"country\": \"country\",\n      \"rights\": \"rights\",\n      \"rank\": 1,\n      \"media\": \"media\",\n      \"language\": \"language\",\n      \"description\": \"description\",\n      \"content\": \"content\",\n      \"title_translated_en\": \"title_translated_en\",\n      \"content_translated_en\": \"content_translated_en\",\n      \"word_count\": 1,\n      \"is_opinion\": true,\n      \"twitter_account\": \"twitter_account\",\n      \"all_links\": [\n        \"all_links\"\n      ],\n      \"all_domain_links\": [\n        \"all_domain_links\"\n      ],\n      \"all_links_data\": [\n        {\n          \"domain_url\": \"amazon.de\",\n          \"link\": \"https://www.amazon.de/s?k=Künstliche+Intelligenz\",\n          \"text\": \"KI Brillen\"\n        }\n      ],\n      \"id\": \"id\",\n      \"score\": 1.1,\n      \"robots_compliant\": true,\n      \"custom_tags\": {\n        \"key\": [\n          \"value\"\n        ]\n      },\n      \"additional_domain_info\": {\n        \"is_news_domain\": true,\n        \"news_type\": \"News and Blogs\",\n        \"news_domain_type\": \"Original Content\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "955e9765-a611-4056-96ce-23ff88d053dc",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "5bf301ef-9b29-4573-9299-c30bfd4e976e",
+      "name": "Retrieve sources - default",
+      "request": {
+        "urlPathTemplate": "/api/sources",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "lang": {
+            "equalTo": "en,es"
+          },
+          "countries": {
+            "equalTo": "US,CA"
+          },
+          "predefined_sources": {
+            "equalTo": "top 50 US, top 20 GB"
+          },
+          "source_name": {
+            "equalTo": "sport,tech"
+          },
+          "source_url": {
+            "equalTo": "bbc.com"
+          },
+          "include_additional_info": {
+            "equalTo": "true"
+          },
+          "is_news_domain": {
+            "equalTo": "true"
+          },
+          "news_type": {
+            "equalTo": "General News Outlets,Tech News and Updates"
+          },
+          "from_rank": {
+            "equalTo": "100"
+          },
+          "to_rank": {
+            "equalTo": "100"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"message\": \"message\",\n  \"sources\": [\n    {\n      \"name_source\": \"name_source\",\n      \"domain_url\": \"domain_url\",\n      \"logo\": \"logo\",\n      \"additional_info\": {\n        \"nb_articles_for_7d\": 153,\n        \"country\": \"US\",\n        \"rank\": 117,\n        \"is_news_domain\": true,\n        \"news_domain_type\": \"Original Content\",\n        \"news_type\": \"General News Outlets\",\n        \"robots_compliant\": \"100%\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "5bf301ef-9b29-4573-9299-c30bfd4e976e",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "091bcdf8-209a-4b1a-b31e-fde1a138b52f",
+      "name": "Retrieve sources - default",
+      "request": {
+        "urlPathTemplate": "/api/sources",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"message\": \"message\",\n  \"sources\": [\n    {\n      \"name_source\": \"name_source\",\n      \"domain_url\": \"domain_url\",\n      \"logo\": \"logo\",\n      \"additional_info\": {\n        \"nb_articles_for_7d\": 153,\n        \"country\": \"US\",\n        \"rank\": 117,\n        \"is_news_domain\": true,\n        \"news_domain_type\": \"Original Content\",\n        \"news_type\": \"General News Outlets\",\n        \"robots_compliant\": \"100%\"\n      }\n    }\n  ],\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "091bcdf8-209a-4b1a-b31e-fde1a138b52f",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "6777bbef-ee15-419e-88de-be0ab71d49db",
+      "name": "Get aggregation count by interval - default",
+      "request": {
+        "urlPathTemplate": "/api/aggregation_count",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        },
+        "queryParameters": {
+          "q": {
+            "equalTo": "\"supply chain\" AND Amazon NOT China"
+          },
+          "search_in": {
+            "equalTo": "title_content, title_content_translated"
+          },
+          "predefined_sources": {
+            "equalTo": "top 50 US, top 20 GB"
+          },
+          "sources": {
+            "equalTo": "nytimes.com,finance.yahoo.com"
+          },
+          "not_sources": {
+            "equalTo": "cnn.com,wsj.com"
+          },
+          "lang": {
+            "equalTo": "en,es"
+          },
+          "not_lang": {
+            "equalTo": "fr,de"
+          },
+          "countries": {
+            "equalTo": "US,CA"
+          },
+          "not_countries": {
+            "equalTo": "UK,FR"
+          },
+          "not_author_name": {
+            "equalTo": "John Doe, Jane Doe"
+          },
+          "from_": {
+            "equalTo": "1 day ago"
+          },
+          "to_": {
+            "equalTo": "now"
+          },
+          "published_date_precision": {
+            "equalTo": "full"
+          },
+          "by_parse_date": {
+            "equalTo": "true"
+          },
+          "ranked_only": {
+            "equalTo": "true"
+          },
+          "from_rank": {
+            "equalTo": "100"
+          },
+          "to_rank": {
+            "equalTo": "100"
+          },
+          "is_headline": {
+            "equalTo": "true"
+          },
+          "is_opinion": {
+            "equalTo": "true"
+          },
+          "is_paid_content": {
+            "equalTo": "false"
+          },
+          "parent_url": {
+            "equalTo": "wsj.com/politics,wsj.com/tech"
+          },
+          "all_links": {
+            "equalTo": "https://aiindex.stanford.edu/report,https://www.stateof.ai"
+          },
+          "all_domain_links": {
+            "equalTo": "who.int,nih.gov"
+          },
+          "all_links_text": {
+            "equalTo": "Nvidia,Tesla"
+          },
+          "word_count_min": {
+            "equalTo": "300"
+          },
+          "word_count_max": {
+            "equalTo": "1000"
+          },
+          "page": {
+            "equalTo": "2"
+          },
+          "page_size": {
+            "equalTo": "50"
+          },
+          "include_nlp_data": {
+            "equalTo": "true"
+          },
+          "has_nlp": {
+            "equalTo": "true"
+          },
+          "theme": {
+            "equalTo": "Finance,Tech"
+          },
+          "not_theme": {
+            "equalTo": "Crime,Sports"
+          },
+          "ORG_entity_name": {
+            "equalTo": "\"Apple Inc\" OR Microsoft"
+          },
+          "PER_entity_name": {
+            "equalTo": "\"Elon Musk\" OR \"Jeff Bezos\""
+          },
+          "LOC_entity_name": {
+            "equalTo": "\"San Francisco\" OR \"New York City\""
+          },
+          "MISC_entity_name": {
+            "equalTo": "AWS OR \"Microsoft Azure\""
+          },
+          "title_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "title_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "content_sentiment_min": {
+            "equalTo": "-0.5"
+          },
+          "content_sentiment_max": {
+            "equalTo": "0.5"
+          },
+          "iptc_tags": {
+            "equalTo": "20000199,20000209"
+          },
+          "not_iptc_tags": {
+            "equalTo": "20000205,20000209"
+          },
+          "robots_compliant": {
+            "equalTo": "true"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"aggregations\": {\n    \"aggregation_count\": [\n      {\n        \"time_frame\": \"2024-12-31T00:00:00Z\",\n        \"article_count\": 86\n      }\n    ]\n  },\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "6777bbef-ee15-419e-88de-be0ab71d49db",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "b3c5c651-7f4c-4387-a9c6-e486cbd2ae95",
+      "name": "Get aggregation count by interval - default",
+      "request": {
+        "urlPathTemplate": "/api/aggregation_count",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"total_hits\": 1,\n  \"page\": 1,\n  \"total_pages\": 1,\n  \"page_size\": 1,\n  \"aggregations\": {\n    \"aggregation_count\": [\n      {\n        \"time_frame\": \"2024-12-31T00:00:00Z\",\n        \"article_count\": 86\n      }\n    ]\n  },\n  \"user_input\": {\n    \"key\": \"value\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "b3c5c651-7f4c-4387-a9c6-e486cbd2ae95",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "38625d22-3bdc-4ac8-9b3f-af6963473697",
+      "name": "Retrieve subscription plan information - default",
+      "request": {
+        "urlPathTemplate": "/api/subscription",
+        "method": "GET",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"active\": true,\n  \"concurrent_calls\": 1,\n  \"plan\": \"plan\",\n  \"plan_calls\": 1,\n  \"remaining_calls\": 1,\n  \"historical_days\": 1\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "38625d22-3bdc-4ac8-9b3f-af6963473697",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "2b42b9e2-028a-4a29-a4ce-0d31717c8192",
+      "name": "Retrieve subscription plan information - default",
+      "request": {
+        "urlPathTemplate": "/api/subscription",
+        "method": "POST",
+        "headers": {
+          "x-api-token": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"active\": true,\n  \"concurrent_calls\": 1,\n  \"plan\": \"plan\",\n  \"plan_calls\": 1,\n  \"remaining_calls\": 1,\n  \"historical_days\": 1\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "2b42b9e2-028a-4a29-a4ce-0d31717c8192",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 16
+  }
+}
