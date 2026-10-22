@@ -1,3 +1,6 @@
 LICENSE
 .gitignore
 README.md
+.fern/replay.lock
+.fern/replay.yml
+.gitattributes

@@ -17,7 +17,7 @@ This module requires Go version >= 1.13.
 Run this command to use the Newscatcher Go library in your module:
 
 ```sh
-go get github.com/Newscatcher/newscatcher-go
+go get github.com/Newscatcher/newscatcher-go/v2
 ```
 
 ## Usage
@@ -27,9 +27,9 @@ Build and use the client like this:
 ```go
 import (
     "context"
-    newscatcher "github.com/Newscatcher/newscatcher-go"
-    newscatcherclient "github.com/Newscatcher/newscatcher-go/client"
-    "github.com/Newscatcher/newscatcher-go/option"
+    newscatcher "github.com/Newscatcher/newscatcher-go/v2"
+    newscatcherclient "github.com/Newscatcher/newscatcher-go/v2/client"
+    "github.com/Newscatcher/newscatcher-go/v2/option"
 )
 
 client := newscatcherclient.NewClient(
@@ -54,7 +54,7 @@ When the API responds with a non-success status code, the SDK returns an error.
 
 ```go
 import (
-    "github.com/Newscatcher/newscatcher-go/core"
+    "github.com/Newscatcher/newscatcher-go/v2/core"
     "fmt"
 )
 
@@ -73,7 +73,7 @@ You can use Go's standard error handling features with these errors:
 ```go
 import (
     import "errors"
-    newscatcher "github.com/Newscatcher/newscatcher-go"
+    newscatcher "github.com/Newscatcher/newscatcher-go/v2"
 )
 
 response, err := client.Search.Post(...)
