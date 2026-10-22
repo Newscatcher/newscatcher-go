@@ -6,10 +6,10 @@ import (
 	context "context"
 	http "net/http"
 
-	newscatchergo "github.com/Newscatcher/newscatcher-go"
-	core "github.com/Newscatcher/newscatcher-go/core"
-	internal "github.com/Newscatcher/newscatcher-go/internal"
-	option "github.com/Newscatcher/newscatcher-go/option"
+	newscatchergo "github.com/Newscatcher/newscatcher-go/v2"
+	core "github.com/Newscatcher/newscatcher-go/v2/core"
+	internal "github.com/Newscatcher/newscatcher-go/v2/internal"
+	option "github.com/Newscatcher/newscatcher-go/v2/option"
 )
 
 type RawClient struct {

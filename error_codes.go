@@ -3,8 +3,8 @@
 package api
 
 import (
-	core "github.com/Newscatcher/newscatcher-go/core"
-	internal "github.com/Newscatcher/newscatcher-go/internal"
+	core "github.com/Newscatcher/newscatcher-go/v2/core"
+	internal "github.com/Newscatcher/newscatcher-go/v2/internal"
 )
 
 var ErrorCodes internal.ErrorCodes = internal.ErrorCodes{

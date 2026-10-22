@@ -10,9 +10,9 @@ import (
 	os "os"
 	testing "testing"
 
-	newscatchergo "github.com/Newscatcher/newscatcher-go"
-	client "github.com/Newscatcher/newscatcher-go/client"
-	option "github.com/Newscatcher/newscatcher-go/option"
+	newscatchergo "github.com/Newscatcher/newscatcher-go/v2"
+	client "github.com/Newscatcher/newscatcher-go/v2/client"
+	option "github.com/Newscatcher/newscatcher-go/v2/option"
 	require "github.com/stretchr/testify/require"
 )
 

@@ -1,4 +1,4 @@
-module github.com/Newscatcher/newscatcher-go
+module github.com/Newscatcher/newscatcher-go/v2
 
 go 1.21
 

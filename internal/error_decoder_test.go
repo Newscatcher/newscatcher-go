@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/Newscatcher/newscatcher-go/core"
+	"github.com/Newscatcher/newscatcher-go/v2/core"
 	"github.com/stretchr/testify/assert"
 )
 

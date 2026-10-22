@@ -3,7 +3,7 @@
 package client
 
 import (
-	option "github.com/Newscatcher/newscatcher-go/option"
+	option "github.com/Newscatcher/newscatcher-go/v2/option"
 	assert "github.com/stretchr/testify/assert"
 	http "net/http"
 	testing "testing"

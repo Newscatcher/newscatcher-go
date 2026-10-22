@@ -10,5 +10,5 @@
   "invokedBy": "ci",
   "requestedVersion": "AUTO",
   "ciProvider": "unknown",
-  "sdkVersion": "v0.0.0-fern-placeholder"
+  "sdkVersion": "v2.0.0"
 }

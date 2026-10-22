@@ -5,7 +5,7 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/Newscatcher/newscatcher-go/internal"
+	internal "github.com/Newscatcher/newscatcher-go/v2/internal"
 	big "math/big"
 	url "net/url"
 	time "time"

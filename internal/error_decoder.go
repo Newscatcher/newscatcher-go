@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Newscatcher/newscatcher-go/core"
+	"github.com/Newscatcher/newscatcher-go/v2/core"
 )
 
 // ErrorCodes maps HTTP status codes to error constructors.

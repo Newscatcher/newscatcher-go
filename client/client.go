@@ -3,17 +3,17 @@
 package client
 
 import (
-	aggregationcount "github.com/Newscatcher/newscatcher-go/aggregationcount"
-	authors "github.com/Newscatcher/newscatcher-go/authors"
-	breakingnews "github.com/Newscatcher/newscatcher-go/breakingnews"
-	core "github.com/Newscatcher/newscatcher-go/core"
-	internal "github.com/Newscatcher/newscatcher-go/internal"
-	latestheadlines "github.com/Newscatcher/newscatcher-go/latestheadlines"
-	option "github.com/Newscatcher/newscatcher-go/option"
-	search "github.com/Newscatcher/newscatcher-go/search"
-	searchbylink "github.com/Newscatcher/newscatcher-go/searchbylink"
-	sources "github.com/Newscatcher/newscatcher-go/sources"
-	subscription "github.com/Newscatcher/newscatcher-go/subscription"
+	aggregationcount "github.com/Newscatcher/newscatcher-go/v2/aggregationcount"
+	authors "github.com/Newscatcher/newscatcher-go/v2/authors"
+	breakingnews "github.com/Newscatcher/newscatcher-go/v2/breakingnews"
+	core "github.com/Newscatcher/newscatcher-go/v2/core"
+	internal "github.com/Newscatcher/newscatcher-go/v2/internal"
+	latestheadlines "github.com/Newscatcher/newscatcher-go/v2/latestheadlines"
+	option "github.com/Newscatcher/newscatcher-go/v2/option"
+	search "github.com/Newscatcher/newscatcher-go/v2/search"
+	searchbylink "github.com/Newscatcher/newscatcher-go/v2/searchbylink"
+	sources "github.com/Newscatcher/newscatcher-go/v2/sources"
+	subscription "github.com/Newscatcher/newscatcher-go/v2/subscription"
 )
 
 type Client struct {
